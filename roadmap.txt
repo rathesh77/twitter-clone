@@ -1,0 +1,25 @@
+TODO
+
+Tweet (id, author_id, content)
+  replies: Array<Message>
+  likes : int
+  dislikes : int
+  shares : int
+  mentionned_people: Array<User>
+
+Trend (country, hashtag)
+
+Message (id, author_id, tweet_id, content)
+
+User (username, email, password...)
+  T: Tweet
+  followers: Array<User>
+  following: Array<User>
+  notifications: Array<notification>
+
+Thread
+  T: Array<Tweet>
+
+Notification (type_id: tweet_id | mention_id)
+    new_tweets
+    mentions
