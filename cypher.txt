@@ -1,0 +1,18 @@
+CREATE (user:User {id:1, username: 'user', email: 'toto@toto.fr'});
+CREATE (tweet:Tweet {id: 1, author_id: 1, content:'tweet',  likes:0, dislikes:32, shares:10, mentionned_people: ['a']});
+CREATE (message:Message {id: 1, author_id: 1, tweet_id:1, content: 'message'});
+
+MATCH (u:User), (t: Tweet)
+  WHERE u.id = t.author_id
+CREATE (u)-[:WROTE_TWEET]->(t)
+RETURN  u, t;
+
+MATCH (t: Tweet), (m: Message)
+  WHERE t.id = m.tweet_id
+CREATE (m)-[:PART_OF]->(t)
+RETURN  m, t;
+
+MATCH (u:User), (m: Message)
+  WHERE u.id = m.author_id
+CREATE (u)-[:WROTE_MESSAGE]->(m)
+RETURN  u, m;
