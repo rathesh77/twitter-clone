@@ -6,18 +6,37 @@
 }
 
 .left-pane {
-  flex-grow:1 ;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+.left-pane-container {
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 12px;
+  padding-right: 12px;
+}
 
 .main-container > * {
-  padding: 80px;
 
 }
 
-.front-pane {
-  flex-grow:2;
+.main-pane {
+  display: flex;
+  justify-content: space-between;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.middle-section {
+  flex-basis: 70%;
+}
+.right-section > * {
+  margin-bottom: 10px;
+  flex-basis: 30%;
 
 }

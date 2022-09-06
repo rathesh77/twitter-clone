@@ -1,6 +1,8 @@
 
 export default function LeftPane() {
   return (
+    <div className="left-pane-container">
+
     <div className="left-pane">
         <div>
           <li>Accueil</li>
@@ -17,5 +19,7 @@ export default function LeftPane() {
           profile shortcut
         </div>
     </div>
+        </div>
+
   )
 }

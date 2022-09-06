@@ -1,11 +1,11 @@
 import LeftPane from './LeftPane'
-import FrontPane from './FrontPane'
+import MainPane from './MainPane'
 //import RightPane from './RightPane.js'
-export default function MainPage() {
+export default function Main() {
   return (
     <div className='main-container'>
       <LeftPane/>
-      <FrontPane/>
+      <MainPane/>
     </div>
   )
 }
