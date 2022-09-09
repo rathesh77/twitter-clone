@@ -118,6 +118,15 @@ a {
   text-decoration: none;
 }
 
-.see-more {
-  
+.menu-item {
+  font-size: 1.2rem;
+}
+
+.tweet-header {
+  display: flex;
+}
+
+.tweet-wrapper {
+  display: flex;
+  max-width: 600px;
 }

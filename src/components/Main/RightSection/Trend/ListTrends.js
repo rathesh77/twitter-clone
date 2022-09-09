@@ -1,8 +1,5 @@
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import Trend from './Trend'
 
 export default function ListTrends() {
@@ -22,7 +19,7 @@ export default function ListTrends() {
             <Trend title='#trend'/>
         </ListItem>
         <br/>
-        <a href="#" className='see-more'>Voir plus</a>
+        <a href="test" className='see-more'>Voir plus</a>
       </List>
   );
 }

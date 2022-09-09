@@ -1,4 +1,3 @@
-import { Button, ListItemButton } from "@mui/material"
 import { useState } from "react"
 import {Avatar} from '@mui/material'
 export default function Suggestion(props) {
@@ -15,7 +14,7 @@ export default function Suggestion(props) {
           <div className="suggestion-user-name">{title}</div>
           <div className="suggestion-user-tag">@{title.split(' ').join('_')}</div>
         </div>
-        <a href="#"><div className="btn btn-follow">Suivre</div></a>
+        <a href="test"><div className="btn btn-follow">Suivre</div></a>
       </div>
 
     </div>
