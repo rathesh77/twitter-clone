@@ -53,10 +53,10 @@ export default function ListTweets() {
     },
   ]
   return (
-    <List class="tweets">
+    <List className="tweets">
       {messages.map(m =>
       (
-        <ListItem disablePadding>
+        <ListItem disablePadding key={Math.random()}>
           <Tweet author={m.author} message={m.message} timestamp="23h" />
         </ListItem>
       )

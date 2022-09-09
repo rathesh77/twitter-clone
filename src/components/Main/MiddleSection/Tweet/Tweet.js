@@ -7,10 +7,11 @@ export default function Tweet(props) {
 
   return (
     <div className="tweet-wrapper">
-      <div className="tweet-author-avatar">
-      <Avatar src={author.avatar} alt={author.name}/>
 
+      <div className="tweet-author-avatar">
+        <Avatar src={author.avatar} alt={author.name} />
       </div>
+
       <div className="tweet-content">
         <div className="tweet-header">
           <div className="tweet-author-name">

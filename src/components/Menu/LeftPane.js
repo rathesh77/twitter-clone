@@ -1,4 +1,11 @@
 import { List, ListItem, ListItemButton } from '@mui/material'
+import HouseIcon from '@mui/icons-material/House';
+import TagIcon from '@mui/icons-material/Tag';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import EmailIcon from '@mui/icons-material/Email';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function LeftPane() {
   return (
@@ -8,25 +15,25 @@ export default function LeftPane() {
         <div>
           <List>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Accueil</ListItemButton>
+              <ListItemButton className='menu-item'><HouseIcon/>Accueil</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Explorer</ListItemButton>
+              <ListItemButton className='menu-item'><TagIcon/>Explorer</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Notifications</ListItemButton>
+              <ListItemButton className='menu-item'><NotificationsActiveIcon/>Notifications</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Messages</ListItemButton>
+              <ListItemButton className='menu-item'><EmailIcon/>Messages</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Signets</ListItemButton>
+              <ListItemButton className='menu-item'><BookmarkIcon/>Signets</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Listes</ListItemButton>
+              <ListItemButton className='menu-item'><ListAltIcon/>Listes</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'>Profile</ListItemButton>
+              <ListItemButton className='menu-item'><PersonIcon/>Profile</ListItemButton>
             </ListItem>
           </List>
         </div>

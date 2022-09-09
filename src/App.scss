@@ -1,8 +1,8 @@
 .main-container {
   height: 100vh;
-  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  
 }
 
 .left-pane {
@@ -13,9 +13,7 @@
 
 .left-pane-container {
   display: flex;
-  justify-content: flex-end;
-  padding-left: 12px;
-  padding-right: 12px;
+
 }
 
 .main-pane {
@@ -27,6 +25,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+
 }
 
 .middle-section {
@@ -105,7 +105,7 @@
 
 .btn {
   background-color: black;
-  color:white;
+  color: white;
   display: flex;
   align-items: center;
   height: 35px;
@@ -124,9 +124,35 @@ a {
 
 .tweet-header {
   display: flex;
+  margin-bottom: 2px;
 }
 
 .tweet-wrapper {
   display: flex;
-  max-width: 600px;
+  max-width: 50vw;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: rgb(239, 243, 244);
+  border-collapse: collapse;
+  align-items: center;
+  padding: 0 16px 0 16px;
+  font-size: 0.94rem;
+}
+
+.tweet-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tweet-message {
+  margin-bottom: 20px;
+}
+
+.tweet-author-avatar {
+  margin-right: 12px;
+}
+
+.menu-item svg {
+  margin-right: 10px;
 }
