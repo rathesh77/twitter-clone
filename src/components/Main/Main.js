@@ -1,5 +1,5 @@
-import MiddleSection from './MiddleSection.js'
-import RightSection from './RightSection.js'
+import MiddleSection from './MiddleSection/Main.js'
+import RightSection from './RightSection/Main.js'
 
 export default function MainPane() {
   return (
