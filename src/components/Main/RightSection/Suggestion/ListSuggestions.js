@@ -8,28 +8,18 @@ import Suggestion from './Suggestion'
 export default function ListSuggestions() {
   return (
       <List className="suggestions">
-        <div className='right-section-title'>Tendances pour vous</div>
+        <div className='right-section-title'>Vous pourriez aimer</div>
         <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
+            <Suggestion title='ShoxCSGO' avatar="https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg"/>
         </ListItem>
         <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
+            <Suggestion title='ShoxCSGO' avatar="https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg"/>
         </ListItem>
         <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
+            <Suggestion title='Dan Madesclaire' avatar="https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg"/>
         </ListItem>
-        <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
-        </ListItem>
-        <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
-        </ListItem>
-        <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
-        </ListItem>
-        <ListItem disablePadding>
-            <Suggestion title='Suggestion'/>
-        </ListItem>
+        <br/>
+        <a href="#" className='see-more'>Voir plus</a>
       </List>
 
    

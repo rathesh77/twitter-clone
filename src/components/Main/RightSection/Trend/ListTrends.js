@@ -21,15 +21,8 @@ export default function ListTrends() {
         <ListItem disablePadding>
             <Trend title='#trend'/>
         </ListItem>
-        <ListItem disablePadding>
-            <Trend title='#trend'/>
-        </ListItem>
-        <ListItem disablePadding>
-            <Trend title='#trend'/>
-        </ListItem>
-        <ListItem disablePadding>
-            <Trend title='#trend'/>
-        </ListItem>
+        <br/>
+        <a href="#" className='see-more'>Voir plus</a>
       </List>
   );
 }
