@@ -1,5 +1,5 @@
 .main-container {
-  height: 100vh;
+  max-height: 100vh;
   display: flex;
   justify-content: space-between;
   
@@ -30,12 +30,14 @@
 }
 
 .middle-section {
-  flex-basis: 70%;
+  max-width: 600px;
 }
 
+.right-section {
+  margin-left: 20px;
+}
 .right-section>* {
   margin-bottom: 10px;
-  flex-basis: 30%;
   border-radius: 20px !important;
   text-align: left;
 }
@@ -186,6 +188,7 @@ a {
   display: flex;
   justify-content: space-evenly;
   align-items: flex-end;
+  min-height: 120px;
 }
 
 .rdw-editor-wrapper :nth-child(1) {
