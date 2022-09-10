@@ -127,15 +127,20 @@ a {
   margin-bottom: 2px;
 }
 
+.tweet-header :nth-child(2)::after {
+  content: ' ·'
+}
+
+.tweet-header * {
+  padding: 0 5px 0 0;
+}
 .tweet-wrapper {
   display: flex;
-  max-width: 50vw;
   border-width: 0.5px;
   border-style: solid;
   border-color: rgb(239, 243, 244);
   border-collapse: collapse;
-  align-items: center;
-  padding: 0 16px 0 16px;
+  padding: 10px 16px 10px 16px;
   font-size: 0.94rem;
 }
 
@@ -155,4 +160,34 @@ a {
 
 .menu-item svg {
   margin-right: 10px;
+}
+
+.tweet-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 0 6px 0;
+}
+
+.tweet-author-tag {
+  line-height: 17.5px;
+  font-size: 0.83rem;
+}
+
+.rdw-editor-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.tweet-editor {
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: rgb(239, 243, 244);
+  border-collapse: collapse;
+  padding: 10px 16px 10px 16px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.rdw-editor-wrapper :nth-child(1) {
+  border: none;
 }

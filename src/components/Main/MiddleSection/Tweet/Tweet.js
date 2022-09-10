@@ -1,5 +1,10 @@
 import { useState } from "react"
 import { Avatar } from '@mui/material'
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+
 export default function Tweet(props) {
   const [message] = useState(props.message)
   const [author] = useState(props.author)
@@ -26,6 +31,12 @@ export default function Tweet(props) {
         </div>
         <div className="tweet-message">
           {message}
+        </div>
+        <div className="tweet-buttons">
+          <ChatBubbleOutlineIcon/>
+          <AutorenewIcon/>
+          <FavoriteIcon/>
+          <IosShareIcon/>
         </div>
       </div>
     </div>
