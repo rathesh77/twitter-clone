@@ -1,11 +1,30 @@
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {useState} from 'react'
+import axios from 'axios'
+import { convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+
 export default function CreateTweet() {
   let [editorState, setEditorState] = useState(this)
   const onEditorStateChange = function(state) {
-    console.log('editor change')
     setEditorState(state)
+  }
+  const handleTweetPost = async function() {
+    let authorId, content, mentionnedPeople
+
+    authorId = '3359fb73-fd65-42d7-a728-396ec3a6540f'
+    content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    mentionnedPeople = []
+
+    const data = {authorId, content, mentionnedPeople}
+    
+    await axios.post(
+      'http://localhost:8080/tweet',
+      {
+        data
+      }
+    )
   }
   return (
     <div className="tweet-editor">
@@ -26,7 +45,7 @@ export default function CreateTweet() {
         
     }}
 />
-  <button type="button" className="btn">Tweeter</button>
+  <button type="button" className="btn" onClick={handleTweetPost}>Tweeter</button>
 
     </div>
   )

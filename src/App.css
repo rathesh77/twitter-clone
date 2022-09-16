@@ -1,8 +1,8 @@
+@charset "UTF-8";
 .main-container {
-  height: 100vh;
-  width: 100%;
+  max-height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .left-pane {
@@ -13,9 +13,6 @@
 
 .left-pane-container {
   display: flex;
-  justify-content: flex-end;
-  padding-left: 12px;
-  padding-right: 12px;
 }
 
 .main-pane {
@@ -27,22 +24,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .middle-section {
-  flex-basis: 70%;
+  max-width: 600px;
+}
+
+.right-section {
+  margin-left: 20px;
 }
 
 .right-section > * {
   margin-bottom: 10px;
-  flex-basis: 30%;
   border-radius: 20px !important;
   text-align: left;
 }
 
 .right-section-title {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   padding: 12px 16px 12px 0px;
 }
 
@@ -56,6 +57,129 @@
 
 .trend-title {
   font-weight: bold;
+}
+
+.trend {
+  width: 100%;
+}
+
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+.suggestions .suggestion {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+}
+.suggestions .suggestion .suggestion-avatar {
+  margin-right: 10px;
+}
+.suggestions .suggestion .suggestion-user-wrapper {
+  flex-basis: 100%;
+  align-items: center;
+}
+.suggestions .suggestion .suggestion-user-wrapper .suggestion-user {
+  padding: 12px 0 12px 0;
+}
+.suggestions .suggestion .suggestion-user-wrapper .suggestion-user .suggestion-user-name {
+  font-weight: bold;
+}
+.suggestions .suggestion .suggestion-user-wrapper .suggestion-user .suggestion-user-tag {
+  font-size: 0.8rem;
+}
+
+.btn {
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  height: 35px;
+  padding: 1px 15px 1px 15px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+.menu-item {
+  font-size: 1.2rem;
+}
+
+.tweet-header {
+  display: flex;
+  margin-bottom: 2px;
+}
+
+.tweet-header :nth-child(2)::after {
+  content: " ·";
+}
+
+.tweet-header * {
+  padding: 0 5px 0 0;
+}
+
+.tweet-wrapper {
+  display: flex;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: rgb(239, 243, 244);
+  border-collapse: collapse;
+  padding: 10px 16px 10px 16px;
+  font-size: 0.94rem;
+}
+
+.tweet-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tweet-message {
+  margin-bottom: 20px;
+}
+
+.tweet-author-avatar {
+  margin-right: 12px;
+}
+
+.menu-item svg {
+  margin-right: 10px;
+}
+
+.tweet-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 0 6px 0;
+}
+
+.tweet-author-tag {
+  line-height: 17.5px;
+  font-size: 0.83rem;
+}
+
+.rdw-editor-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.tweet-editor {
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: rgb(239, 243, 244);
+  border-collapse: collapse;
+  padding: 10px 16px 10px 16px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  min-height: 120px;
+}
+
+.rdw-editor-wrapper :nth-child(1) {
+  border: none;
 }
 
 /*# sourceMappingURL=App.css.map */
