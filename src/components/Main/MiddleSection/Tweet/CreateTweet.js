@@ -10,15 +10,27 @@ export default function CreateTweet() {
   const onEditorStateChange = function(state) {
     setEditorState(state)
   }
+  const _uploadImageCallBack = (file) =>{
+
+    const imageObject = {
+      file: file,
+      localSrc: URL.createObjectURL(file),
+    }
+    
+    return new Promise(
+      (resolve, reject) => {
+        resolve({ data: { link: imageObject.localSrc } });
+      }
+    );
+  }
   const handleTweetPost = async function() {
     let authorId, content, mentionnedPeople
 
-    authorId = '3359fb73-fd65-42d7-a728-396ec3a6540f'
+    authorId = '82c3442d-8154-4eb0-9289-bbeeaa1a7543'
     content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     mentionnedPeople = []
 
     const data = {authorId, content, mentionnedPeople}
-    
     await axios.post(
       'http://localhost:8080/tweet',
       {
@@ -36,13 +48,14 @@ export default function CreateTweet() {
   placeholder="Quoi de neuf ?"
   onEditorStateChange={onEditorStateChange}
       toolbar={{
-        options: ['inline', 'blockType', 'fontSize', 'list', 'textAlign', 'history'],
+        options: ['inline', 'blockType', 'fontSize', 'list', 'textAlign', 'history', 'image'],
         inline: { inDropdown: true },
         list: { inDropdown: true },
         textAlign: { inDropdown: true },
         link: { inDropdown: true },
         history: { inDropdown: true },
-        
+        image: { uploadCallback: _uploadImageCallBack },
+
     }}
 />
   <button type="button" className="btn" onClick={handleTweetPost}>Tweeter</button>

@@ -29,8 +29,7 @@ export default function Tweet(props) {
             {timestamp}
           </div>
         </div>
-        <div className="tweet-message">
-          {message}
+        <div className="tweet-message" dangerouslySetInnerHTML={{__html:message}}>
         </div>
         <div className="tweet-buttons">
           <ChatBubbleOutlineIcon/>

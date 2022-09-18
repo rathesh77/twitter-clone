@@ -1,10 +1,12 @@
 .main-container {
-  max-height: 100vh;
   display: flex;
   justify-content: space-between;
   
 }
+body {
+  overflow: hidden;
 
+}
 .left-pane {
   display: flex;
   flex-direction: column;
@@ -19,6 +21,8 @@
 .main-pane {
   display: flex;
   justify-content: space-between;
+  overflow-y: auto;
+  max-height: 98vh;
 }
 
 .App {
@@ -144,12 +148,14 @@ a {
   border-collapse: collapse;
   padding: 10px 16px 10px 16px;
   font-size: 0.94rem;
+  width: 100% !important
 }
 
 .tweet-content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100% !important
 }
 
 .tweet-message {
@@ -193,4 +199,58 @@ a {
 
 .rdw-editor-wrapper :nth-child(1) {
   border: none;
+}
+
+.user-infos {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-nickname {
+  font-size: 1.3rem;
+
+}
+
+.user-subs-infos {
+  display: flex;
+  justify-content:flex-start;
+}
+
+.user-profile-pic {
+  background-image: url('https://i.ebayimg.com/images/g/BIsAAOSwSqVhDHDB/s-l500.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 600px;
+  height: 250px;
+}
+
+.user-profile > *, .user-infos > * {
+  margin-bottom: 10px;
+}
+
+.user-banner {
+  position: relative;
+}
+
+.btn-edit-profile {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.user-subscribed-to {
+  margin-right: 10px;
+}
+
+.MuiTabs-flexContainer {
+  justify-content: space-around;
+}
+
+img {
+  max-width: 300px;
+}
+
+ul  a {
+  color: inherit
 }

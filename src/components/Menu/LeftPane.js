@@ -7,6 +7,8 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonIcon from '@mui/icons-material/Person';
 
+import { Link } from 'react-router-dom';
+
 export default function LeftPane() {
   return (
     <div className="left-pane-container">
@@ -14,9 +16,11 @@ export default function LeftPane() {
       <div className="left-pane">
         <div>
           <List>
-            <ListItem disablePadding>
-              <ListItemButton className='menu-item'><HouseIcon/>Accueil</ListItemButton>
-            </ListItem>
+            <Link to="/">
+              <ListItem disablePadding>
+                <ListItemButton className='menu-item'><HouseIcon/>Accueil</ListItemButton>
+              </ListItem>
+            </Link>
             <ListItem disablePadding>
               <ListItemButton className='menu-item'><TagIcon/>Explorer</ListItemButton>
             </ListItem>
@@ -32,9 +36,11 @@ export default function LeftPane() {
             <ListItem disablePadding>
               <ListItemButton className='menu-item'><ListAltIcon/>Listes</ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton className='menu-item'><PersonIcon/>Profile</ListItemButton>
-            </ListItem>
+            <Link to="/profil?a=1">
+              <ListItem disablePadding>
+                <ListItemButton className='menu-item'><PersonIcon/>Profile</ListItemButton>
+              </ListItem>
+            </Link>
           </List>
         </div>
         <div className="profile-shortcut">
