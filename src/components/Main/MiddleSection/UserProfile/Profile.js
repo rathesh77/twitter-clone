@@ -30,9 +30,9 @@ export default function Profile() {
     setValue(newValue);
   };
   const fetchUserTweets = async () => {
-    const userId = '82c3442d-8154-4eb0-9289-bbeeaa1a7543'
+    const userId = '10d8b2ac-b2b3-444f-a177-c432e5efc568'
     const result = await axios.get(
-      `http://localhost:8080/my-tweets?userId=${userId}`,
+      `http://localhost:8080/my-related-tweets?userId=${userId}`,
       {
         data: {
           userId
@@ -46,7 +46,6 @@ export default function Profile() {
       console.log(res)
       messages.push({
         author: {
-          id: message.authorId,
           name: author.username,
           avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg'
         },

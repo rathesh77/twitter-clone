@@ -5,8 +5,10 @@ import axios from 'axios'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 
-export default function CreateTweet() {
+export default function CreateTweet(props) {
+  const {updateTweetsList} = props
   let [editorState, setEditorState] = useState(this)
+  
   const onEditorStateChange = function(state) {
     setEditorState(state)
   }
@@ -26,17 +28,19 @@ export default function CreateTweet() {
   const handleTweetPost = async function() {
     let authorId, content, mentionnedPeople
 
-    authorId = '82c3442d-8154-4eb0-9289-bbeeaa1a7543'
+    authorId = '10d8b2ac-b2b3-444f-a177-c432e5efc568'
     content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     mentionnedPeople = []
 
     const data = {authorId, content, mentionnedPeople}
-    await axios.post(
+    const results = await axios.post(
       'http://localhost:8080/tweet',
       {
         data
       }
     )
+    setEditorState(null)
+    updateTweetsList(results.data)
   }
   return (
     <div className="tweet-editor">
