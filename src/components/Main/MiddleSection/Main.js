@@ -3,14 +3,13 @@ import ListTweets from './Tweet/ListTweets.js'
 import { Route, Routes} from 'react-router-dom';
 import Profile from './UserProfile/Profile.js';
 import { useState } from 'react';
-import axios from 'axios'
+import {axiosInstance} from '../../../axios'
 import { useEffect } from 'react';
 
 export default function MiddleSection() {
 
   const [deepTweets, setDeepTweets] = useState([])
   const updateTweetsList = (data) => {
-    console.log(data)
     const update = [...deepTweets]
     update.unshift({
       author: {
@@ -23,8 +22,8 @@ export default function MiddleSection() {
   }
 
   const fetchDeepTweets = async () => {
-    const userId = '10d8b2ac-b2b3-444f-a177-c432e5efc568'
-    const result = await axios.get(
+    const userId = '32426ea3-68c2-4355-b8a6-bb6304a21a4a'
+    const result = await axiosInstance.get(
       `http://localhost:8080/deep-tweets?userId=${userId}`,
       {
         data: {
@@ -36,7 +35,6 @@ export default function MiddleSection() {
     for (const res of result.data) {
       const message = res._fields[2].properties
       const author = res._fields[0].properties
-      console.log(res)
       messages.push({
         author: {
           name: author.username,
@@ -50,7 +48,6 @@ export default function MiddleSection() {
 
   useEffect(()=>{
     fetchDeepTweets()
-    console.log('tutu')
   }, [])
   return (
     <div className='middle-section'>

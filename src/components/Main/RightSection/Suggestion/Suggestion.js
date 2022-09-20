@@ -3,7 +3,6 @@ import {Avatar} from '@mui/material'
 export default function Suggestion(props) {
   const [title] = useState(props.title)
   const [avatar] = useState(props.avatar)
-  console.log(avatar)
   return (
     <div className="suggestion">
       <div className="suggestion-avatar">

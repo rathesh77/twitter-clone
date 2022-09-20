@@ -36,7 +36,7 @@ export default function LeftPane() {
             <ListItem disablePadding>
               <ListItemButton className='menu-item'><ListAltIcon/>Listes</ListItemButton>
             </ListItem>
-            <Link to="/profil?a=1">
+            <Link to="profil">
               <ListItem disablePadding>
                 <ListItemButton className='menu-item'><PersonIcon/>Profile</ListItemButton>
               </ListItem>

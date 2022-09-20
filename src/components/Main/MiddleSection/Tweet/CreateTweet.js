@@ -1,7 +1,7 @@
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {useState} from 'react'
-import axios from 'axios'
+import {axiosInstance} from '../../../../axios'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 
@@ -28,12 +28,12 @@ export default function CreateTweet(props) {
   const handleTweetPost = async function() {
     let authorId, content, mentionnedPeople
 
-    authorId = '10d8b2ac-b2b3-444f-a177-c432e5efc568'
+    authorId = '32426ea3-68c2-4355-b8a6-bb6304a21a4a'
     content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     mentionnedPeople = []
 
     const data = {authorId, content, mentionnedPeople}
-    const results = await axios.post(
+    const results = await axiosInstance.post(
       'http://localhost:8080/tweet',
       {
         data

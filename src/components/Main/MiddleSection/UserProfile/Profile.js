@@ -3,7 +3,7 @@ import Banner from './Banner'
 import { Tabs, Tab } from '@mui/material'
 import UserInfos from './UserInfos'
 import ListTweets from '../Tweet/ListTweets'
-import axios from 'axios'
+import {axiosInstance} from '../../../../axios'
 export default function Profile() {
   const messages = [
     {
@@ -30,8 +30,8 @@ export default function Profile() {
     setValue(newValue);
   };
   const fetchUserTweets = async () => {
-    const userId = '10d8b2ac-b2b3-444f-a177-c432e5efc568'
-    const result = await axios.get(
+    const userId = '32426ea3-68c2-4355-b8a6-bb6304a21a4a'
+    const result = await axiosInstance.get(
       `http://localhost:8080/my-related-tweets?userId=${userId}`,
       {
         data: {
@@ -43,7 +43,6 @@ export default function Profile() {
     for (const res of result.data) {
       const message = res._fields[0].properties
       const author = res._fields[2].properties
-      console.log(res)
       messages.push({
         author: {
           name: author.username,
@@ -58,7 +57,6 @@ export default function Profile() {
   useEffect(()=> {
     fetchUserTweets()
   }, [])
-  console.log(value)
   let content = 0
 
   if (value === 0)

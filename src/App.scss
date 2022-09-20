@@ -7,6 +7,7 @@ body {
   overflow: hidden;
 
 }
+
 .left-pane {
   display: flex;
   flex-direction: column;
@@ -22,7 +23,7 @@ body {
   display: flex;
   justify-content: space-between;
   overflow-y: auto;
-  max-height: 98vh;
+  max-height: 100vh;
 }
 
 .App {
@@ -217,7 +218,7 @@ a {
 }
 
 .user-profile-pic {
-  background-image: url('https://i.ebayimg.com/images/g/BIsAAOSwSqVhDHDB/s-l500.jpg');
+  background-image: url('F:/porno/AnaCheri/Pics/Ana Cheri - Onlyfans Day CluB (Telegram) (106).jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -253,4 +254,36 @@ img {
 
 ul  a {
   color: inherit
+}
+
+.login-wrapper {
+  display: flex;
+  flex-wrap: wrap-reverse;
+
+}
+
+.login-image {
+  
+  width: 40%;
+  height: 100vh;
+  background: url('https://abs.twimg.com/sticky/illustrations/lohp_1302x955.png');
+}
+
+.login-credentials-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.h1-header {
+  font-size: 64px;
+}
+
+.h2-header {
+  font-size: 31px;
+}
+
+.login-credentials {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
 }
