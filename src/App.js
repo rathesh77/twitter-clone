@@ -6,18 +6,51 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 import Main from './components/Main'
-import Login from './components/Main/LoginScreen/login'
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import Login from './components/LoginScreen/login'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import AuthContext from './authContext'
+import { useEffect, useState } from 'react'
+import { axiosInstance } from './axios';
+
+function MainComponent() {
+  return (<div className="App"><Main /></div>)
+}
 
 function App() {
+  const [userId, setUserId] = useState(null)
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getMe = async () => {
+    try {
+      const response = await axiosInstance.get('/me')
+      if (response.status === 200) {
+        const { data } = response
+        const { uid: id } = data
+        setUserId(id)
+      }
+    } catch (e) {
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (userId == null) {
+      getMe()
+    }
+  }, [userId])
+  if (isLoading) {
+    return (<div>LOADING</div>)
+  }
+
   return (
-    <AuthContext.Provider value={{userId: 'test'}}>
+    <AuthContext.Provider value={{ userId, setUserId }}>
       <Router>
         <Routes>
-            <Route element={(<PrivateRoute Component={Login} shouldBeAuthenticated={false} />)} path='/login'/>
-            <Route index={true} path='/*' element={(<div className="App"><Main/></div>)}/>
+          <Route element={<PrivateRoute Component={Login} shouldBeAuthenticated={false} />} path='/login' />
+          <Route element={(<PrivateRoute Component={MainComponent} shouldBeAuthenticated={true} />)} path='/*' />
         </Routes>
       </Router>
     </AuthContext.Provider>

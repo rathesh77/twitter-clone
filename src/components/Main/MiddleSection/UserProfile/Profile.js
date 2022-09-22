@@ -4,17 +4,12 @@ import { Tabs, Tab } from '@mui/material'
 import UserInfos from './UserInfos'
 import ListTweets from '../Tweet/ListTweets'
 import {axiosInstance} from '../../../../axios'
+import AuthContext from '../../../../authContext'
+import { useContext } from 'react'
+
 export default function Profile() {
   const messages = [
-    {
-      author: {
-        id: 1,
-        name: 'Rathesh',
-        avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg'
-      },
-      message: `Won 2-1 against @dynamoeclot in the @cctour_gg , insane mirage from us !
-      Let's go for the semi-final tomorrow at 10 AM ! 🤩`
-    }, {
+   /* {
       author: {
         id: 1,
         name: 'Rathesh',
@@ -23,14 +18,16 @@ export default function Profile() {
       message: `Won 2-1 against @dynamoeclot in the @cctour_gg , insane mirage from us !
       Let's go for the semi-final tomorrow at 10 AM ! 🤩`
     }
+   */
   ]
   const [value, setValue] = useState(0)
   const [userTweets, setUserTweets ] = useState(messages)
+  const {userId} = useContext(AuthContext)
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   const fetchUserTweets = async () => {
-    const userId = '32426ea3-68c2-4355-b8a6-bb6304a21a4a'
     const result = await axiosInstance.get(
       `http://localhost:8080/my-related-tweets?userId=${userId}`,
       {

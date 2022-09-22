@@ -5,10 +5,14 @@ import Profile from './UserProfile/Profile.js';
 import { useState } from 'react';
 import {axiosInstance} from '../../../axios'
 import { useEffect } from 'react';
-
+import { useContext } from 'react';
+import AuthContext from '../../../authContext.js';
 export default function MiddleSection() {
 
   const [deepTweets, setDeepTweets] = useState([])
+  const {userId} = useContext(AuthContext)
+
+
   const updateTweetsList = (data) => {
     const update = [...deepTweets]
     update.unshift({
@@ -22,19 +26,20 @@ export default function MiddleSection() {
   }
 
   const fetchDeepTweets = async () => {
-    const userId = '32426ea3-68c2-4355-b8a6-bb6304a21a4a'
+
     const result = await axiosInstance.get(
       `http://localhost:8080/deep-tweets?userId=${userId}`,
       {
         data: {
-          userId
+          userId: userId
         }
       }
     )
+    console.log(result.data)
     const messages = []
     for (const res of result.data) {
-      const message = res._fields[2].properties
-      const author = res._fields[0].properties
+      const message = res._fields[4].properties
+      const author = res._fields[2].properties
       messages.push({
         author: {
           name: author.username,

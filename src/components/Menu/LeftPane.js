@@ -7,9 +7,19 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonIcon from '@mui/icons-material/Person';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { axiosInstance } from '../../axios';
+import { useContext } from 'react';
+import AuthContext from '../../authContext';
 
 export default function LeftPane() {
+  const navigate = useNavigate()
+  const {setUserId} = useContext(AuthContext)
+  const logout = async () => {
+    await axiosInstance.delete('/logout')
+    setUserId(null)
+    navigate('/login')
+  }
   return (
     <div className="left-pane-container">
 
@@ -43,8 +53,8 @@ export default function LeftPane() {
             </Link>
           </List>
         </div>
-        <div className="profile-shortcut">
-          profile shortcut
+        <div className="profile-shortcut" onClick={logout}>
+          Log out
         </div>
       </div>
     </div>

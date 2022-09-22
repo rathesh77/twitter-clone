@@ -1,12 +1,15 @@
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {useState} from 'react'
+import {useContext, useState} from 'react'
 import {axiosInstance} from '../../../../axios'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import AuthContext from "../../../../authContext";
 
 export default function CreateTweet(props) {
   const {updateTweetsList} = props
+  const authContext = useContext(AuthContext)
+  const {userId} = authContext
   let [editorState, setEditorState] = useState(this)
   
   const onEditorStateChange = function(state) {
@@ -28,7 +31,7 @@ export default function CreateTweet(props) {
   const handleTweetPost = async function() {
     let authorId, content, mentionnedPeople
 
-    authorId = '32426ea3-68c2-4355-b8a6-bb6304a21a4a'
+    authorId = userId
     content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     mentionnedPeople = []
 
