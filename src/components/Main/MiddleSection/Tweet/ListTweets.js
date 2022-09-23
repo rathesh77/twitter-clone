@@ -8,7 +8,7 @@ export default function ListTweets(props) {
       {messages.map(m =>
       (
         <ListItem className='tweet-item' disablePadding key={Math.random()}>
-          <Tweet author={m.author} message={m.message} timestamp="23h" />
+          <Tweet  timestamp="23h" {...m} />
         </ListItem>
       )
       )}

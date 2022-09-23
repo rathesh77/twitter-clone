@@ -1,16 +1,16 @@
 import CreateTweet from './Tweet/CreateTweet.js'
 import ListTweets from './Tweet/ListTweets.js'
-import { Route, Routes} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Profile from './UserProfile/Profile.js';
 import { useState } from 'react';
-import {axiosInstance} from '../../../axios'
+import { axiosInstance } from '../../../axios'
 import { useEffect } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../../../authContext.js';
 export default function MiddleSection() {
 
   const [deepTweets, setDeepTweets] = useState([])
-  const {userId} = useContext(AuthContext)
+  const { userId } = useContext(AuthContext)
 
 
   const updateTweetsList = (data) => {
@@ -28,7 +28,7 @@ export default function MiddleSection() {
   const fetchDeepTweets = async () => {
 
     const result = await axiosInstance.get(
-      `http://localhost:8080/deep-tweets?userId=${userId}`,
+      `/deep-tweets?userId=${userId}`,
       {
         data: {
           userId: userId
@@ -37,34 +37,60 @@ export default function MiddleSection() {
     )
     console.log(result.data)
     const messages = []
+    const seenTweets = {}
     for (const res of result.data) {
       const message = res._fields[2].properties
-      const author = res._fields[0].properties
+      let author = res._fields[0].properties
       const relationship = res._fields[1]
-      console.log(author.username)
-      if (relationship != 'WROTE_TWEET' && relationship != 'TWEETED')
+      if (relationship != 'WROTE_TWEET') {
+        seenTweets[message.uid] = { author, relationship }
+
+        if (message.uid in seenTweets)
+          author = seenTweets[message.uid]
+        else {
+          author = (await axiosInstance.get(`/tweet-author?id=${message.uid}`))
+          author = author.data._fields[0].properties
+        }
         continue
+      }
+      const likes = message.likes
       messages.push({
+        tweetId: message.uid,
         author: {
           name: author.username,
-          avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg'
+          avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg',
         },
-        message: message.content
+        message: message.content,
+        likes,
+        relationship
       })
     }
+    for (let i = 0; i < messages.length; i++) {
+      if (seenTweets[messages[i].tweetId]) {
+        const item = {
+          author: seenTweets[messages[i].tweetId].author,
+          relationship: seenTweets[messages[i].tweetId].relationship
+        }
+        if (!messages[i].userRelations) {
+          messages[i].userRelations = [item]
+        } else
+          messages[i].userRelations.push(item)
+      }
+    }
+    console.log(messages)
     setDeepTweets(messages)
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchDeepTweets()
   }, [])
   return (
     <div className='middle-section'>
       <Routes>
-        <Route path='/' element={<div><CreateTweet updateTweetsList={updateTweetsList}/><ListTweets messages={deepTweets}/></div>}/>
-        <Route path='/profil' element={<Profile/>}/>
+        <Route path='/' element={<div><CreateTweet updateTweetsList={updateTweetsList} /><ListTweets messages={deepTweets} /></div>} />
+        <Route path='/profil' element={<Profile />} />
       </Routes>
 
-      </div>
+    </div>
   );
 }

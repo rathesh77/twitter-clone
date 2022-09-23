@@ -143,6 +143,7 @@ a {
 }
 .tweet-wrapper {
   display: flex;
+  flex-direction: column;
   border-width: 0.5px;
   border-style: solid;
   border-color: rgb(239, 243, 244);
@@ -177,6 +178,14 @@ a {
   margin: 0 0 6px 0;
 }
 
+.tweet-button {
+  :first-child {
+    margin-right: 10px;
+  }
+  display: flex;
+  align-items: center;
+}
+
 .tweet-author-tag {
   line-height: 17.5px;
   font-size: 0.83rem;
@@ -196,6 +205,13 @@ a {
   justify-content: space-evenly;
   align-items: flex-end;
   min-height: 120px;
+  flex-direction: column;
+
+}
+
+.editorClassName.rdw-editor-main {
+  max-height: 200px !important;
+  overflow-y: auto !important;
 }
 
 .rdw-editor-wrapper :nth-child(1) {

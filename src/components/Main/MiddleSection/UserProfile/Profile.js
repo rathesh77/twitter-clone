@@ -40,12 +40,14 @@ export default function Profile() {
     for (const res of result.data) {
       const message = res._fields[0].properties
       const author = res._fields[2].properties
+      const likes = message.likes
       messages.push({
         author: {
           name: author.username,
           avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg'
         },
-        message: message.content
+        message: message.content,
+        likes
       })
     }
     setUserTweets(messages)
