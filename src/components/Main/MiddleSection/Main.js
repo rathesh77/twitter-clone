@@ -38,8 +38,12 @@ export default function MiddleSection() {
     console.log(result.data)
     const messages = []
     for (const res of result.data) {
-      const message = res._fields[4].properties
-      const author = res._fields[2].properties
+      const message = res._fields[2].properties
+      const author = res._fields[0].properties
+      const relationship = res._fields[1]
+      console.log(author.username)
+      if (relationship != 'WROTE_TWEET' && relationship != 'TWEETED')
+        continue
       messages.push({
         author: {
           name: author.username,
