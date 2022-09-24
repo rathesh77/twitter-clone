@@ -14,10 +14,10 @@ import AuthContext from '../../authContext';
 
 export default function LeftPane() {
   const navigate = useNavigate()
-  const {setUserId} = useContext(AuthContext)
+  const {setUser} = useContext(AuthContext)
   const logout = async () => {
     await axiosInstance.delete('/logout')
-    setUserId(null)
+    setUser(null)
     navigate('/login')
   }
   return (

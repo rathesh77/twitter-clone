@@ -10,7 +10,7 @@ import AuthContext from '../../../authContext.js';
 export default function MiddleSection() {
 
   const [deepTweets, setDeepTweets] = useState([])
-  const { userId } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
 
 
   const updateTweetsList = (data) => {
@@ -18,7 +18,7 @@ export default function MiddleSection() {
     update.unshift({
       author: {
         name: data.author.username,
-        avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg'
+        avatar: user.avatar
       },
       message: data.content
     })
@@ -26,12 +26,12 @@ export default function MiddleSection() {
   }
 
   const fetchDeepTweets = async () => {
-
+    const userId = user.uid
     const result = await axiosInstance.get(
       `/deep-tweets?userId=${userId}`,
       {
         data: {
-          userId: userId
+          userId
         }
       }
     )
@@ -39,6 +39,8 @@ export default function MiddleSection() {
     const messages = []
     const seenTweets = {}
     for (const res of result.data) {
+      if (!res._fields[0])
+        continue
       const message = res._fields[2].properties
       let author = res._fields[0].properties
       const relationship = res._fields[1]
@@ -58,7 +60,7 @@ export default function MiddleSection() {
         tweetId: message.uid,
         author: {
           name: author.username,
-          avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg',
+          avatar: user.avatar,
         },
         message: message.content,
         likes,

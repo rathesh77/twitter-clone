@@ -6,6 +6,7 @@ import ListTweets from '../Tweet/ListTweets'
 import {axiosInstance} from '../../../../axios'
 import AuthContext from '../../../../authContext'
 import { useContext } from 'react'
+import {Avatar} from '@mui/material'
 
 export default function Profile() {
   const messages = [
@@ -22,14 +23,15 @@ export default function Profile() {
   ]
   const [value, setValue] = useState(0)
   const [userTweets, setUserTweets ] = useState(messages)
-  const {userId} = useContext(AuthContext)
+  const {user} = useContext(AuthContext)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   const fetchUserTweets = async () => {
+    const userId = user.uid
     const result = await axiosInstance.get(
-      `http://localhost:8080/my-related-tweets?userId=${userId}`,
+      `/my-related-tweets?userId=${userId}`,
       {
         data: {
           userId
@@ -44,7 +46,7 @@ export default function Profile() {
       messages.push({
         author: {
           name: author.username,
-          avatar: 'https://pbs.twimg.com/profile_images/1557819838222966785/JeYuvKvT_400x400.jpg'
+          avatar: user.avatar
         },
         message: message.content,
         likes
@@ -64,6 +66,8 @@ export default function Profile() {
   return (
     <div className='user-profile'>
       <Banner />
+              <Avatar  sx={{ marginLeft: "10px", width: "25%", height:"auto" }} src={user.avatar} alt='profile pic'/>
+
       <UserInfos />
       <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
         <Tab label="Tweets" />

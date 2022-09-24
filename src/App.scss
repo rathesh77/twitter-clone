@@ -1,45 +1,45 @@
 .main-container {
   display: flex;
-  justify-content: space-between;
   
 }
-body {
-  overflow: hidden;
 
-}
 
 .left-pane {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 275px;
 }
 
 .left-pane-container {
   display: flex;
-
+  justify-content: flex-end;
+  flex-grow: 1;
+  
 }
 
-.main-pane {
+
+.main-pane-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-grow: 1;
   overflow-y: auto;
   max-height: 100vh;
 }
-
-.App {
+.main-pane {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  justify-content: space-between;
 
 }
 
 .middle-section {
-  max-width: 600px;
+  width: 600px;
+
 }
 
 .right-section {
-  margin-left: 20px;
+  width: 350px;
+  margin-left: 30px;
 }
 .right-section>* {
   margin-bottom: 10px;
@@ -205,8 +205,7 @@ a {
   justify-content: space-evenly;
   align-items: flex-end;
   min-height: 120px;
-  flex-direction: column;
-
+  
 }
 
 .editorClassName.rdw-editor-main {
@@ -221,25 +220,23 @@ a {
 .user-infos {
   display: flex;
   flex-direction: column;
+  padding: 10px 16px 10px 16px;
 }
 
 .user-nickname {
   font-size: 1.3rem;
-
+  .user-subs-infos {
+    display: flex;
+    justify-content:flex-start;
+  }
 }
 
-.user-subs-infos {
-  display: flex;
-  justify-content:flex-start;
-}
+.user-profile {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(239, 243, 244);
+  border-collapse: collapse;
 
-.user-profile-pic {
-  background-image: url('https://steamuserimages-a.akamaihd.net/ugc/1613797962877782991/99A32B4CA5FA378E7152B2A3449AA479B4705E38/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 600px;
-  height: 250px;
 }
 
 .user-profile > *, .user-infos > * {
@@ -248,6 +245,14 @@ a {
 
 .user-banner {
   position: relative;
+  .user-profile-pic {
+  background-image: url('https://steamuserimages-a.akamaihd.net/ugc/1613797962877782991/99A32B4CA5FA378E7152B2A3449AA479B4705E38/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 250px;
+}
+
 }
 
 .btn-edit-profile {
@@ -272,22 +277,20 @@ ul  a {
   color: inherit
 }
 
+
+
 .login-wrapper {
   display: flex;
   flex-wrap: wrap-reverse;
-
-}
-
-.login-image {
-  
-  width: 40%;
-  height: 100vh;
-  background: url('https://abs.twimg.com/sticky/illustrations/lohp_1302x955.png');
-}
-
-.login-credentials-wrapper {
-  display: flex;
-  flex-direction: column;
+  .login-image {
+    width: 40%;
+    height: 100vh;
+    background: url('https://abs.twimg.com/sticky/illustrations/lohp_1302x955.png');
+  }
+  .login-credentials-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .h1-header {
@@ -302,4 +305,16 @@ ul  a {
   display: flex;
   flex-direction: column;
   max-width: 500px;
+}
+
+.user-relations {
+  margin-left: 28px;
+  position: relative;
+  bottom:5px;
+  display: flex;
+  align-items: center;
+}
+
+.user-relations > svg {
+  max-height: 20px;
 }

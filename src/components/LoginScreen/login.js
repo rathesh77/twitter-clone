@@ -10,7 +10,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate();
-  const {setUserId} = useContext(AuthContext)
+  const {setUser} = useContext(AuthContext)
   
   const handleLogin = async () => {
     const data = {email, password}
@@ -18,7 +18,7 @@ export default function Login() {
       ...data
     })
     if (response.status === 200) {
-      setUserId(response.data.uid)
+      setUser(response.data)
       return navigate('/')
     }
   }

@@ -18,7 +18,7 @@ function MainComponent() {
 }
 
 function App() {
-  const [userId, setUserId] = useState(null)
+  const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true);
 
   const getMe = async () => {
@@ -26,8 +26,7 @@ function App() {
       const response = await axiosInstance.get('/me')
       if (response.status === 200) {
         const { data } = response
-        const { uid: id } = data
-        setUserId(id)
+        setUser(data)
       }
     } catch (e) {
 
@@ -37,16 +36,16 @@ function App() {
   }
 
   useEffect(() => {
-    if (userId == null) {
+
+    if (user == null) {
       getMe()
     }
-  }, [userId])
+  }, [user])
   if (isLoading) {
     return (<div>LOADING</div>)
   }
-
   return (
-    <AuthContext.Provider value={{ userId, setUserId }}>
+    <AuthContext.Provider value={{user, setUser }}>
       <Router>
         <Routes>
           <Route element={<PrivateRoute Component={Login} shouldBeAuthenticated={false} />} path='/login' />

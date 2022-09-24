@@ -24,11 +24,10 @@ export default function Tweet(props) {
       userRelations = userRelations.join(", ") + " a réagit";
     }
   }
-  console.log(userRelations);
   return (
     <div className="tweet-wrapper">
       <div>
-        <div>{userRelations ? <div>{userRelations}</div> : null}</div>
+        <div>{userRelations ? <div className="user-relations"><AutorenewIcon />{userRelations}</div> : null}</div>
         <div style={{display: 'flex'}}>
           <div className="tweet-author-avatar">
             <Avatar src={author.avatar} alt={author.name} />

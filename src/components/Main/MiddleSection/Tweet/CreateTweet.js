@@ -9,7 +9,7 @@ import AuthContext from "../../../../authContext";
 export default function CreateTweet(props) {
   const {updateTweetsList} = props
   const authContext = useContext(AuthContext)
-  const {userId} = authContext
+  const {user} = authContext
   let [editorState, setEditorState] = useState(this)
   
   const onEditorStateChange = function(state) {
@@ -31,13 +31,13 @@ export default function CreateTweet(props) {
   const handleTweetPost = async function() {
     let authorId, content, mentionnedPeople
 
-    authorId = userId
+    authorId = user.uid
     content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     mentionnedPeople = []
 
     const data = {authorId, content, mentionnedPeople}
     const results = await axiosInstance.post(
-      'http://localhost:8080/tweet',
+      '/tweet',
       {
         data
       }

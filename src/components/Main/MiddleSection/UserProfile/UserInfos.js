@@ -1,8 +1,11 @@
 import {useState} from 'react'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useContext } from 'react';
+import AuthContext from '../../../../authContext';
 
 export default function UserInfos() {
-  const [nickname] = useState('usertest')
+  const authContext = useContext(AuthContext)
+  const [nickname] = useState(authContext.user.username)
   return (
     <div className='user-infos'>
       <div className='user-name-wrapper'><span className='user-nickname'>{nickname}</span><br/><span className='user-tagname'>@{nickname}</span></div>
