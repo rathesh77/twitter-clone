@@ -9,7 +9,7 @@ import { useContext } from 'react'
 import {Avatar} from '@mui/material'
 
 export default function Profile() {
-  const messages = [
+  const tweets = [
    /* {
       author: {
         id: 1,
@@ -22,7 +22,7 @@ export default function Profile() {
    */
   ]
   const [value, setValue] = useState(0)
-  const [userTweets, setUserTweets ] = useState(messages)
+  const [userTweets, setUserTweets ] = useState(tweets)
   const {user} = useContext(AuthContext)
 
   const handleChange = (event, newValue) => {
@@ -38,21 +38,17 @@ export default function Profile() {
         }
       }
     )
-    const messages = []
+    const tweets = []
     for (const res of result.data) {
       const message = res._fields[0].properties
       const author = res._fields[2].properties
-      const likes = message.likes
-      messages.push({
-        author: {
-          name: author.username,
-          avatar: user.avatar
-        },
-        message: message.content,
-        likes
+      tweets.push({
+        author,
+        ...message
+        
       })
     }
-    setUserTweets(messages)
+    setUserTweets(tweets)
   }
 
   useEffect(()=> {
@@ -61,7 +57,7 @@ export default function Profile() {
   let content = 0
 
   if (value === 0)
-    content = (<ListTweets messages={userTweets}/>)
+    content = (<ListTweets tweets={userTweets}/>)
 
   return (
     <div className='user-profile'>

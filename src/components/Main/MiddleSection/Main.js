@@ -7,6 +7,7 @@ import { axiosInstance } from '../../../axios'
 import { useEffect } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../../../authContext.js';
+import ViewTweet from './Tweet/ViewTweet.js';
 export default function MiddleSection() {
 
   const [deepTweets, setDeepTweets] = useState([])
@@ -15,12 +16,11 @@ export default function MiddleSection() {
 
   const updateTweetsList = (data) => {
     const update = [...deepTweets]
+    const { uid } = data
     update.unshift({
-      author: {
-        name: data.author.username,
-        avatar: user.avatar
-      },
-      message: data.content
+      tweetId: uid,
+      ...data
+
     })
     setDeepTweets(update)
   }
@@ -35,8 +35,7 @@ export default function MiddleSection() {
         }
       }
     )
-    console.log(result.data)
-    const messages = []
+    const tweets = []
     const seenTweets = {}
     for (const res of result.data) {
       if (!res._fields[0])
@@ -44,7 +43,7 @@ export default function MiddleSection() {
       const message = res._fields[2].properties
       let author = res._fields[0].properties
       const relationship = res._fields[1]
-      if (relationship != 'WROTE_TWEET') {
+      if (relationship !== 'WROTE_TWEET') {
         seenTweets[message.uid] = { author, relationship }
 
         if (message.uid in seenTweets)
@@ -55,32 +54,26 @@ export default function MiddleSection() {
         }
         continue
       }
-      const likes = message.likes
-      messages.push({
+      tweets.push({
         tweetId: message.uid,
-        author: {
-          name: author.username,
-          avatar: user.avatar,
-        },
-        message: message.content,
-        likes,
-        relationship
+        author,
+        ...message
       })
     }
-    for (let i = 0; i < messages.length; i++) {
-      if (seenTweets[messages[i].tweetId]) {
+    for (let i = 0; i < tweets.length; i++) {
+      if (seenTweets[tweets[i].tweetId]) {
         const item = {
-          author: seenTweets[messages[i].tweetId].author,
-          relationship: seenTweets[messages[i].tweetId].relationship
+          author: seenTweets[tweets[i].tweetId].author,
+          relationship: seenTweets[tweets[i].tweetId].relationship
         }
-        if (!messages[i].userRelations) {
-          messages[i].userRelations = [item]
+        if (!tweets[i].userRelations) {
+          tweets[i].userRelations = [item]
         } else
-          messages[i].userRelations.push(item)
+          tweets[i].userRelations.push(item)
       }
     }
-    console.log(messages)
-    setDeepTweets(messages)
+
+    setDeepTweets(tweets)
   }
 
   useEffect(() => {
@@ -89,8 +82,11 @@ export default function MiddleSection() {
   return (
     <div className='middle-section'>
       <Routes>
-        <Route path='/' element={<div><CreateTweet updateTweetsList={updateTweetsList} /><ListTweets messages={deepTweets} /></div>} />
+        <Route path='/tweet' element={<ViewTweet />} />
+
+        <Route path='/' element={<div><CreateTweet updateTweetsList={updateTweetsList} /><ListTweets tweets={deepTweets} /></div>} />
         <Route path='/profil' element={<Profile />} />
+
       </Routes>
 
     </div>
