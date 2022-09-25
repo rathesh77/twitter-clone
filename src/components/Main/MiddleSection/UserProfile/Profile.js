@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Banner from './Banner'
 import { Tabs, Tab } from '@mui/material'
 import UserInfos from './UserInfos'
 import ListTweets from '../Tweet/ListTweets'
 import {axiosInstance} from '../../../../axios'
-import AuthContext from '../../../../authContext'
-import { useContext } from 'react'
 import {Avatar} from '@mui/material'
+import AuthContext from '../../../../authContext'
+import { useLocation } from 'react-router-dom'
 
-export default function Profile() {
+export default function Profile(props) {
   const tweets = [
    /* {
       author: {
@@ -21,44 +21,49 @@ export default function Profile() {
     }
    */
   ]
+  const { state } = useLocation();
   const [value, setValue] = useState(0)
   const [userTweets, setUserTweets ] = useState(tweets)
-  const {user} = useContext(AuthContext)
-
+  const [user, setUser] = useState(null)
+  const authContext = useContext(AuthContext)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const fetchUserTweets = async () => {
-    const userId = user.uid
-    const result = await axiosInstance.get(
-      `/my-related-tweets?userId=${userId}`,
-      {
-        data: {
-          userId
-        }
-      }
-    )
-    const tweets = []
-    for (const res of result.data) {
-      const message = res._fields[0].properties
-      const author = res._fields[2].properties
-      tweets.push({
-        author,
-        ...message
-        
-      })
-    }
-    setUserTweets(tweets)
-  }
 
   useEffect(()=> {
-    fetchUserTweets()
-  }, [])
+    (async () => {
+      const currentUser = (await axiosInstance.get(`/user?id=${state == null ? authContext.user.uid : state.userId}`)).data._fields[0].properties
+      setUser(currentUser)
+      const userId = currentUser.uid
+      const result = await axiosInstance.get(
+        `/my-related-tweets?userId=${userId}`,
+        {
+          data: {
+            userId
+          }
+        }
+      )
+      const tweets = []
+      for (const res of result.data) {
+        const message = res._fields[0].properties
+        const author = res._fields[2].properties
+        tweets.push({
+          author,
+          ...message
+          
+        })
+      }
+      setUserTweets(tweets)
+    })()
+  }, [state])
+  if (user == null) {
+    return (<div>LOADING</div>)
+  }
   let content = 0
 
   if (value === 0)
     content = (<ListTweets tweets={userTweets}/>)
-
+  
   return (
     <div className='user-profile'>
       <Banner />

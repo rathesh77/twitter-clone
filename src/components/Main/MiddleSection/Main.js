@@ -1,6 +1,6 @@
 import CreateTweet from './Tweet/CreateTweet.js'
 import ListTweets from './Tweet/ListTweets.js'
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Profile from './UserProfile/Profile.js';
 import { useState } from 'react';
 import { axiosInstance } from '../../../axios'
@@ -12,7 +12,7 @@ export default function MiddleSection() {
 
   const [deepTweets, setDeepTweets] = useState([])
   const { user } = useContext(AuthContext)
-
+  const {search} = useLocation()
 
   const updateTweetsList = (data) => {
     const update = [...deepTweets]
@@ -78,11 +78,11 @@ export default function MiddleSection() {
 
   useEffect(() => {
     fetchDeepTweets()
-  }, [])
+  }, [search])
   return (
     <div className='middle-section'>
       <Routes>
-        <Route path='/tweet' element={<ViewTweet />} />
+        <Route path='/tweet' element={<ViewTweet key={search} />} />
 
         <Route path='/' element={<div><CreateTweet updateTweetsList={updateTweetsList} /><ListTweets tweets={deepTweets} /></div>} />
         <Route path='/profil' element={<Profile />} />

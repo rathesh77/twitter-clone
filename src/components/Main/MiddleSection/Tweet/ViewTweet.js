@@ -20,8 +20,6 @@ export default function ViewTweet() {
 
   const handleTweetClick = (e, tweetId) => {
     navigate(`/tweet?id=${tweetId}`)
-    setTweet(null)
-    setMessages(null)
   }
   const onEditorStateChange = function (state) {
     setEditorState(state)
@@ -73,10 +71,11 @@ export default function ViewTweet() {
       const tweetId = urlParams.get('id')
       let response = await axiosInstance.get(`/tweet/${tweetId}/messages`)
       const currentTweet = response.data.tweet._fields[0].properties
+      const author = response.data.tweet._fields[1].properties
       let { messages } = response.data
       messages = messages.map((m) => { return { author: m._fields[0].properties, message: m._fields[1].properties } })
 
-      const obj = { ...currentTweet, author: { ...authContext.user } }
+      const obj = { ...currentTweet, author }
       setTweet(obj)
       setMessages(messages)
     } catch (e) {
