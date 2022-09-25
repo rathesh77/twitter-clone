@@ -7,50 +7,59 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonIcon from '@mui/icons-material/Person';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axios';
 import { useContext } from 'react';
 import AuthContext from '../../authContext';
 
 export default function LeftPane() {
   const navigate = useNavigate()
-  const {setUser} = useContext(AuthContext)
+  const {user, setUser} = useContext(AuthContext)
+  const {pathname} = useLocation()
   const logout = async () => {
     await axiosInstance.delete('/logout')
     setUser(null)
     navigate('/login')
+  }
+
+  const handleProfileClick = () => {
+
+  }
+
+  const handleGeneralClick = (e) => {
+   const link = e.target.getAttribute('data-link')
+   console.log(link, pathname)
+   if (pathname !== link) {
+    navigate(link)
+  }
   }
   return (
     <div className="left-pane-container">
 
       <div className="left-pane">
         <div>
-          <List>
-            <Link to="/">
+          <List onClick={handleGeneralClick}>
               <ListItem disablePadding>
-                <ListItemButton className='menu-item'><HouseIcon/>Accueil</ListItemButton>
+                <ListItemButton data-link="/" className='menu-item'><HouseIcon/>Accueil</ListItemButton>
               </ListItem>
-            </Link>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'><TagIcon/>Explorer</ListItemButton>
+              <ListItemButton data-link="/browse" className='menu-item'><TagIcon/>Explorer</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'><NotificationsActiveIcon/>Notifications</ListItemButton>
+              <ListItemButton data-link="/notifications" className='menu-item'><NotificationsActiveIcon/>Notifications</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'><EmailIcon/>Messages</ListItemButton>
+              <ListItemButton data-link="/messages" className='menu-item'><EmailIcon/>Messages</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'><BookmarkIcon/>Signets</ListItemButton>
+              <ListItemButton data-link="/signets" className='menu-item'><BookmarkIcon/>Signets</ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton className='menu-item'><ListAltIcon/>Listes</ListItemButton>
+              <ListItemButton data-link="/lists" className='menu-item'><ListAltIcon/>Listes</ListItemButton>
             </ListItem>
-            <Link to="profil">
               <ListItem disablePadding>
-                <ListItemButton className='menu-item'><PersonIcon/>Profile</ListItemButton>
+                <ListItemButton data-link={"/"+user.username} className='menu-item'><PersonIcon/>Profile</ListItemButton>
               </ListItem>
-            </Link>
           </List>
         </div>
         <div className="profile-shortcut" onClick={logout}>

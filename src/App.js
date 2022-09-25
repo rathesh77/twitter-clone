@@ -49,7 +49,7 @@ function App() {
       <Router>
         <Routes>
           <Route element={<PrivateRoute Component={Login} shouldBeAuthenticated={false} />} path='/login' />
-          <Route element={(<PrivateRoute Component={MainComponent} shouldBeAuthenticated={true} />)} path='/*' />
+          <Route index element={(<PrivateRoute Component={MainComponent} shouldBeAuthenticated={true} />)} path='*' />
         </Routes>
       </Router>
     </AuthContext.Provider>

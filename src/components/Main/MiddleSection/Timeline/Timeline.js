@@ -1,15 +1,13 @@
-import CreateTweet from './Tweet/CreateTweet.js'
-import ListTweets from './Tweet/ListTweets.js'
-import { Route, Routes, useLocation } from 'react-router-dom';
-import Profile from './UserProfile/Profile.js';
-import { useState } from 'react';
-import { axiosInstance } from '../../../axios'
-import { useEffect } from 'react';
-import { useContext } from 'react';
-import AuthContext from '../../../authContext.js';
-import ViewTweet from './Tweet/ViewTweet.js';
-export default function MiddleSection() {
+import CreateTweet from '../Tweet/CreateTweet.js'
+import ListTweets from '../Tweet/ListTweets.js'
+import { useLocation } from 'react-router-dom';
+import { axiosInstance } from '../../../../axios'
+import { useEffect, useState, useContext } from 'react';
+import AuthContext from '../../../../authContext.js';
 
+export default function Timeline() {
+
+  console.log('re render')
   const [deepTweets, setDeepTweets] = useState([])
   const { user } = useContext(AuthContext)
   const {search} = useLocation()
@@ -80,15 +78,9 @@ export default function MiddleSection() {
     fetchDeepTweets()
   }, [search])
   return (
-    <div className='middle-section'>
-      <Routes>
-        <Route path='/tweet' element={<ViewTweet key={search} />} />
-
-        <Route path='/' element={<div><CreateTweet updateTweetsList={updateTweetsList} /><ListTweets tweets={deepTweets} /></div>} />
-        <Route path='/profil' element={<Profile />} />
-
-      </Routes>
-
+      <div>
+        <CreateTweet updateTweetsList={updateTweetsList} />
+        <ListTweets tweets={deepTweets} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import AuthContext from '../../../../authContext'
 import { useLocation } from 'react-router-dom'
 
 export default function Profile(props) {
+
   const tweets = [
    /* {
       author: {

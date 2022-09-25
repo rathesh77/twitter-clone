@@ -3,12 +3,13 @@ import ListTrends from './Trend/ListTrends';
 import ListSuggestions from './Suggestion/ListSuggestions';
 import { useState } from 'react';
 import { axiosInstance } from '../../../axios';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function RightSection() {
 
   const [searchResults, setSearchResults] = useState([])
   const navigate = useNavigate()
+  const {pathname} = useLocation()
   const handleSearchInput = async (e) => {
     const { value } = e.target
     if (value === '') {
@@ -20,7 +21,8 @@ export default function RightSection() {
     setSearchResults(data)
   }
   const handleSearchItemClick = async (e, item) => {
-    navigate('/profil', { state: { userId: item.uid } })
+    if (pathname.slice(1) !== item.username)
+      navigate(`/${item.username}`, { state: { userId: item.uid } })
   }
   return (
     <div>
