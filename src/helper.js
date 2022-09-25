@@ -4,7 +4,6 @@ function formatDate(date) {
   const str = [day, month, year].map((e) => e.low < 10 ? '0' + e.low : e.low).join('/')
   return str
 */
-console.log(date)
   const {low, high} = date
   let lowBits = (low).toString(2)
   lowBits = '0'.repeat(32 - lowBits.length).concat(lowBits)

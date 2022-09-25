@@ -7,7 +7,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonIcon from '@mui/icons-material/Person';
 
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axios';
 import { useContext } from 'react';
 import AuthContext from '../../authContext';

@@ -5,24 +5,26 @@ import AuthContext from '../../../../authContext';
 import { axiosInstance } from '../../../../axios';
 import Tweet from './Tweet';
 
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import WysiwygForm from '../../../WysiwygForm';
 
 export default function ViewTweet() {
 
   const [tweet, setTweet] = useState(null)
   const [messages, setMessages] = useState(null)
-  let [editorState, setEditorState] = useState(this)
   const authContext = useContext(AuthContext)
   const navigate = useNavigate()
+
 
   const handleTweetClick = (e, tweetId) => {
     navigate(`/tweet?id=${tweetId}`)
   }
-  const onEditorStateChange = function (state) {
-    setEditorState(state)
+
+  let formContent = null
+
+  const setFormContent = (data) => {
+    formContent = data
   }
 
   const updateMessagesList = function (data) {
@@ -31,25 +33,13 @@ export default function ViewTweet() {
     setMessages(newMessagesList)
   }
 
-  const _uploadImageCallBack = (file) => {
-
-    const imageObject = {
-      file: file,
-      localSrc: URL.createObjectURL(file),
-    }
-
-    return new Promise(
-      (resolve, reject) => {
-        resolve({ data: { link: imageObject.localSrc } });
-      }
-    );
-  }
-
   const handleMessagePost = async function () {
     let authorId, content, mentionnedPeople
 
+    if (formContent == null )
+      return
     authorId = authContext.user.uid
-    content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    content = draftToHtml(convertToRaw(formContent.getCurrentContent()))
     mentionnedPeople = []
 
     const data = { authorId, content, mentionnedPeople, tweetId: tweet.uid }
@@ -59,7 +49,7 @@ export default function ViewTweet() {
         data
       }
     )
-    setEditorState(null)
+    setFormContent(null)
     setTweet({ ...tweet, replies: tweet.replies + 1 })
     updateMessagesList(results.data)
 
@@ -96,28 +86,7 @@ export default function ViewTweet() {
   return (
     <div className="tweet">
       <Tweet key={tweet.replies} {...tweet}/>
-      <div className="tweet-editor">
-        <Editor
-          editorState={editorState}
-          toolbarClassName="toolbarClassName"
-          wrapperClassName="wrapperClassName"
-          editorClassName="editorClassName"
-          placeholder="Tweetez votre reponse"
-          onEditorStateChange={onEditorStateChange}
-          toolbar={{
-            options: ['inline', 'blockType', 'fontSize', 'list', 'textAlign', 'history', 'image'],
-            inline: { inDropdown: true },
-            list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
-            image: { uploadCallback: _uploadImageCallBack },
-
-          }}
-        />
-        <button type="button" className="btn" onClick={handleMessagePost}>Tweeter</button>
-
-      </div>
+        <WysiwygForm setFormContent={setFormContent} action={handleMessagePost}/>
       <List>
         {messages.map((m) => {
           const { author, message } = m

@@ -32,7 +32,7 @@ export default function Profile(props) {
 
   const handleUserFollow = async () => {
     try {
-      const result = await axiosInstance.put(`/follow/${user.uid}`)
+      await axiosInstance.put(`/follow/${user.uid}`)
       setIsFollowing(true)
     } catch (e) {
       console.log(e)
@@ -74,7 +74,6 @@ export default function Profile(props) {
       )
       const tweets = []
       for (const res of result.data) {
-        console.log(res)
         if (res._fields[1] === 'RETWEETED')
           continue
         const message = res._fields[0].properties

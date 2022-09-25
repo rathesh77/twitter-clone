@@ -7,7 +7,6 @@ import AuthContext from '../../../../authContext.js';
 
 export default function Timeline() {
 
-  console.log('re render')
   const [deepTweets, setDeepTweets] = useState([])
   const { user } = useContext(AuthContext)
   const {search} = useLocation()

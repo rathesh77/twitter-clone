@@ -20,9 +20,9 @@ export default function Tweet(props) {
         : props.userRelations.map((e) => e.author.username);
 
     if (userRelations.length > 1) {
-      userRelations = userRelations.join(", ") + " ont réagit";
+      userRelations = userRelations.join(", ") + " ont retweeté";
     } else {
-      userRelations = userRelations.join(", ") + " a réagit";
+      userRelations = userRelations.join(", ") + " a retweeté";
     }
   }
   return (
