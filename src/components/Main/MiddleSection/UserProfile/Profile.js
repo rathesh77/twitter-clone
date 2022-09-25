@@ -1,12 +1,11 @@
 import { useState, useEffect, useContext } from 'react'
-import Banner from './Banner'
 import { Tabs, Tab } from '@mui/material'
 import UserInfos from './UserInfos'
 import ListTweets from '../Tweet/ListTweets'
 import { axiosInstance } from '../../../../axios'
 import { Avatar } from '@mui/material'
 import AuthContext from '../../../../authContext'
-import { Navigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 export default function Profile(props) {
 
