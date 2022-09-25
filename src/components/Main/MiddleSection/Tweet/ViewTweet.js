@@ -95,7 +95,7 @@ export default function ViewTweet() {
   }
   return (
     <div className="tweet">
-      <Tweet timestamp="23h" key={tweet.replies} {...tweet}/>
+      <Tweet key={tweet.replies} {...tweet}/>
       <div className="tweet-editor">
         <Editor
           editorState={editorState}
@@ -123,7 +123,7 @@ export default function ViewTweet() {
           const { author, message } = m
           return (
             <ListItem key={message.uid}  onClick={(e)=> {handleTweetClick(e, message.uid)}}>
-              <Tweet {...message} author={author} timestamp="23h"/>
+              <Tweet {...message} author={author}/>
             </ListItem>
           )
         })}

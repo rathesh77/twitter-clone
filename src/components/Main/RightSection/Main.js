@@ -23,6 +23,7 @@ export default function RightSection() {
   const handleSearchItemClick = async (e, item) => {
     if (pathname.slice(1) !== item.username)
       navigate(`/${item.username}`, { state: { userId: item.uid } })
+    setSearchResults([])
   }
   return (
     <div>
@@ -31,7 +32,7 @@ export default function RightSection() {
           const properties = s._fields[0].properties
           return (
             <div key={properties.uid} className='search-item' onClick={(e) => { handleSearchItemClick(e, properties) }}>
-              <Avatar sx={{ marginRight: "10px", marginLeft: "10px", width: "15%", height: "auto" }} src={properties.avatar} alt='Spic' />
+              <Avatar sx={{ marginRight: "10px", marginLeft: "10px", width: "60px", height: "60px" }} src={properties.avatar} alt='Spic' />
               <div>
                 <div>
                   {properties.username}

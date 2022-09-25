@@ -14,7 +14,7 @@ export default function MainPane() {
           element={<ViewTweet key={search}/>}
         />
         <Route path='' element={<Timeline />}/>
-        <Route path=':name' element={<Profile />}/>
+        <Route path=':name' element={<Profile key={pathname} />}/>
       </Route>
     </Routes>
 

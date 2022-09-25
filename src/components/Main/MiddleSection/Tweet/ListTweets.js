@@ -12,7 +12,7 @@ export default function ListTweets(props) {
       {tweets.map(t =>
       (
         <ListItem key={t.uid} onClick={(e)=> {handleTweetClick(e, t.uid)}} className='tweet-item' disablePadding>
-          <Tweet  timestamp="23h" {...t} />
+          <Tweet {...t} />
         </ListItem>
       )
       )}

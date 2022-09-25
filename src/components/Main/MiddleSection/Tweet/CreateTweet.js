@@ -30,9 +30,17 @@ export default function CreateTweet(props) {
   }
   const handleTweetPost = async function() {
     let authorId, content, mentionnedPeople
+    if (editorState == null )
+      return
 
+    const editorCurrentContent = editorState.getCurrentContent()
+    /*if (editorCurrentContent.getPlainText().trim().length === 0) {
+      return
+    }*/
     authorId = user.uid
-    content = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    content = draftToHtml(convertToRaw(editorCurrentContent))
+    if  (content.length == 0)
+      return
     mentionnedPeople = []
 
     const data = {authorId, content, mentionnedPeople}

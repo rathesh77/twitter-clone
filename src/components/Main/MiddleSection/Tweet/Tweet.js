@@ -4,11 +4,12 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import formatDate from "../../../../helper";
 
 export default function Tweet(props) {
   const [message] = useState(props.content);
   const [author] = useState(props.author);
-  const [timestamp] = useState(props.timestamp);
+  const [timestamp] = useState(formatDate(props.date));
   const [likes] = useState(props.likes);
   const [replies] = useState(props.replies);
   let userRelations = null;
