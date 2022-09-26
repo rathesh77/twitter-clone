@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import Timeline from './MiddleSection/Timeline/Timeline.js';
 import ViewTweet from './MiddleSection/Tweet/ViewTweet.js';
@@ -23,9 +24,15 @@ export default function MainPane() {
 }
 
 function Container() {
+  const { pathname } = useLocation()
+  const containerElement = useRef(null);
+
+  useEffect(()=>{
+    containerElement.current.scrollTop = 0
+  }, [pathname])
 
   return (
-    <div className="main-pane-container">
+    <div ref={containerElement} className="main-pane-container">
       <div className="main-pane">
         <div className='middle-section'>
           <Outlet />
