@@ -272,7 +272,7 @@ a {
 .login-wrapper {
   display: flex;
   flex-wrap: wrap-reverse;
-
+  justify-content: center;
   .login-image {
     width: 40%;
     height: 100vh;
@@ -282,9 +282,17 @@ a {
   .login-credentials-wrapper {
     display: flex;
     flex-direction: column;
+    padding: 40px;
+    justify-content: center;
+    flex-grow: 1;
   }
 }
 
+@media screen and (max-width:1260px) {
+  .login-image {
+    flex-grow: 1;
+  }
+}
 .user-relations {
   margin-left: 28px;
   position: relative;
