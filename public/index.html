@@ -50,7 +50,11 @@
       const containerHeight = container.offsetHeight
       container.addEventListener('scroll', function (e) {
         if (container.scrollTop >= (rightSectionContainerHeight - containerHeight)) {
-          rightSectionContainer.style.marginTop = (container.scrollTop - (rightSectionContainerHeight - containerHeight)) + 'px'
+          if (rightSectionContainerHeight <= containerHeight) {
+            rightSectionContainer.style.marginTop = container.scrollTop + 'px'
+          } else {
+            rightSectionContainer.style.marginTop = (container.scrollTop - (rightSectionContainerHeight - containerHeight)) + 'px'
+          }
         } else if (container.scrollTop === 0) {
           rightSectionContainer.style.marginTop = '0px'
         }

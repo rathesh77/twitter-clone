@@ -64,6 +64,11 @@
   width: 100%;
 }
 
+.clickable:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .suggestions {
   .suggestion {
     .suggestion-avatar {
@@ -75,6 +80,8 @@
         .suggestion-user-name {
           font-weight: bold;
         }
+
+
 
         .suggestion-user-tag {
           font-size: 0.8rem;
@@ -171,9 +178,7 @@ a {
         line-height: 17.5px;
         font-size: 0.83rem;
       }
-      .tweet-author-name:hover {
-        text-decoration: underline;
-      }
+      
     }
     .tweet-message {
       margin-bottom: 20px;
@@ -271,26 +276,23 @@ a {
 
 .login-wrapper {
   display: flex;
-  flex-wrap: wrap-reverse;
-  justify-content: center;
+  height: 100vh;
   .login-image {
-    width: 40%;
-    height: 100vh;
     background: url("https://abs.twimg.com/sticky/illustrations/lohp_1302x955.png");
+    flex-grow: 2;
   }
 
   .login-credentials-wrapper {
     display: flex;
     flex-direction: column;
-    padding: 40px;
-    justify-content: center;
     flex-grow: 1;
+    padding:50px;
   }
 }
+@media screen and (max-width:1200px) {
+  .login-wrapper {
+    flex-direction: column-reverse;
 
-@media screen and (max-width:1260px) {
-  .login-image {
-    flex-grow: 1;
   }
 }
 .user-relations {
