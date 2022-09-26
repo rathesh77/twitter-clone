@@ -5,6 +5,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import formatDate from "../../../../helper";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Tweet(props) {
   const [message] = useState(props.content);
@@ -12,6 +13,15 @@ export default function Tweet(props) {
   const [timestamp] = useState(formatDate(props.date));
   const [likes] = useState(props.likes);
   const [replies] = useState(props.replies);
+  const {pathname} = useLocation()
+  const navigate = useNavigate()
+  
+  const handleUsernameClick = (e) => {
+    e.stopPropagation()
+    if (pathname.slice(1) !== author.username)
+      navigate(`/${author.username}`, { state: { userId: author.uid } })
+
+  }
   let userRelations = null;
   if (props.userRelations != null) {
     userRelations =
@@ -36,7 +46,7 @@ export default function Tweet(props) {
 
           <div className="tweet-content">
             <div className="tweet-header">
-              <div className="tweet-author-name">{author.username}</div>
+              <div className="tweet-author-name" onClick={handleUsernameClick}>{author.username}</div>
               <div className="tweet-author-tag">@{author.username}</div>
               <div className="tweet-timestamp">{timestamp}</div>
             </div>
