@@ -40,6 +40,8 @@ function App() {
     if (user == null) {
       getMe()
     }
+    const event = new Event('rendered')
+    document.dispatchEvent(event)
   }, [user])
   if (isLoading) {
     return (<div>LOADING</div>)
