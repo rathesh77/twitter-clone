@@ -106,7 +106,7 @@ export default function Profile(props) {
           {isFollowing === true ? "Abonné" : 'Suivre'}
         </button> : null}
       </div>
-      <UserInfos />
+      <UserInfos user={user}/>
       <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
         <Tab label="Tweets" />
         <Tab label="Tweets et réponses" />

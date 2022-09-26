@@ -59,7 +59,7 @@ export default function LeftPane() {
           </List>
         </div>
         <div className="profile-shortcut" onClick={logout}>
-          Log out
+          Se déconnecter
         </div>
       </div>
     </div>
