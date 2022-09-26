@@ -97,7 +97,7 @@ export default function Profile(props) {
   return (
     <div className='user-profile'>
       <div className='user-banner'>
-        <div className="user-profile-pic"></div>
+        <div className="user-profile-pic" style={{backgroundImage: `url('${user.banner}')`}}></div>
         {user.uid === authContext.user.uid ? <button className='btn btn-edit-profile'>Éditer le profil</button> : null}
       </div>
       <div className='user-profile-avatar-wrapper'>
