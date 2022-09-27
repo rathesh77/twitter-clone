@@ -81,8 +81,6 @@
           font-weight: bold;
         }
 
-
-
         .suggestion-user-tag {
           font-size: 0.8rem;
         }
@@ -178,7 +176,6 @@ a {
         line-height: 17.5px;
         font-size: 0.83rem;
       }
-      
     }
     .tweet-message {
       margin-bottom: 20px;
@@ -227,23 +224,17 @@ a {
   .user-name-wrapper {
     .user-nickname {
       font-size: 1.3rem;
-    
-  
     }
-    }
-    .user-subs-infos {
-      display: flex;
-      justify-content: flex-start;
+  }
+  .user-subs-infos {
+    display: flex;
+    justify-content: flex-start;
 
-      .user-subscribed-to {
-  margin-right: 10px;
+    .user-subscribed-to {
+      margin-right: 10px;
+    }
+  }
 }
-    }
-}
-
-
-
-
 
 .user-profile {
   border-width: 1px;
@@ -253,7 +244,7 @@ a {
 
   .user-banner {
     position: relative;
-  
+
     .user-profile-pic {
       background-repeat: no-repeat;
       background-position: center;
@@ -269,9 +260,9 @@ a {
   }
 
   & > *,
-.user-infos > * {
-  margin-bottom: 10px;
-}
+  .user-infos > * {
+    margin-bottom: 10px;
+  }
 }
 
 .login-wrapper {
@@ -290,7 +281,7 @@ a {
     padding: 40px;
   }
 }
-@media screen and (max-width:1200px) {
+@media screen and (max-width: 1200px) {
   .login-wrapper {
     flex-direction: column-reverse;
   }
@@ -298,7 +289,7 @@ a {
   .login-image {
     flex-grow: 3 !important;
   }
-  
+
   .login-credentials-wrapper {
     padding-bottom: 0 !important;
   }
@@ -312,7 +303,6 @@ a {
 
   & > svg {
     max-height: 20px;
-
   }
 }
 
@@ -327,7 +317,6 @@ a {
     align-items: flex-start;
     padding: 10px;
   }
-  
 }
 
 .h1-header {
