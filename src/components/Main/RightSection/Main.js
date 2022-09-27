@@ -27,7 +27,9 @@ export default function RightSection() {
   }
   return (
     <div>
-      <div className='search-results'>
+      <div className="right-section">
+        <TextField onChange={handleSearchInput} id="outlined-basic" label="Rechercher sur Twitter" variant="outlined" sx={{ marginBottom: '10px', width: '100%' }} />
+        <div className='search-results'>
         {searchResults.map((s) => {
           const properties = s._fields[0].properties
           return (
@@ -45,9 +47,6 @@ export default function RightSection() {
           )
         })}
       </div>
-      <div className="right-section">
-        <TextField onChange={handleSearchInput} id="outlined-basic" label="Rechercher sur Twitter" variant="outlined" sx={{ marginBottom: '10px', width: '100%' }} />
-
         <Paper elevation={1} sx={{ padding: '15px 20px 15px 20px' }}>
           <ListTrends />
         </Paper>

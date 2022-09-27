@@ -36,7 +36,7 @@
   width: 350px;
   margin-left: 30px;
   z-index: 1;
-
+  position: relative;
   & > * {
     margin-bottom: 10px;
     border-radius: 20px !important;
@@ -307,16 +307,19 @@ a {
 }
 
 .search-results {
-  position: absolute;
   z-index: 2;
+  position:absolute;
   width: 350px;
   background-color: white;
-  top: 60px;
+  top:60px;
+  right:0;
   .search-item {
     display: flex;
     align-items: flex-start;
     padding: 10px;
   }
+  border-radius: 0 !important;
+
 }
 
 .h1-header {
