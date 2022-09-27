@@ -6,39 +6,44 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import formatDate from "../../../../helper";
 import ClickableUser from "../../../ClickableUser";
+import { axiosInstance } from "../../../../axios";
 
 export default function Tweet(props) {
+  const [uid] = useState(props.uid);
   const [message] = useState(props.content);
   const [author] = useState(props.author);
   const [timestamp] = useState(formatDate(props.date));
   const [likes] = useState(props.likes);
+  const [retweets, setRetweets] = useState(props.retweets);
   const [replies] = useState(props.replies);
+  const [userRelations, setUserRelations] = useState(props.userRelations != null ? props.userRelations : [])
 
-  let userRelations = null;
-  if (props.userRelations != null) {
-    userRelations =
-      props.userRelations == null
-        ? null
-        : props.userRelations.map((e) => e.author.username);
-
-    if (userRelations.length > 1) {
-      userRelations = userRelations.join(", ") + " ont retweeté";
-    } else {
-      userRelations = userRelations.join(", ") + " a retweeté";
-    }
+  const handleRetweetClick = async (e) => {
+    e.stopPropagation()
+    await axiosInstance.post(`/retweet/${uid}`)
+    setRetweets(retweets + 1)
+    setUserRelations([...userRelations, { author }])
   }
+
+  let headerRelation = userRelations.map((e) => e.author.username);
+  if (headerRelation.length > 1) {
+    headerRelation = headerRelation.join(", ") + " ont retweeté";
+  } else {
+    headerRelation = headerRelation.join(", ") + " a retweeté";
+  }
+
   return (
     <div className="tweet-wrapper">
       <div>
-        <div>{userRelations ? <div className="user-relations"><AutorenewIcon />{userRelations}</div> : null}</div>
-        <div style={{display: 'flex'}}>
+        <div>{userRelations.length > 0 ? <div className="user-relations"><AutorenewIcon />{headerRelation}</div> : null}</div>
+        <div style={{ display: 'flex' }}>
           <div className="tweet-author-avatar">
             <Avatar src={author.avatar} alt={author.name} />
           </div>
 
           <div className="tweet-content">
             <div className="tweet-header">
-              <ClickableUser className="tweet-author-name" user={author}/>
+              <ClickableUser className="tweet-author-name" user={author} />
               <div className="tweet-author-tag">@{author.username}</div>
               <div className="tweet-timestamp">{timestamp}</div>
             </div>
@@ -51,8 +56,8 @@ export default function Tweet(props) {
                 <div>{replies}</div>
                 <ChatBubbleOutlineIcon />
               </div>
-              <div className="tweet-button">
-                <div>{likes}</div>
+              <div className="tweet-button" onClick={handleRetweetClick}>
+                <div>{retweets}</div>
                 <AutorenewIcon />
               </div>
               <div className="tweet-button">
