@@ -27,7 +27,7 @@ export default function Tweet(props) {
   }
 
   let headerRelation = userRelations
-    .filter((e) => e.author.uid !== authContext.user.uid)
+    //.filter((e) => e.author.uid !== authContext.user.uid)
     .map((e) => e.author.username)
   
   console.log(headerRelation)
