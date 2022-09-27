@@ -285,14 +285,22 @@ a {
   .login-credentials-wrapper {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     flex-grow: 1;
-    padding:50px;
+    padding: 40px;
   }
 }
 @media screen and (max-width:1200px) {
   .login-wrapper {
     flex-direction: column-reverse;
+  }
 
+  .login-image {
+    flex-grow: 3 !important;
+  }
+  
+  .login-credentials-wrapper {
+    padding-bottom: 0 !important;
   }
 }
 .user-relations {
