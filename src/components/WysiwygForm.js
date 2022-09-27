@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { axiosInstance } from "../axios";
 
 export default function WysiwygForm(props) {
 
@@ -11,16 +12,20 @@ export default function WysiwygForm(props) {
     setEditorState(state)
    setFormContent(state)
   }
-  const _uploadImageCallBack = (file) => {
-
-    const imageObject = {
-      file: file,
-      localSrc: URL.createObjectURL(file),
+  const _uploadImageCallBack = async (file) => {
+    
+    const formData = new FormData();
+    formData.append('file',file)
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
     }
+    const response = await axiosInstance.post('/chunks', formData, config);
 
     return new Promise(
       (resolve, reject) => {
-        resolve({ data: { link: imageObject.localSrc } });
+        resolve({ data: { link: axiosInstance.defaults.baseURL+ '/'+ response.data.filename } });
       }
     );
   }
