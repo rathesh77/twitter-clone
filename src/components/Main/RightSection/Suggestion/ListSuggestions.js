@@ -8,13 +8,18 @@ export default function ListSuggestions() {
   const [suggestions, setSuggestions] = useState([])
   
   useEffect(()=>{
+    if (suggestions.length !== 0) {
+      console.log('render')
+      const event = new Event('rendered')
+      document.dispatchEvent(event)
+      return
+    }
     (async()=>{
       const suggestions = await axiosInstance.get('/suggestions')
-      console.log(suggestions.data)
       setSuggestions(suggestions.data)
     })()
 
-  }, [])
+  }, [suggestions])
   
   return (
     <List className="suggestions">
