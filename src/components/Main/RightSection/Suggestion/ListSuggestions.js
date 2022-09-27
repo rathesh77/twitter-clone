@@ -5,10 +5,10 @@ import { axiosInstance } from "../../../../axios";
 import Suggestion from "./Suggestion";
 
 export default function ListSuggestions() {
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState(null)
   
   useEffect(()=>{
-    if (suggestions.length !== 0) {
+    if (suggestions != null) {
       console.log('render')
       const event = new Event('rendered')
       document.dispatchEvent(event)
@@ -20,7 +20,9 @@ export default function ListSuggestions() {
     })()
 
   }, [suggestions])
-  
+  if (suggestions == null) {
+    return <div></div>
+  }
   return (
     <List className="suggestions">
       <div className="right-section-title">Vous pourriez aimer</div>
