@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Avatar } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -7,8 +7,10 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import formatDate from "../../../../helper";
 import ClickableUser from "../../../ClickableUser";
 import { axiosInstance } from "../../../../axios";
+import AuthContext from "../../../../authContext";
 
 export default function Tweet(props) {
+  const authContext = useContext(AuthContext)
   const [uid] = useState(props.uid);
   const [message] = useState(props.content);
   const [author] = useState(props.author);
@@ -16,26 +18,30 @@ export default function Tweet(props) {
   const [likes] = useState(props.likes);
   const [retweets, setRetweets] = useState(props.retweets);
   const [replies] = useState(props.replies);
-  const [userRelations, setUserRelations] = useState(props.userRelations != null ? props.userRelations : [])
+  const [userRelations] = useState(props.userRelations != null ? props.userRelations : [])
 
   const handleRetweetClick = async (e) => {
     e.stopPropagation()
     await axiosInstance.post(`/retweet/${uid}`)
     setRetweets(retweets + 1)
-    setUserRelations([...userRelations, { author }])
   }
 
-  let headerRelation = userRelations.map((e) => e.author.username);
-  if (headerRelation.length > 1) {
-    headerRelation = headerRelation.join(", ") + " ont retweeté";
-  } else {
-    headerRelation = headerRelation.join(", ") + " a retweeté";
-  }
+  let headerRelation = userRelations
+    .filter((e) => e.author.uid !== authContext.user.uid)
+    .map((e) => e.author.username)
+  
+  console.log(headerRelation)
 
   return (
     <div className="tweet-wrapper">
       <div>
-        <div>{userRelations.length > 0 ? <div className="user-relations"><AutorenewIcon />{headerRelation}</div> : null}</div>
+        <div>
+          {headerRelation.length > 0 ? 
+          <div className="user-relations">
+            <AutorenewIcon />{headerRelation.join(', ') + (headerRelation.length > 1 ? ' ont retweeté' : ' a retweeté')}
+          </div> : 
+          null}
+        </div>
         <div style={{ display: 'flex' }}>
           <div className="tweet-author-avatar">
             <Avatar src={author.avatar} alt={author.name} />

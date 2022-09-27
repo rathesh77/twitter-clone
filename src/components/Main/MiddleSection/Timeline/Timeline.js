@@ -41,13 +41,11 @@ export default function Timeline() {
       let author = res._fields[0].properties
       const relationship = res._fields[1]
       if (relationship !== 'WROTE_TWEET') {
-        seenTweets[message.uid] = { author, relationship }
-
-        if (message.uid in seenTweets)
-          author = seenTweets[message.uid]
+        if (message.uid in seenTweets) {
+          seenTweets[message.uid].push({ author, relationship })
+        }
         else {
-          author = (await axiosInstance.get(`/tweet-author?id=${message.uid}`))
-          author = author.data._fields[0].properties
+          seenTweets[message.uid] = [{ author, relationship }]
         }
         continue
       }
@@ -59,17 +57,18 @@ export default function Timeline() {
     }
     for (let i = 0; i < tweets.length; i++) {
       if (seenTweets[tweets[i].tweetId]) {
-        const item = {
-          author: seenTweets[tweets[i].tweetId].author,
-          relationship: seenTweets[tweets[i].tweetId].relationship
+        for (let j = 0; j <seenTweets[tweets[i].tweetId].length; j++) {
+          const item = {
+            author: seenTweets[tweets[i].tweetId][j].author,
+            relationship: seenTweets[tweets[i].tweetId][j].relationship
+          }
+          if (!tweets[i].userRelations) {
+            tweets[i].userRelations = [item]
+          } else
+            tweets[i].userRelations.push(item)
         }
-        if (!tweets[i].userRelations) {
-          tweets[i].userRelations = [item]
-        } else
-          tweets[i].userRelations.push(item)
       }
     }
-
     setDeepTweets(tweets)
   }
 
