@@ -1,57 +1,58 @@
 
-import { useState } from "react";
-import { Editor } from "react-draft-wysiwyg";
+import { useRef, useState } from "react";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { axiosInstance } from "../axios";
 
 export default function WysiwygForm(props) {
 
-  let [editorState, setEditorState] = useState(this)
-  const {setFormContent, action} = props
-  const onEditorStateChange = function (state) {
+  let [setEditorState] = useState(this)
+  const [filePreview, setFilePreview] = useState(null)
+  const [file, setFile] = useState(null)
+  const { action, setFormContent } = props
+
+  const editor = useRef(null)
+  const onEditorStateChange = function (e) {
+    const state = e.target.innerText
     setEditorState(state)
-   setFormContent(state)
+    setFormContent(state)
   }
-  const _uploadImageCallBack = async (file) => {
-    
-    const formData = new FormData();
-    formData.append('file',file)
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
+
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0]
+    setFile(file)
+    const objectURL = URL.createObjectURL(file);
+    const mimeType = file.type
+    let content = ''
+    if (mimeType.toLowerCase().includes('video')) {
+      content = `<video onclick="event.stopPropagation()" controls muted> <source src="${objectURL}" type="${mimeType}"/> </video>`
+    } else {
+      content = `<img src="${objectURL}" alt="test"/>`
     }
-    const response = await axiosInstance.post('/chunks', formData, config);
-
-    return new Promise(
-      (resolve, reject) => {
-        resolve({ data: { link: axiosInstance.defaults.baseURL+ '/'+ response.data.filename } });
-      }
-    );
+    setFilePreview(content)
   }
 
+  const handleTweetPost = async () => {
+    await action(file);
+    setEditorState(null);
+    setFile(null)
+    setFilePreview(null)
+    setFormContent(null)
+    editor.current.innerText = ''
+  }
   return (
     <div className="tweet-editor">
 
-        <Editor
-          editorState={editorState}
-          toolbarClassName="toolbarClassName"
-          wrapperClassName="wrapperClassName"
-          editorClassName="editorClassName"
-          placeholder="Tweetez votre reponse"
-          onEditorStateChange={onEditorStateChange}
-          toolbar={{
-            options: ['inline', 'blockType', 'fontSize', 'list', 'textAlign', 'history', 'image'],
-            inline: { inDropdown: true },
-            list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
-            image: { uploadCallback: _uploadImageCallBack },
+      <div className="editor-wrapper">
+        <div contentEditable="true" className="editor" onInput={onEditorStateChange} ref={editor}>
+        </div>
+        <div className="file-preview" dangerouslySetInnerHTML={{ __html: filePreview }}>
 
-          }}
-        />
-        <button type="button" className="btn" onClick={()=>{action(); setEditorState(null)}}>Tweeter</button>
-          </div>
+        </div>
+        <div className="editor-buttons">
+          <input id="selectedFile" style={{ "display": "none", width: 'inherit' }} type="file" multiple={false} onChange={handleFileUpload} /><button type="button" onClick={(e) => { document.getElementById('selectedFile').click() }}>Upload file</button>
+        </div>
+      </div>
+      <button type="button" className="btn" onClick={handleTweetPost}>Tweeter</button>
+    </div>
   )
 }
