@@ -357,11 +357,15 @@ ul a {
   width: inherit;
   max-height: 600px !important;
   overflow-y: auto !important;
-  min-height: 200px;
+  min-height: 100px;
 }
 
 video {
   max-width: 500px;
   height: auto;
   max-height: 400px;
+}
+
+textarea {
+  resize: none;
 }
