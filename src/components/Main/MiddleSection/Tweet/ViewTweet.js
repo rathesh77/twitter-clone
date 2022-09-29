@@ -5,8 +5,6 @@ import AuthContext from '../../../../authContext';
 import { axiosInstance } from '../../../../axios';
 import Tweet from './Tweet';
 
-import { convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
 import WysiwygForm from '../../../WysiwygForm';
 
 export default function ViewTweet() {
@@ -16,44 +14,19 @@ export default function ViewTweet() {
   const authContext = useContext(AuthContext)
   const navigate = useNavigate()
 
-
   const handleTweetClick = (e, tweetId) => {
     navigate(`/tweet?id=${tweetId}`)
   }
 
-  let formContent = null
-
-  const setFormContent = (data) => {
-    formContent = data
-  }
-
-  const updateMessagesList = function (data) {
+  const updateTweetsList = function (data) {
     const newMessagesList = [...messages]
     newMessagesList.unshift({ message: { ...data }, author: authContext.user })
     setMessages(newMessagesList)
   }
 
-  const handleMessagePost = async function () {
-    let authorId, content, mentionnedPeople
-
-    if (formContent == null )
-      return
-    authorId = authContext.user.uid
-    content = draftToHtml(convertToRaw(formContent.getCurrentContent()))
-    mentionnedPeople = []
-
-    const data = { authorId, content, mentionnedPeople, tweetId: tweet.uid }
-    const results = await axiosInstance.post(
-      '/tweet',
-      {
-        data
-      }
-    )
-    setFormContent(null)
-    setTweet({ ...tweet, replies: tweet.replies + 1 })
-    updateMessagesList(results.data)
-
-  }
+  const action = (tweet)=> {
+    updateTweetsList(tweet)
+  } 
 
   const getCurrentTweetAndMessages = async () => {
     try {
@@ -86,7 +59,7 @@ export default function ViewTweet() {
   return (
     <div className="tweet">
       <Tweet key={tweet.replies} {...tweet}/>
-        <WysiwygForm setFormContent={setFormContent} action={handleMessagePost}/>
+        <WysiwygForm action={action} tweet={tweet}/>
       <List>
         {messages.map((m) => {
           const { author, message } = m

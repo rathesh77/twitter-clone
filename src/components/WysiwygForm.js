@@ -1,18 +1,21 @@
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import AuthContext from "../authContext";
+import { axiosInstance } from "../axios";
 
 export default function WysiwygForm(props) {
 
-  let [setEditorState] = useState(this)
   const [filePreview, setFilePreview] = useState(null)
   const [file, setFile] = useState(null)
-  const { action, setFormContent } = props
+  const [formContent, setFormContent] = useState(null)
+  const { action, tweet } = props
+  const authContext = useContext(AuthContext)
+  
 
   const editor = useRef(null)
   const onEditorStateChange = function (e) {
-    const state = e.target.innerText
-    setEditorState(state)
+    const state = e.target.value
     setFormContent(state)
   }
 
@@ -31,20 +34,68 @@ export default function WysiwygForm(props) {
     setFilePreview(content)
   }
 
-  const handleTweetPost = async () => {
-    await action(file);
-    setEditorState(null);
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file)
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    }
+
+    const response = await axiosInstance.post('/media', formData, config);
+    return response.data
+  }
+
+  const handleTweetPost = async function () {
+    let authorId, mentionnedPeople
+    authorId = authContext.user.uid
+    mentionnedPeople = []
+
+    if (file == null && (formContent == null || formContent.trim().length === 0))
+      return
+
+    const filename = await uploadImage(file)
+    let content = formContent == null ? '' : formContent.trim()
+
+    if (file !== null) {
+      const imageUrl = axiosInstance.defaults.baseURL + '/' + filename.filename
+      const mimeType = filename.mimetype
+      content += '<br/>'
+      if (mimeType.toLowerCase().includes('video')) {
+        content += `<video onclick="event.stopPropagation()" controls muted> <source src="${imageUrl}" type="${mimeType}"/> </video>`
+
+      } else {
+
+        content += `<img src="${imageUrl}" alt="test"/>`
+      }
+    }
+    console.log(content)
+    const data = { authorId, content, mentionnedPeople }
+    if (tweet != null) {
+      data['tweetId'] = tweet.uid
+    }
+    const results = await axiosInstance.post(
+      '/tweet',
+      {
+        data
+      }
+    )
+    console.log(results)
+    await action(results.data)
     setFile(null)
     setFilePreview(null)
     setFormContent(null)
     editor.current.innerText = ''
+
   }
+
   return (
     <div className="tweet-editor">
 
       <div className="editor-wrapper">
-        <div contentEditable="true" className="editor" onInput={onEditorStateChange} ref={editor}>
-        </div>
+        <textarea placeholder="Ecrivez votre tweet" className="editor" onChange={onEditorStateChange} ref={editor}>
+        </textarea>
         <div className="file-preview" dangerouslySetInnerHTML={{ __html: filePreview }}>
 
         </div>
