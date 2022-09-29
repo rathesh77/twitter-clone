@@ -6,6 +6,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axios';
@@ -56,11 +57,12 @@ export default function LeftPane() {
             <ListItem disablePadding>
               <ListItemButton data-link={"/" + user.username} className='menu-item'><PersonIcon />Profile</ListItemButton>
             </ListItem>
+            <ListItem disablePadding onClick={logout}>
+              <ListItemButton sx={{color: 'red'}} className='menu-item'><LogoutIcon />Se déconnecter</ListItemButton>
+            </ListItem>
           </List>
         </div>
-        <div className="profile-shortcut" onClick={logout}>
-          Se déconnecter
-        </div>
+
       </div>
     </div>
 
