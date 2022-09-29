@@ -1,19 +1,19 @@
 
-import { useContext, useRef, useState } from "react";
+import {IconButton, TextField } from "@mui/material";
+import { useContext, useState } from "react";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import AuthContext from "../authContext";
 import { axiosInstance } from "../axios";
+import ImageIcon from '@mui/icons-material/Image';
 
 export default function WysiwygForm(props) {
 
   const [filePreview, setFilePreview] = useState(null)
   const [file, setFile] = useState(null)
-  const [formContent, setFormContent] = useState(null)
+  const [formContent, setFormContent] = useState('')
   const { action, tweet } = props
   const authContext = useContext(AuthContext)
   
-
-  const editor = useRef(null)
   const onEditorStateChange = function (e) {
     const state = e.target.value
     setFormContent(state)
@@ -85,8 +85,8 @@ export default function WysiwygForm(props) {
     await action(results.data)
     setFile(null)
     setFilePreview(null)
-    setFormContent(null)
-    editor.current.innerText = ''
+    setFormContent('')
+    
 
   }
 
@@ -94,13 +94,25 @@ export default function WysiwygForm(props) {
     <div className="tweet-editor">
 
       <div className="editor-wrapper">
-        <textarea placeholder="Ecrivez votre tweet" className="editor" onChange={onEditorStateChange} ref={editor}>
-        </textarea>
+        
+        <TextField
+          id="multiline-flexible"
+          label="Ecrivez votre tweet"
+          className="editor"
+          multiline
+          maxRows={10}
+          value={formContent}
+          onChange={onEditorStateChange}
+          variant="standard"
+        />
         <div className="file-preview" dangerouslySetInnerHTML={{ __html: filePreview }}>
 
         </div>
         <div className="editor-buttons">
-          <input id="selectedFile" style={{ "display": "none", width: 'inherit' }} type="file" multiple={false} onChange={handleFileUpload} /><button type="button" onClick={(e) => { document.getElementById('selectedFile').click() }}>Upload file</button>
+            <IconButton color='inherit' aria-label="upload picture" component="label">
+            <input id="selectedFile" hidden type="file" multiple={false} onChange={handleFileUpload} />
+  <ImageIcon />
+</IconButton>
         </div>
       </div>
       <button type="button" className="btn" onClick={handleTweetPost}>Tweeter</button>

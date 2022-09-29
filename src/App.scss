@@ -1,3 +1,5 @@
+$border-dark: rgba(0, 0, 0, 0.1);;
+
 .main-container {
   display: flex;
 }
@@ -104,14 +106,13 @@
 
 .btn {
   background-color: black;
-  color: white;
   display: flex;
   align-items: center;
   height: 35px;
   padding: 1px 15px 1px 15px;
   border-radius: 30px;
   font-size: 0.9rem;
-
+  border-color: $border-dark;
   &:hover {
     cursor: pointer;
   }
@@ -130,7 +131,7 @@ a {
   flex-direction: column;
   border-width: 0.5px;
   border-style: solid;
-  border-color: rgb(239, 243, 244);
+  border-color: $border-dark;
   border-collapse: collapse;
   padding: 10px 16px 10px 16px;
   font-size: 0.94rem;
@@ -194,7 +195,7 @@ a {
 .tweet-editor {
   border-width: 0.5px;
   border-style: solid;
-  border-color: rgb(239, 243, 244);
+  border-color: $border-dark;
   border-collapse: collapse;
   padding: 10px 16px 10px 16px;
   display: flex;
@@ -226,7 +227,7 @@ a {
 .user-profile {
   border-width: 1px;
   border-style: solid;
-  border-color: rgb(239, 243, 244);
+  border-color: $border-dark;
   border-collapse: collapse;
 
   .user-banner {
@@ -294,12 +295,12 @@ a {
 }
 
 .search-results {
-  z-index: 2;
   position:absolute;
   width: 350px;
   background-color: white;
   top:60px;
   right:0;
+  z-index: 1;
   .search-item {
     display: flex;
     align-items: flex-start;
@@ -355,9 +356,6 @@ ul a {
 
 .editor {
   width: inherit;
-  max-height: 600px !important;
-  overflow-y: auto !important;
-  min-height: 100px;
 }
 
 video {
@@ -368,4 +366,21 @@ video {
 
 textarea {
   resize: none;
+}
+
+.editor-buttons {
+  button {
+  background-color: transparent;
+  border: 1px solid $border-dark;
+  color: black;
+
+  &:hover {
+    cursor: pointer;
+  }
+  }
+  margin-top: 10px;
+}
+
+button {
+  color: white;
 }
