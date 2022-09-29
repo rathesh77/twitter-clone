@@ -351,7 +351,10 @@ ul a {
   display: flex;
   flex-direction: column;
   width: 100%;
+  .file-preview {
+    margin-top: 30px;
 
+  }
 }
 
 .editor {
@@ -378,7 +381,6 @@ textarea {
     cursor: pointer;
   }
   }
-  margin-top: 10px;
 }
 
 button {
