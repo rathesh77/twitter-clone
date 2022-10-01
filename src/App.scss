@@ -386,3 +386,14 @@ textarea {
 button {
   color: white;
 }
+
+.file-error {
+  position: absolute;
+  bottom:5%;
+  left: 30%;
+  right: 30%;
+  background-color: cyan;
+  color: white;
+  padding:20px;
+  z-index: 2;
+}

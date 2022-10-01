@@ -10,6 +10,8 @@ export default function WysiwygForm(props) {
 
   const [filePreview, setFilePreview] = useState(null)
   const [file, setFile] = useState(null)
+  const [fileErr, setFileErr] = useState(false)
+
   const [formContent, setFormContent] = useState('')
   const { action, tweet } = props
   const authContext = useContext(AuthContext)
@@ -22,6 +24,15 @@ export default function WysiwygForm(props) {
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
+    e.target.value = ''
+    const sizeMB = file.size / (10**6)
+    if (sizeMB > 512.0) {
+      setFileErr(true)
+      setTimeout(()=>{
+        setFileErr(false)
+      },3000)
+      return
+    }
     setFile(file)
     const objectURL = URL.createObjectURL(file);
     const mimeType = file.type
@@ -92,6 +103,11 @@ export default function WysiwygForm(props) {
 
   return (
     <div className="tweet-editor">
+      { fileErr === true ? 
+        <div className="file-error">
+          File must not exceed 512MB
+        </div>
+      : null}
 
       <div className="editor-wrapper">
         

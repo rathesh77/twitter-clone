@@ -40,7 +40,7 @@ export default function Timeline() {
       const message = res._fields[2].properties
       let author = res._fields[0].properties
       const relationship = res._fields[1]
-      if (relationship !== 'WROTE_TWEET') {
+      if (relationship === 'RETWEETED') {
         if (message.uid in seenTweets) {
           seenTweets[message.uid].push({ author, relationship })
         }
@@ -49,6 +49,7 @@ export default function Timeline() {
         }
         continue
       }
+      if (relationship === 'WROTE_TWEET')
       tweets.push({
         tweetId: message.uid,
         author,

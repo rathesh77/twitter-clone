@@ -7,8 +7,8 @@ export default function UserInfos(props) {
       <div className='user-name-wrapper'><span className='user-nickname'>{user.username}</span><br/><span className='user-tagname'>@{user.username}</span></div>
       <div className='user-date-registration'><CalendarMonthIcon/> A rejoint Twitter en septembre 2020</div>
       <div className='user-subs-infos'>
-        <div className='user-subscribed-to'>15 abonnements</div>
-        <div className='user-subscribers'>20 abonnés</div>
+        <div className='user-subscribed-to'>{user.followings} abonnements</div>
+        <div className='user-subscribers'>{user.followers} abonnés</div>
       </div>
 
     </div>

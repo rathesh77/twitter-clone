@@ -51,7 +51,12 @@ export default function Profile(props) {
   useEffect(() => {
     (async () => {
       const currentUser = (await axiosInstance.get(`/user?id=${state == null ? authContext.user.uid : state.userId}`)).data._fields[0].properties
-      setUser(currentUser)
+      let followers = await axiosInstance.get(`/followers?id=${state == null ? authContext.user.uid : state.userId}`)
+      followers = followers.data.count
+
+      let followings = await axiosInstance.get(`/followings?id=${state == null ? authContext.user.uid : state.userId}`)
+      followings = followings.data.count
+      setUser({...currentUser, followers, followings})
       if (currentUser.uid !== authContext.uid) {
         const following = await axiosInstance.get(`/follow/${currentUser.uid}`)
         const relation = following.data
@@ -74,7 +79,7 @@ export default function Profile(props) {
       )
       const tweets = []
       for (const res of result.data) {
-        if (res._fields[1] === 'RETWEETED')
+        if (res._fields[1] !== 'WROTE_TWEET')
           continue
         const message = res._fields[0].properties
         const author = res._fields[2].properties
