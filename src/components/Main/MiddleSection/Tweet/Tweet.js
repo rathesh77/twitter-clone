@@ -2,12 +2,12 @@ import { useContext, useState } from "react";
 import { Avatar } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import IosShareIcon from "@mui/icons-material/IosShare";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import formatDate from "../../../../helper";
 import ClickableUser from "../../../ClickableUser";
 import { axiosInstance } from "../../../../axios";
 import AuthContext from "../../../../authContext";
+import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 
 export default function Tweet(props) {
   const authContext = useContext(AuthContext)
@@ -15,15 +15,35 @@ export default function Tweet(props) {
   const [message] = useState(props.content);
   const [author] = useState(props.author);
   const [timestamp] = useState(formatDate(props.date));
-  const [likes] = useState(props.likes);
+  const [likes, setLikes] = useState(props.likes);
   const [retweets, setRetweets] = useState(props.retweets);
+  const [dislikes, setDislikes] = useState(props.dislikes);
   const [replies] = useState(props.replies);
   const [userRelations] = useState(props.userRelations != null ? props.userRelations : [])
 
   const handleRetweetClick = async (e) => {
     e.stopPropagation()
-    await axiosInstance.post(`/retweet/${uid}`)
-    setRetweets(retweets + 1)
+    const result = await axiosInstance.post(`/retweet/${uid}`)
+    const {retweetsIncrement} = result.data
+
+    setRetweets(retweets + retweetsIncrement)
+  }
+
+  const handleLikeClick = async (e) => {
+    e.stopPropagation()
+    const result = await axiosInstance.post(`/likeTweet/${uid}`)
+    const {likesIncrement, dislikesDecrement} = result.data
+    setLikes(likes + likesIncrement)
+    setDislikes(dislikes - dislikesDecrement)
+  }
+
+  const handleDislikeClick = async (e) => {
+    e.stopPropagation()
+    const result = await axiosInstance.post(`/dislikeTweet/${uid}`)
+    const {dislikesIncrement, likesDecrement} = result.data
+    setDislikes(dislikes + dislikesIncrement)
+    setLikes(likes - likesDecrement)
+
   }
 
   let headerRelation = userRelations
@@ -66,13 +86,13 @@ export default function Tweet(props) {
                 <div>{retweets}</div>
                 <AutorenewIcon />
               </div>
-              <div className="tweet-button">
+              <div className="tweet-button" onClick={handleLikeClick}>
                 <div>{likes}</div>
                 <FavoriteIcon />
               </div>
-              <div className="tweet-button">
-                <div>{likes}</div>
-                <IosShareIcon />
+              <div className="tweet-button" onClick={handleDislikeClick}>
+                <div>{dislikes}</div>
+                <HeartBrokenIcon />
               </div>
             </div>
           </div>
