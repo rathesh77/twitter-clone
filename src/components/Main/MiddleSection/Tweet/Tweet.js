@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Avatar } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import formatDate from "../../../../helper";
 import ClickableUser from "../../../ClickableUser";
-import AuthContext from "../../../../authContext";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import { postLikeTweet, postDislikeTweet, postRetweet } from "../../../../services/Tweet";
 

@@ -1,4 +1,3 @@
-import { useState } from "react"
 import {Avatar} from '@mui/material'
 import ClickableUser from "../../../ClickableUser"
 import { followUser } from "../../../../services/User"
