@@ -1,9 +1,9 @@
 import CreateTweet from '../Tweet/CreateTweet.js'
 import ListTweets from '../Tweet/ListTweets.js'
 import { useLocation } from 'react-router-dom';
-import { axiosInstance } from '../../../../axios'
 import { useEffect, useState, useContext } from 'react';
 import AuthContext from '../../../../authContext.js';
+import { fetchDeepTweets } from '../../../../services/Tweet.js';
 
 export default function Timeline() {
 
@@ -22,19 +22,12 @@ export default function Timeline() {
     setDeepTweets(update)
   }
 
-  const fetchDeepTweets = async () => {
+  const getDeepTweets = async () => {
     const userId = user.uid
-    const result = await axiosInstance.get(
-      `/deep-tweets?userId=${userId}`,
-      {
-        data: {
-          userId
-        }
-      }
-    )
+    const results = await fetchDeepTweets(userId)
     const tweets = []
     const seenTweets = {}
-    for (const res of result.data) {
+    for (const res of results) {
       if (!res._fields[0])
         continue
       const message = res._fields[2].properties
@@ -74,7 +67,7 @@ export default function Timeline() {
   }
 
   useEffect(() => {
-    fetchDeepTweets()
+    getDeepTweets()
   }, [search])
   return (
       <div>

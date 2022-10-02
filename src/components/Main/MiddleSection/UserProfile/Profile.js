@@ -2,10 +2,11 @@ import { useState, useEffect, useContext } from 'react'
 import { Tabs, Tab } from '@mui/material'
 import UserInfos from './UserInfos'
 import ListTweets from '../Tweet/ListTweets'
-import { axiosInstance } from '../../../../axios'
 import { Avatar } from '@mui/material'
 import AuthContext from '../../../../authContext'
 import { useLocation } from 'react-router-dom'
+import { fetchRelatedTweets } from '../../../../services/Tweet'
+import { doesCurrentUserFollowRecipient, fetchFollowers, fetchFollowings, fetchUser, followUser } from '../../../../services/User'
 
 export default function Profile(props) {
 
@@ -24,7 +25,7 @@ export default function Profile(props) {
   const [value, setValue] = useState(0)
   const [userTweets, setUserTweets] = useState(tweets)
   const [user, setUser] = useState(null)
-  const [isFollowing, setIsFollowing] = useState(null)
+  const [isFollowing, setIsFollowing] = useState(false)
   const authContext = useContext(AuthContext)
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -32,7 +33,7 @@ export default function Profile(props) {
 
   const handleUserFollow = async () => {
     try {
-      await axiosInstance.put(`/follow/${user.uid}`)
+      await followUser(user.uid)
       setIsFollowing(true)
     } catch (e) {
       console.log(e)
@@ -50,18 +51,15 @@ export default function Profile(props) {
 
   useEffect(() => {
     (async () => {
-      const currentUser = (await axiosInstance.get(`/user?id=${state == null ? authContext.user.uid : state.userId}`)).data._fields[0].properties
-      let followers = await axiosInstance.get(`/followers?id=${state == null ? authContext.user.uid : state.userId}`)
-      followers = followers.data.count
+      const currentUserId = state == null ? authContext.user.uid : state.userId
+      const currentUser = await fetchUser(currentUserId)
+      let followers = await fetchFollowers(currentUserId)
 
-      let followings = await axiosInstance.get(`/followings?id=${state == null ? authContext.user.uid : state.userId}`)
-      followings = followings.data.count
+      let followings = await fetchFollowings(currentUserId)
       setUser({...currentUser, followers, followings})
-      if (currentUser.uid !== authContext.uid) {
-        const following = await axiosInstance.get(`/follow/${currentUser.uid}`)
-        const relation = following.data
-
-        if (relation !== false) {
+      if (currentUser.uid !== authContext.user.uid ) {
+        const isFollowing = await doesCurrentUserFollowRecipient(currentUser.uid)
+        if (isFollowing !== false) {
           setIsFollowing(true)
         } else {
           setIsFollowing(false)
@@ -69,16 +67,9 @@ export default function Profile(props) {
         }
       }
       const userId = currentUser.uid
-      const result = await axiosInstance.get(
-        `/my-related-tweets?userId=${userId}`,
-        {
-          data: {
-            userId
-          }
-        }
-      )
+      const results = await fetchRelatedTweets(userId)
       const tweets = []
-      for (const res of result.data) {
+      for (const res of results) {
         if (res._fields[1] !== 'WROTE_TWEET')
           continue
         const message = res._fields[0].properties
@@ -92,7 +83,7 @@ export default function Profile(props) {
       setUserTweets(tweets)
     })()
   }, [state])
-  if (user == null || isFollowing === null) {
+  if (user == null) {
     return (<div>LOADING</div>)
   }
   let content = 0

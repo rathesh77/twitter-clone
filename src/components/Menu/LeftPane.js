@@ -9,16 +9,16 @@ import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { axiosInstance } from '../../axios';
 import { useContext } from 'react';
 import AuthContext from '../../authContext';
+import { logout } from '../../services/User';
 
 export default function LeftPane() {
   const navigate = useNavigate()
   const { user, setUser } = useContext(AuthContext)
   const { pathname } = useLocation()
-  const logout = async () => {
-    await axiosInstance.delete('/logout')
+  const handleLogout = async () => {
+    await logout()
     setUser(null)
     navigate('/login')
   }
@@ -57,7 +57,7 @@ export default function LeftPane() {
             <ListItem disablePadding>
               <ListItemButton data-link={"/" + user.username} className='menu-item'><PersonIcon />Profile</ListItemButton>
             </ListItem>
-            <ListItem disablePadding onClick={logout}>
+            <ListItem disablePadding onClick={handleLogout}>
               <ListItemButton sx={{color: 'red'}} className='menu-item'><LogoutIcon />Se déconnecter</ListItemButton>
             </ListItem>
           </List>

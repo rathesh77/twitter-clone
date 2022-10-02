@@ -1,7 +1,7 @@
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../../../axios";
+import { fetchSuggestions } from "../../../../services/User";
 import Suggestion from "./Suggestion";
 
 export default function ListSuggestions() {
@@ -15,8 +15,9 @@ export default function ListSuggestions() {
       return
     }
     (async()=>{
-      const suggestions = await axiosInstance.get('/suggestions')
-      setSuggestions(suggestions.data)
+      const suggestions = await fetchSuggestions()
+      if (suggestions)
+        setSuggestions(suggestions)
     })()
 
   }, [suggestions])

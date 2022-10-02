@@ -1,14 +1,14 @@
 import { useState } from "react"
 import {Avatar} from '@mui/material'
 import ClickableUser from "../../../ClickableUser"
-import { axiosInstance } from "../../../../axios"
+import { followUser } from "../../../../services/User"
 export default function Suggestion(props) {
   
   const {setSuggestions, user} = props
   const {username, avatar} = user
   const handleUserFollow = async () => {
     try {
-      await axiosInstance.put(`/follow/${user.uid}`)
+      await followUser(user.uid)
       setSuggestions([])
     } catch (e) {
       console.log(e)

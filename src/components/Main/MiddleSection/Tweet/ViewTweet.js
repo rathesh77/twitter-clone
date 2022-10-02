@@ -2,10 +2,10 @@ import { List, ListItem } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../../../authContext';
-import { axiosInstance } from '../../../../axios';
 import Tweet from './Tweet';
 
 import WysiwygForm from '../../../WysiwygForm';
+import { fetchTweetsUnderTweet } from '../../../../services/Tweet';
 
 export default function ViewTweet() {
 
@@ -32,10 +32,10 @@ export default function ViewTweet() {
     try {
       const urlParams = new URLSearchParams(window.location.search)
       const tweetId = urlParams.get('id')
-      let response = await axiosInstance.get(`/tweet/${tweetId}/messages`)
-      const currentTweet = response.data.tweet._fields[0].properties
-      const author = response.data.tweet._fields[1].properties
-      let { messages } = response.data
+      let response = await fetchTweetsUnderTweet(tweetId)
+      const currentTweet = response.tweet._fields[0].properties
+      const author = response.tweet._fields[1].properties
+      let { messages } = response
       messages = messages.map((m) => { return { author: m._fields[0].properties, message: m._fields[1].properties } })
 
       const obj = { ...currentTweet, author }

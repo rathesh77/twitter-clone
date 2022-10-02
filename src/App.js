@@ -11,12 +11,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import AuthContext from './authContext'
 import { useEffect, useState } from 'react'
-import { axiosInstance } from './axios';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { blueGrey, common, grey } from '@mui/material/colors';
 
+import {fetchMe} from './services/User.js'
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -73,17 +73,13 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const getMe = async () => {
-    try {
-      const response = await axiosInstance.get('/me')
-      if (response.status === 200) {
-        const { data } = response
-        setUser(data)
-      }
-    } catch (e) {
-
-    } finally {
-      setIsLoading(false)
+    const response = await fetchMe()
+    if (response) {
+      console.log(response)
+      setUser(response)
     }
+    setIsLoading(false)
+    
   }
 
   useEffect(() => {

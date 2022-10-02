@@ -5,7 +5,9 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import AuthContext from "../authContext";
 import { axiosInstance } from "../axios";
 import ImageIcon from '@mui/icons-material/Image';
+import { postMedia, postTweet } from "../services/Tweet";
 
+const BASE_URL = axiosInstance.defaults.baseURL
 export default function WysiwygForm(props) {
 
   const [filePreview, setFilePreview] = useState(null)
@@ -46,16 +48,7 @@ export default function WysiwygForm(props) {
   }
 
   const uploadImage = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file)
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data'
-      }
-    }
-
-    const response = await axiosInstance.post('/media', formData, config);
-    return response.data
+    return await postMedia(file)
   }
 
   const handleTweetPost = async function () {
@@ -70,7 +63,7 @@ export default function WysiwygForm(props) {
     let content = formContent == null ? '' : formContent.trim()
 
     if (file !== null) {
-      const imageUrl = axiosInstance.defaults.baseURL + '/' + filename.filename
+      const imageUrl = BASE_URL + '/' + filename.filename
       const mimeType = filename.mimetype
       content += '<br/>'
       if (mimeType.toLowerCase().includes('video')) {
@@ -81,19 +74,12 @@ export default function WysiwygForm(props) {
         content += `<img src="${imageUrl}" alt="test"/>`
       }
     }
-    console.log(content)
     const data = { authorId, content, mentionnedPeople }
     if (tweet != null) {
       data['tweetId'] = tweet.uid
     }
-    const results = await axiosInstance.post(
-      '/tweet',
-      {
-        data
-      }
-    )
-    console.log(results)
-    await action(results.data)
+    const results = await postTweet(data)
+    await action(results)
     setFile(null)
     setFilePreview(null)
     setFormContent('')

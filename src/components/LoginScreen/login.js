@@ -2,9 +2,8 @@ import { useContext, useState } from "react"
 import { TextField } from '@mui/material'
 import { useNavigate } from "react-router-dom";
 
-import {axiosInstance} from '../../axios'
-
 import AuthContext from "../../authContext";
+import { login } from "../../services/User";
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -14,11 +13,9 @@ export default function Login() {
   
   const handleLogin = async () => {
     const data = {email, password}
-    const response = await axiosInstance.post('/login', {
-      ...data
-    })
-    if (response.status === 200) {
-      setUser(response.data)
+    const response = await login(data)
+    if (response) {
+      setUser(response)
       return navigate('/')
     }
   }

@@ -5,12 +5,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import formatDate from "../../../../helper";
 import ClickableUser from "../../../ClickableUser";
-import { axiosInstance } from "../../../../axios";
 import AuthContext from "../../../../authContext";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
+import { postLikeTweet, postDislikeTweet, postRetweet } from "../../../../services/Tweet";
 
 export default function Tweet(props) {
-  const authContext = useContext(AuthContext)
   const [uid] = useState(props.uid);
   const [message] = useState(props.content);
   const [author] = useState(props.author);
@@ -23,24 +22,24 @@ export default function Tweet(props) {
 
   const handleRetweetClick = async (e) => {
     e.stopPropagation()
-    const result = await axiosInstance.post(`/retweet/${uid}`)
-    const {retweetsIncrement} = result.data
+    const results = await postRetweet(uid)
+    const {retweetsIncrement} = results
 
     setRetweets(retweets + retweetsIncrement)
   }
 
   const handleLikeClick = async (e) => {
     e.stopPropagation()
-    const result = await axiosInstance.post(`/likeTweet/${uid}`)
-    const {likesIncrement, dislikesDecrement} = result.data
+    const results = await postLikeTweet(uid)
+    const {likesIncrement, dislikesDecrement} = results
     setLikes(likes + likesIncrement)
     setDislikes(dislikes - dislikesDecrement)
   }
 
   const handleDislikeClick = async (e) => {
     e.stopPropagation()
-    const result = await axiosInstance.post(`/dislikeTweet/${uid}`)
-    const {dislikesIncrement, likesDecrement} = result.data
+    const result = await postDislikeTweet(uid)
+    const {dislikesIncrement, likesDecrement} = result
     setDislikes(dislikes + dislikesIncrement)
     setLikes(likes - likesDecrement)
 
@@ -50,7 +49,6 @@ export default function Tweet(props) {
     //.filter((e) => e.author.uid !== authContext.user.uid)
     .map((e) => e.author.username)
   
-  console.log(headerRelation)
 
   return (
     <div className="tweet-wrapper">

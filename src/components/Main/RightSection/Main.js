@@ -2,8 +2,8 @@ import { TextField, Paper, Avatar } from '@mui/material'
 import ListTrends from './Trend/ListTrends';
 import ListSuggestions from './Suggestion/ListSuggestions';
 import { useState } from 'react';
-import { axiosInstance } from '../../../axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { fetchSearch } from '../../../services/search';
 
 export default function RightSection() {
 
@@ -16,8 +16,8 @@ export default function RightSection() {
       setSearchResults([])
       return
     }
-    const results = await axiosInstance.get(`/search?value=${value}`)
-    const data = results.data
+    const results = await fetchSearch(value)
+    const data = results
     setSearchResults(data)
   }
   const handleSearchItemClick = async (e, item) => {
