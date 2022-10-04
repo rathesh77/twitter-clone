@@ -8,7 +8,7 @@ import './App.css';
 import Main from './layout/index.js'
 import Login from './pages/Login'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from './middlewares/PrivateRoute';
 import AuthContext from './authContext'
 import { useEffect, useState } from 'react'
 
