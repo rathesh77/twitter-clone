@@ -1,5 +1,5 @@
-import LeftPane from '../components/LeftPane'
-import MainPane from './Main/index'
+import LeftPane from './Menu'
+import MainPane from './Container/index'
 export default function Main() {
   return (
     <div className='main-container'>

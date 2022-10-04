@@ -6,7 +6,7 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 import Main from './layout/index.js'
-import Login from './pages/login'
+import Login from './pages/Login'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import AuthContext from './authContext'
@@ -16,7 +16,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { blueGrey, common, grey } from '@mui/material/colors';
 
-import {fetchMe} from './services/User.js'
+import {fetchMe} from './services/userServices.js'
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',

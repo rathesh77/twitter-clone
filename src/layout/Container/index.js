@@ -4,19 +4,13 @@ import Timeline from '../../pages/Timeline';
 import ViewTweet from '../../pages/ViewTweet.js';
 import Profile from '../../pages/Profile';
 import RightSection from './RightSection/index.js'
+import MiddleSection from './MiddleSection';
 
 export default function MainPane() {
   const { search, pathname } = useLocation()
   return (
     <Routes>
-      <Route path="/" element={<Container />}>
-        <Route
-          path="tweet"
-          element={<ViewTweet key={search}/>}
-        />
-        <Route path='' element={<Timeline />}/>
-        <Route path=':name' element={<Profile key={pathname} />}/>
-      </Route>
+      <Route path="/*" element={<Container />}/>
     </Routes>
 
 
@@ -35,7 +29,7 @@ function Container() {
     <div ref={containerElement} className="main-pane-container">
       <div className="main-pane">
         <div className='middle-section'>
-          <Outlet />
+          <MiddleSection />
         </div>
         <RightSection />
       </div>

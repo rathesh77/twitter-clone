@@ -5,7 +5,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import AuthContext from "../../authContext";
 import { axiosInstance } from "../../axios";
 import ImageIcon from '@mui/icons-material/Image';
-import { postMedia, postTweet } from "../../services/Tweet";
+import { postMedia, postTweet } from "../../services/tweetServices";
 
 const BASE_URL = axiosInstance.defaults.baseURL
 export default function WysiwygForm(props) {

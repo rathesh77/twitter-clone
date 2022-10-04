@@ -5,7 +5,7 @@ import AuthContext from '../authContext';
 import Tweet from '../components/Tweet';
 
 import WysiwygForm from '../components/form/WysiwygForm';
-import { fetchTweetsUnderTweet } from '../services/Tweet';
+import { fetchTweetsUnderTweet } from '../services/tweetServices';
 
 export default function ViewTweet() {
 

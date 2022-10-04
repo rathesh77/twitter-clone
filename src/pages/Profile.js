@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from 'react'
 import { Tabs, Tab } from '@mui/material'
 import UserInfos from '../components/UserInfos'
-import ListTweets from '../components/List/ListTweets'
+import ListTweets from '../components/list/ListTweets'
 import { Avatar } from '@mui/material'
 import AuthContext from '../authContext'
 import { useLocation } from 'react-router-dom'
-import { fetchRelatedTweets } from '../services/Tweet'
-import { doesCurrentUserFollowRecipient, fetchFollowers, fetchFollowings, fetchUser, followUser } from '../services/User'
+import { fetchRelatedTweets } from '../services/tweetServices'
+import { doesCurrentUserFollowRecipient, fetchFollowers, fetchFollowings, fetchUser, followUser } from '../services/userServices'
 
 export default function Profile(props) {
 

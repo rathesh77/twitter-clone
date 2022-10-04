@@ -1,6 +1,6 @@
 import {Avatar} from '@mui/material'
 import ClickableUser from "../components/ClickableUser"
-import { followUser } from "../services/User"
+import { followUser } from "../services/userServices"
 export default function Suggestion(props) {
   
   const {setSuggestions, user} = props
