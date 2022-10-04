@@ -2,7 +2,7 @@ import {Navigate} from 'react-router-dom'
 import React from 'react'
 import { useContext } from 'react'
 import AuthContext from './authContext'
-import Login from './components/LoginScreen/login'
+import Login from './pages/login'
 export default function PrivateRoute({Component, shouldBeAuthenticated, ...rest}) {
   const auth = useContext(AuthContext)
   if (shouldBeAuthenticated === false) {

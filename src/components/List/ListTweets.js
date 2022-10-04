@@ -1,6 +1,6 @@
 import { List, ListItem } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-import Tweet from './Tweet';
+import Tweet from '../../components/Tweet';
 export default function ListTweets(props) {
   const {tweets} = props
   const navigate = useNavigate()

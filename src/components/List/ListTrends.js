@@ -1,6 +1,6 @@
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Trend from './Trend'
+import Trend from '../../components/Trend'
 
 export default function ListTrends() {
   return (

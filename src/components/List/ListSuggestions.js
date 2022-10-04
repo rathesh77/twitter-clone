@@ -1,8 +1,8 @@
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { useEffect, useState } from "react";
-import { fetchSuggestions } from "../../../../services/User";
-import Suggestion from "./Suggestion";
+import { fetchSuggestions } from "../../services/User";
+import Suggestion from "../../components/Suggestion";
 
 export default function ListSuggestions() {
   const [suggestions, setSuggestions] = useState(null)

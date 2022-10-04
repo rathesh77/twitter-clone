@@ -5,8 +5,8 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import './App.css';
-import Main from './components/Main'
-import Login from './components/LoginScreen/login'
+import Main from './layout/index.js'
+import Login from './pages/login'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import AuthContext from './authContext'

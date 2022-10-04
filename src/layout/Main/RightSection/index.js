@@ -1,6 +1,6 @@
 import { TextField, Paper, Avatar } from '@mui/material'
-import ListTrends from './Trend/ListTrends';
-import ListSuggestions from './Suggestion/ListSuggestions';
+import ListTrends from '../../../components/List/ListTrends';
+import ListSuggestions from '../../../components/List/ListSuggestions';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchSearch } from '../../../services/search';

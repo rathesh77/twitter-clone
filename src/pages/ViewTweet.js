@@ -1,11 +1,11 @@
 import { List, ListItem } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../../../../authContext';
-import Tweet from './Tweet';
+import AuthContext from '../authContext';
+import Tweet from '../components/Tweet';
 
-import WysiwygForm from '../../../WysiwygForm';
-import { fetchTweetsUnderTweet } from '../../../../services/Tweet';
+import WysiwygForm from '../components/form/WysiwygForm';
+import { fetchTweetsUnderTweet } from '../services/Tweet';
 
 export default function ViewTweet() {
 

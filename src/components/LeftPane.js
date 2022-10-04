@@ -10,8 +10,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import AuthContext from '../../authContext';
-import { logout } from '../../services/User';
+import AuthContext from '../authContext';
+import { logout } from '../services/User';
 
 export default function LeftPane() {
   const navigate = useNavigate()

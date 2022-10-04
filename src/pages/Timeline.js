@@ -1,9 +1,9 @@
-import CreateTweet from '../Tweet/CreateTweet.js'
-import ListTweets from '../Tweet/ListTweets.js'
+import CreateTweet from '../components/form/CreateTweet'
+import ListTweets from '../components/List/ListTweets'
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import AuthContext from '../../../../authContext.js';
-import { fetchDeepTweets } from '../../../../services/Tweet.js';
+import AuthContext from '../authContext.js';
+import { fetchDeepTweets } from '../services/Tweet.js';
 
 export default function Timeline() {
 

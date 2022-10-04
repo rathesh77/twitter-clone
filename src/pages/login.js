@@ -2,8 +2,8 @@ import { useContext, useState } from "react"
 import { TextField } from '@mui/material'
 import { useNavigate } from "react-router-dom";
 
-import AuthContext from "../../authContext";
-import { login } from "../../services/User";
+import AuthContext from "../authContext";
+import { login } from "../services/User";
 
 export default function Login() {
   const [email, setEmail] = useState('')

@@ -3,10 +3,10 @@ import { Avatar } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
-import formatDate from "../../../../helper";
-import ClickableUser from "../../../ClickableUser";
+import formatDate from "../helper";
+import ClickableUser from "../components/ClickableUser";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
-import { postLikeTweet, postDislikeTweet, postRetweet } from "../../../../services/Tweet";
+import { postLikeTweet, postDislikeTweet, postRetweet } from "../services/Tweet";
 
 export default function Tweet(props) {
   const [uid] = useState(props.uid);
