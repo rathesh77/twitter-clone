@@ -40,6 +40,13 @@ export default function DM() {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
+        if (selectedRecipients.length) {
+            const author = authContext.user
+            const recipients = selectedRecipients
+            const obj = {author, recipients}
+            socket.emit('create_chat', obj);
+            setChats([...chats, {...obj}])
+        }
         setSearchResults([])
         setSelectedRecipients([])
         setOpen(false)
@@ -68,7 +75,9 @@ export default function DM() {
         socket.emit('message');
     }
     const handleSearchItemClick = async (e, item) => {
-        console.log(item)
+        if (item.uid === authContext.user.uid) {
+            return
+        }
         for (let i = 0; i < selectedRecipients.length; i++) {
             if (item.uid === selectedRecipients[i].uid) {
                 return
