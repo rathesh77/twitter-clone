@@ -302,13 +302,18 @@ a {
   top:60px;
   right:0;
   z-index: 1;
-  .search-item {
-    display: flex;
-    align-items: flex-start;
-    padding: 10px;
-  }
+
   border-radius: 0 !important;
 
+}
+.search-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+.dm-container {
+  display: flex;
 }
 
 .h1-header {
@@ -397,4 +402,44 @@ button {
   color: white;
   padding:20px;
   z-index: 2;
+}
+
+.DMs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-DM {
+  display: flex;
+  flex-direction: column;
+}
+
+.DM-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.DM-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-recipients {
+  display: flex;
+}
+
+.recipient-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid silver;
+  border-radius: 40px;
+  padding: 0 5px 0 0;
+}
+.dm-modal-header {
+  display: flex;
+  justify-content: space-between
+}
+
+.no-padding {
+  padding: 0 !important;
 }
