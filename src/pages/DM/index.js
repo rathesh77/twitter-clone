@@ -44,8 +44,9 @@ export default function DM() {
             const author = authContext.user
             const recipients = selectedRecipients
             const obj = {author, recipients}
-            socket.emit('create_chat', obj);
+            //socket.emit('create_chat', obj);
             setChats([...chats, {...obj}])
+            setSelectedChat(obj)
         }
         setSearchResults([])
         setSelectedRecipients([])
@@ -88,11 +89,14 @@ export default function DM() {
     }
     return (
         <div className='dm-container'>
-            <div className='middle-section'>
-                <h1>Messages</h1>
+            <div class='middle-section shrink-1'>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <h1>Messages</h1>
+                    <Button onClick={handleOpen}>new chat</Button>
+
+                </div>
                 <TextField id="outlined-basic" label="Cherchez dans les messages privés" variant="outlined" sx={{ marginBottom: '10px', width: '100%' }} />
 
-                <Button onClick={handleOpen}>Open modal</Button>
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -122,7 +126,7 @@ export default function DM() {
                                 )
                             })}
                         </div>
-                        <div className='searsch-results'>
+                        <div> {/* search results*/} 
                             {searchResults.map((s) => {
                                 const properties = s._fields[0].properties
                                 return (
@@ -146,8 +150,8 @@ export default function DM() {
 
                 </div>
             </div>
-            <div className='right-section'>
-                <Chat selectedChat={selectedChat} />
+            <div class='right-sectiosn grow-1'>
+                {selectedChat != null ? <Chat selectedChat={selectedChat} /> : null}
             </div>
         </div>
     )

@@ -1,6 +1,6 @@
 import { Paper, Avatar } from '@mui/material'
-import ListTrends from '../../../components/list/ListTrends';
-import ListSuggestions from '../../../components/list/ListSuggestions';
+import ListTrends from '../../../components/List/ListTrends';
+import ListSuggestions from '../../../components/List/ListSuggestions';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SearchEngine from '../../../components/SearchEngine';

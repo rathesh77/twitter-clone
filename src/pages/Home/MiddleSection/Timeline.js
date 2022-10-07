@@ -1,5 +1,5 @@
 import CreateTweet from '../../../components/form/CreateTweet'
-import ListTweets from '../../../components/list/ListTweets'
+import ListTweets from '../../../components/List/ListTweets'
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import AuthContext from '../../../authContext.js';

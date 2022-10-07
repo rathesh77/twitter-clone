@@ -34,6 +34,14 @@ $border-dark: rgba(0, 0, 0, 0.1);;
   width: 600px;
 }
 
+.shrink-1 {
+  flex-shrink: 1;
+}
+
+.grow-1 {
+  flex-grow: 1;
+}
+
 .right-section {
   width: 350px;
   margin-left: 30px;
@@ -412,17 +420,43 @@ button {
 .selected-DM {
   display: flex;
   flex-direction: column;
+  border: 1px solid silver;
+  margin-left: 30px;
+  
+  .DM-header {
+    display: flex;
+    justify-content: space-between;
+
+  }
+  
+  .DM-header-container {
+
+    padding: 10px;
+    border-bottom: 1px solid black;
+
+  }
+  .DM-messages {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    overflow-y: auto;
+
+    .message-wrapper {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+
+      .message-header {
+        display: flex;
+      }
+      .message-content {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
 }
 
-.DM-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.DM-messages {
-  display: flex;
-  flex-direction: column;
-}
 
 .selected-recipients {
   display: flex;
