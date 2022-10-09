@@ -51,6 +51,23 @@ export default function DM() {
             - à l'envoi du premier message, on met à jour l'id temporaire
         */
         if (selectedRecipients.length > 0) {
+            for (const chatId in chats) {
+                const chat = chats[chatId]
+                let occurences = 0
+                if (selectedRecipients.length != chat.recipients.length) {
+                    continue
+                }
+                for (const chatRecipient of chat.recipients) {
+                    for (const recipient of selectedRecipients) {
+                        if (recipient.uid == chatRecipient.uid) {
+                            occurences++
+                            break
+                        }
+                    }
+                }
+                if (occurences == chat.recipients.length)
+                    return
+            }
             const tempChatId = 'temp-' + Math.random()
             const chat = {}
             chat.chatId = tempChatId
