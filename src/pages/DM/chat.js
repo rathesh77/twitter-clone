@@ -2,6 +2,7 @@ import { Button, TextField } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../../authContext';
 import Message from '../../components/Message';
+import SendIcon from '@mui/icons-material/Send';
 export default function Chat(props) {
     /*
         props: {
@@ -55,9 +56,11 @@ export default function Chat(props) {
         <div className='selected-DM'>
             <div className='DM-header-container'>
                 <div className='DM-header'>
+                    <h1>
                     {recipients.map((r)=>{
                         return (<span key={r.uid}>{r.username}</span>)
                     })}
+                    </h1>
                 </div>
             </div>
 
@@ -70,7 +73,7 @@ export default function Chat(props) {
             </div>
             <div className='write-message'>
                 <TextField onChange={handleSearchInput} value={message} label="Ecrire un message..." variant="outlined" sx={{ width: '100%' }} />
-                <Button onClick={handleMessagePost}>envoyer le message</Button>
+                <Button onClick={handleMessagePost}><SendIcon/></Button>
             </div>
         </div>
     )

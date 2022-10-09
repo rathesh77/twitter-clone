@@ -418,29 +418,33 @@ button {
   .DM-item {
     display: flex;
     padding: 15px 5px 15px 5px;
-    border: 1px solid silver;
-     & > span:not(:first-child)::before{
-      content: ', '
+     & > span:not(:first-child){
+      padding-left: 10px;
+    }
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04) !important;
+      cursor: pointer;
     }
   }
 }
 
+
 .selected-DM {
   display: flex;
   flex-direction: column;
-  border: 1px solid silver;
-  margin-left: 30px;
+  border-left: 1px solid silver;
+  
   
   .DM-header {
     display: flex;
-    & > span:not(:first-child)::before{
+    & > h1> span:not(:first-child)::before{
       content: ', '
     }
   }
   
   .DM-header-container {
 
-    padding: 10px;
+    padding-left: 10px;
     border-bottom: 1px solid black;
 
   }
@@ -449,11 +453,9 @@ button {
     flex-direction: column;
     height: 80vh;
     overflow-y: auto;
-
+    padding: 10px;
     .message-wrapper {
       display: flex;
-      flex-direction: column;
-      padding: 10px;
 
       .message-header {
         display: flex;
@@ -461,6 +463,9 @@ button {
       .message-content {
         display: flex;
         flex-direction: column;
+        border: 1px solid solid;
+        border-radius: 5px;
+        padding: 5px;
       }
     }
   }
@@ -480,9 +485,26 @@ button {
 }
 .dm-modal-header {
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
+  margin: 15px 0 15px 0;
+  .dm-modal-title {
+    font-size: 21px;
+    font-weight: bold;
+  }
 }
 
 .no-padding {
   padding: 0 !important;
+}
+
+.current-dm {
+  width: 800px;
+}
+
+.dm-list-container {
+  width: 600px;
+}
+
+.write-message {
+  display: flex;
 }

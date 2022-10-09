@@ -6,6 +6,8 @@ import SearchEngine from '../../components/SearchEngine';
 import { Avatar, Button, Modal, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import { fetchUser } from '../../services/userServices';
+import { blue } from '@mui/material/colors';
+import CloseIcon from '@mui/icons-material/Close';
 
 const manager = new Manager("http://localhost:8080", {
     autoConnect: false,
@@ -239,7 +241,7 @@ export default function DM() {
     console.log('refresh')
     return (
         <div className='dm-container'>
-            <div className='middle-section shrink-1'>
+            <div className='dm-list-container'>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <h1>Messages</h1>
                     <Button onClick={handleOpen}>new chat</Button>
@@ -255,7 +257,8 @@ export default function DM() {
                 >
                     <Box sx={style}>
                         <div className='dm-modal-header'>
-                            <h2>Nouveau messages</h2>
+                            <Button><CloseIcon onClick={()=> {setOpen(false); setSelectedRecipients([]); setSearchResults([])}}/></Button>
+                            <span className='dm-modal-title'>Nouveau messages</span>
                             <Button onClick={handleClose}>Suivant</Button>
                         </div>
                         <SearchEngine setSearchResults={setSearchResults} />
@@ -299,10 +302,10 @@ export default function DM() {
                     {Object.keys(chats).map((chatId) => {
                         const chat = chats[chatId]
                         return (
-                            <div key={chatId} className='DM-item' onClick={() => { setSelectedChatId(chatId) }}>
+                            <div key={chatId} className='DM-item' onClick={() => { setSelectedChatId(chatId) }} style={{backgroundColor: chatId === selectedChatId ? blue[50]: 'white'}}>
                                 {chat.recipients.map((cr) => {
                                     return (
-                                        <span key={cr.uid}>{cr.username}</span>
+                                        <span key={cr.uid}><Avatar src={cr.avatar} alt={cr.username}/>{cr.username}</span>
                                     )
                                 })}
                             </div>
@@ -310,7 +313,7 @@ export default function DM() {
                     })}
                 </div>
             </div>
-            <div className='grow-1'>
+            <div className='current-dm'>
                 {selectedChatId == null ? null : <Chat key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />}
             </div>
         </div>
