@@ -1,5 +1,5 @@
 import { Button, TextField } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../../authContext';
 import Message from '../../components/Message';
 export default function Chat(props) {
@@ -13,6 +13,8 @@ export default function Chat(props) {
             postMessage: chat
         }
     */
+    const messagesListContainer = useRef(null);
+
     const authContext = useContext(AuthContext)
     const { selectedChat, createChat, postMessage } = props
     const {recipients} = selectedChat
@@ -21,18 +23,22 @@ export default function Chat(props) {
     const handleSearchInput = (e) => {setMessage(e.target.value)}
 
     const handleMessagePost = () => {
+        let trimmedMessage = message.trim()
+        if (trimmedMessage.length == 0)
+            return
         const newMessage = {
             author: authContext.user,
-            content: message,
+            content: trimmedMessage,
             date: Date.now()
         }
         if (messages.length == 0) {
             createChat(newMessage)
         } else {
             postMessage({...newMessage, chatId: selectedChat.chatId})
-
         }
+        setMessage('')
     }
+    
     const findAuthorOfMessage = (message) => {
         const recipient = recipients.find((r) => r.uid == message.idUser)
         if (recipient == null) {
@@ -40,7 +46,10 @@ export default function Chat(props) {
         }
         return recipient
     }
-    console.log(selectedChat)
+
+    useEffect(()=>{
+        messagesListContainer.current.scrollTop = messagesListContainer.current.scrollHeight
+    })
 
     return (
         <div className='selected-DM'>
@@ -52,7 +61,7 @@ export default function Chat(props) {
                 </div>
             </div>
 
-            <div className='DM-messages'>
+            <div className='DM-messages' ref={messagesListContainer}>
                 {messages.map((m) => {
                     return (
                         <Message key={m.messageId} content={m.content} author={findAuthorOfMessage(m)} date={m.date}/>
