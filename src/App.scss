@@ -454,15 +454,20 @@ button {
     height: 80vh;
     overflow-y: auto;
     padding: 10px;
+
+    div:first-child {
+      display: flex;
+    }
+
     .message-wrapper {
       display: flex;
-
+      margin-top: 20px;
       .message-header {
         display: flex;
+        padding-right: 10px;
       }
       .message-content {
-        display: flex;
-        flex-direction: column;
+
         border: 1px solid solid;
         border-radius: 5px;
         padding: 5px;
