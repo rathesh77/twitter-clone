@@ -1,12 +1,10 @@
 
-function formatDate(date) {
+export function formatDate(date) {
 
   const { low, high } = date
-  let lowBits = null
-  let highBits = null
-
-  lowBits = (low).toString(2)
-  highBits = (high).toString(2)
+  
+  let lowBits = (low).toString(2)
+  let highBits = (high).toString(2)
   if (low < 0)
     lowBits = (parseInt(lowBits.split('').map((b) => b === '1' ? '0' : '1').join(''), 2) + 1).toString(2)
   if (high < 0)
@@ -14,7 +12,12 @@ function formatDate(date) {
 
   let fullBits = highBits.concat(lowBits) + ""
   fullBits = '0'.repeat(64 - fullBits.length).concat(fullBits)
-  const dateTime = new Date(parseInt(fullBits, 2))
+
+  return formatMillisecondsToDate(parseInt(fullBits, 2))
+}
+
+export function formatMillisecondsToDate(timestamp) {
+  const dateTime = new Date(timestamp)
   const day = dateTime.getDate()
   const month = dateTime.getMonth() + 1
   const year = dateTime.getFullYear()
@@ -24,8 +27,7 @@ function formatDate(date) {
 
   const left = [day, month, year].map((e) => e < 10 ? '0' + e : e).join('/')
   const right = [hours, minutes, seconds].map((e) => e < 10 ? '0' + e : e).join(':')
+  console.log(left + right)
 
   return left + ' ' + right
 }
-
-export default formatDate;

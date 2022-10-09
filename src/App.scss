@@ -415,6 +415,14 @@ button {
 .DMs-list {
   display: flex;
   flex-direction: column;
+  .DM-item {
+    display: flex;
+    padding: 15px 5px 15px 5px;
+    border: 1px solid silver;
+     & > span:not(:first-child)::before{
+      content: ', '
+    }
+  }
 }
 
 .selected-DM {
@@ -425,8 +433,9 @@ button {
   
   .DM-header {
     display: flex;
-    justify-content: space-between;
-
+    & > span:not(:first-child)::before{
+      content: ', '
+    }
   }
   
   .DM-header-container {

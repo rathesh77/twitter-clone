@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import AuthContext from "../authContext";
+import {formatMillisecondsToDate} from '../helper'
 
 export default function Message(props) {
   const authContext = useContext(AuthContext)
   const [message] = useState(props.content);
   const [author] = useState(props.author);
-  const [timestamp] = useState(props.date);
-
+  const [date] = useState(formatMillisecondsToDate(props.date));
   const align = authContext.user.uid === author.uid ? 'flex-end' : 'flex-start'
   return (
     <div className="message-wrapper">
@@ -21,7 +21,7 @@ export default function Message(props) {
             className="message-text"
             dangerouslySetInnerHTML={{ __html: message }}
           ></div>
-          <div className="message-timestamp">{timestamp}</div>
+          <div className="message-timestamp">{date}</div>
 
         </div>
       </div>

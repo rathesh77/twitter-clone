@@ -1,0 +1,24 @@
+- [OK] recuperer la liste des chats (chat_lists) et les afficher à gauche
+- [OK] faire en sorte qu'on puisse selectionner un chat
+- [OK] creer un chat
+  - [OK] creer un chat avec un id temporaire quand il est vide
+  - [OK] à l'envoi du premier message, on met à jour l'id temporaire
+  - si + d'1 message alors ajouter aux tableau des messages du chat selectionné, le msg
+
+
+un chat contient une liste de messages
+
+
+models :
+
+Message (
+  author : User,
+  content: Text
+  date: timestamp
+)
+
+Chat (
+  selectedChat : (recipients: Array, messages: Array, chatId:  integer),
+  createChat: function,
+  postMessage: function
+)
