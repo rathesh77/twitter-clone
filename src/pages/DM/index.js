@@ -83,6 +83,7 @@ export default function DM() {
             delete _chats[selectedChatId]
             setChats(_chats)
             setSelectedChatId(chatId)
+            socket.join(chatId)
         })
 
         socket.emit('create_chat', obj)
