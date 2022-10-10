@@ -20,7 +20,11 @@ export default function Suggestion(props) {
       </div>
       <div className="suggestion-user-wrapper"  style={{display: 'flex', justifyContent: 'space-between'}}>
         <div className="suggestion-user">
-          <ClickableUser className="suggestion-user-name" user={user}/>
+          <ClickableUser className="suggestion-user-name" user={user}>
+            <div>
+              {user.username}
+            </div>
+          </ClickableUser>
           <div className="suggestion-user-tag">@{username.split(' ').join('_')}</div>
         </div>
         <div className="btn btn-follow" onClick={handleUserFollow}>Suivre</div>

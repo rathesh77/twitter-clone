@@ -3,6 +3,7 @@ import { blue, grey } from "@mui/material/colors";
 import { useContext, useState } from "react";
 import AuthContext from "../authContext";
 import { formatMillisecondsToDate } from '../helper'
+import ClickableUser from "./ClickableUser";
 
 export default function Message(props) {
   const authContext = useContext(AuthContext)
@@ -29,7 +30,7 @@ export default function Message(props) {
       <div>
         {author.uid == authContext.user.uid ? <div></div> : (
           <div className="message-header">
-            <div className="message-author-tag"><Avatar src={author.avatar} /></div>
+            <div className="message-author-tag"><ClickableUser className="tweet-author-name" user={author}><Avatar src={author.avatar} /></ClickableUser></div>
           </div>
         )}
         <div>

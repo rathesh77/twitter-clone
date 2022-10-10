@@ -16,7 +16,7 @@ export default function ClickableUser(props) {
 
   return (
     <div className={"clickable " + className} onClick={handleUsernameClick}>
-      {user.username}
+      {props.children}
     </div>
   );
 }

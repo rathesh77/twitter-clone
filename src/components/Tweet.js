@@ -66,7 +66,11 @@ export default function Tweet(props) {
 
           <div className="tweet-content">
             <div className="tweet-header">
-              <ClickableUser className="tweet-author-name" user={author} />
+              <ClickableUser className="tweet-author-name" user={author}>
+                <div>
+                  {author.username}
+                </div>
+              </ClickableUser>
               <div className="tweet-author-tag">@{author.username}</div>
               <div className="tweet-timestamp">{timestamp}</div>
             </div>

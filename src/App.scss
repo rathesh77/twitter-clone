@@ -432,9 +432,6 @@ button {
 .selected-DM {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid silver;
-  
-  
   .DM-header {
     display: flex;
     & > h1> span:not(:first-child)::before{
@@ -508,7 +505,10 @@ button {
 
 .dm-list-container {
   width: 600px;
-  margin: 10px;
+  padding: 10px;
+  border-left: 1px solid silver;
+  border-right: 1px solid silver;
+  border-collapse: collapse;
 }
 
 .write-message {

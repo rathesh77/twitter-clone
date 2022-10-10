@@ -8,8 +8,10 @@ import { Box } from '@mui/system';
 import { fetchUser } from '../../services/userServices';
 import { blue } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
+import { axiosInstance } from '../../axios';
+import ClickableUser from '../../components/ClickableUser';
 
-const manager = new Manager("http://localhost:8080", {
+const manager = new Manager(axiosInstance.defaults.baseURL, {
     autoConnect: false,
     secure: false,
     withCredentials: true
@@ -305,7 +307,11 @@ export default function DM() {
                             <div key={chatId} className='DM-item' onClick={() => { setSelectedChatId(chatId) }} style={{backgroundColor: chatId === selectedChatId ? blue[50]: 'white'}}>
                                 {chat.recipients.map((cr) => {
                                     return (
-                                        <span key={cr.uid}><Avatar src={cr.avatar} alt={cr.username}/>{cr.username}</span>
+                                        <span key={cr.uid}>
+                                            <ClickableUser user={cr}>
+                                                <Avatar src={cr.avatar} alt={cr.username}/>{cr.username}
+                                            </ClickableUser>
+                                        </span>
                                     )
                                 })}
                             </div>
@@ -314,7 +320,13 @@ export default function DM() {
                 </div>
             </div>
             <div className='current-dm'>
-                {selectedChatId == null ? null : <Chat key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />}
+                {selectedChatId == null ? 
+                    <div style={{padding: "50px", height: "100vh", display: 'flex', alignItems: 'center'}}> 
+                    <div>
+                        <h1>Sélectionnez un message.</h1>
+                        Faites un choix dans vos conversations existantes, commencez-en une nouvelle ou ne changez rien.
+                    </div>
+                    </div> : <Chat key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />}
             </div>
         </div>
     )
