@@ -10,6 +10,7 @@ import { blue } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
 import { axiosInstance } from '../../axios';
 import ClickableUser from '../../components/ClickableUser';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
 const manager = new Manager(axiosInstance.defaults.baseURL, {
     autoConnect: false,
@@ -246,7 +247,7 @@ export default function DM() {
             <div className='dm-list-container'>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <h1>Messages</h1>
-                    <Button onClick={handleOpen}>new chat</Button>
+                    <Button onClick={handleOpen}><MailOutlineIcon/></Button>
 
                 </div>
                 <TextField id="outlined-basic" label="Cherchez dans les messages privés" variant="outlined" sx={{ marginBottom: '10px', width: '100%' }} />
