@@ -27,7 +27,6 @@ export function formatMillisecondsToDate(timestamp) {
 
   const left = [day, month, year].map((e) => e < 10 ? '0' + e : e).join('/')
   const right = [hours, minutes, seconds].map((e) => e < 10 ? '0' + e : e).join(':')
-  console.log(left + right)
 
   return left + ' ' + right
 }
