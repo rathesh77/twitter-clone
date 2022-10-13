@@ -40,6 +40,7 @@ export default function DM() {
     const [open, setOpen] = useState(false)
     const [chats, setChats] = useState({})
     const [selectedChatId, setSelectedChatId] = useState(null)
+    const [newChat, setNewChat] = useState(null)
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         /*
@@ -148,21 +149,21 @@ export default function DM() {
             recipients: _chats[selectedChatId].recipients,
             content: message.content
         */
-            socket.on('user_invited_you', (chat) => {
-                const { author, recipients, content, chatId, messageId } = chat
-                const _chats = { ...chats }
+       if (newChat == null)
+            return
+        const { author, recipients, content, chatId, messageId } = newChat
+        const _chats = { ...chats }
 
-                const message = {
-                    content,
-                    date: Date.now(),
-                    idUser: author.uid,
-                    messageId
-                }
-                _chats[chatId] = { recipients, messages: [message], chatId }
-                socket.emit('join', chatId)
-                setChats(_chats)
-            });
-    })
+        const message = {
+            content,
+            date: Date.now(),
+            idUser: author.uid,
+            messageId
+        }
+        _chats[chatId] = { recipients, messages: [message], chatId }
+        socket.emit('join', newChat.chatId)
+        setChats(_chats)
+    },[newChat])
     useEffect(() => {
         // recuperer la liste des DM de l'utilisateur courant
         socket.connect()
@@ -177,6 +178,9 @@ export default function DM() {
             console.log('message received')
         });
 
+        socket.on('user_invited_you', (chat) => {
+            setNewChat(chat)
+        });
 
         socket.on('user_posted_message', (message) => {
             const { chatId } = message
