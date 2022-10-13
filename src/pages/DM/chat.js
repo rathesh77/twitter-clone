@@ -17,11 +17,11 @@ export default function Chat(props) {
     const messagesListContainer = useRef(null);
 
     const authContext = useContext(AuthContext)
-    const { selectedChat, createChat, postMessage } = props
+    const { selectedChat, createChat, postMessage, emitWritingEvent } = props
     const {recipients} = selectedChat
     const [messages, setMessages] = useState(selectedChat.messages)
     const [message, setMessage] = useState('')
-    const handleSearchInput = (e) => {setMessage(e.target.value)}
+    const handleSearchInput = (e) => {setMessage(e.target.value); emitWritingEvent()}
 
     const handleMessagePost = () => {
         let trimmedMessage = message.trim()

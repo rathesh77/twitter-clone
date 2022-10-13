@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { axiosInstance } from '../../axios';
 import ClickableUser from '../../components/ClickableUser';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import UsersWriting from '../../components/UsersWriting';
 
 const manager = new Manager(axiosInstance.defaults.baseURL, {
     autoConnect: false,
@@ -60,18 +61,18 @@ export default function DM() {
             for (const chatId in chats) {
                 const chat = chats[chatId]
                 let occurences = 0
-                if (selectedRecipients.length != chat.recipients.length) {
+                if (selectedRecipients.length !== chat.recipients.length) {
                     continue
                 }
                 for (const chatRecipient of chat.recipients) {
                     for (const recipient of selectedRecipients) {
-                        if (recipient.uid == chatRecipient.uid) {
+                        if (recipient.uid === chatRecipient.uid) {
                             occurences++
                             break
                         }
                     }
                 }
-                if (occurences == chat.recipients.length)
+                if (occurences === chat.recipients.length)
                     return
             }
             const tempChatId = 'temp-' + Math.random()
@@ -127,6 +128,10 @@ export default function DM() {
         }
         socket.emit('post_message', obj)
 
+    }
+
+    const emitWritingEvent = () => {
+        socket.emit('writing', {user: authContext.user, chatId: selectedChatId})
     }
 
     const cleanListeners = (socket) => {
@@ -220,7 +225,7 @@ export default function DM() {
                 if (messageId != null) {
                     chats[chatId].messages.push({ messageId, content, idUser, date })
                 }
-                if (idUser != authContext.user.uid && chats[chatId].recipients.find((r) => r.uid == idUser) == null) {
+                if (idUser !== authContext.user.uid && chats[chatId].recipients.find((r) => r.uid === idUser) == null) {
                     chats[chatId].recipients.push(await fetchUser(idUser))
                 }
             }
@@ -331,9 +336,16 @@ export default function DM() {
                         <h1>Sélectionnez un message.</h1>
                         Faites un choix dans vos conversations existantes, commencez-en une nouvelle ou ne changez rien.
                     </div>
-                    </div> : <Chat key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />}
+                    </div> : 
+                    <div>
+                        <Chat emitWritingEvent={emitWritingEvent} key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />
+                        <div>
+                            <UsersWriting selectedChatId={selectedChatId} socket={socket}/>
+                        </div>
+                    </div>
+
+                    }
             </div>
         </div>
     )
 }
-
