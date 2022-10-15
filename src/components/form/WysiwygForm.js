@@ -4,7 +4,25 @@ import { useState } from "react";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import ImageIcon from '@mui/icons-material/Image';
 
-const BASE_URL = axiosInstance.defaults.baseURL
+const style = {
+  'editor': {
+    borderWidth: '0.5px',
+    borderStyle: 'solid',
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    borderCollapse: 'collapse',
+    padding: '10px 16px 10px 16px',
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    minHeight: '120px'
+  },
+  'textField': {
+    attributes: {
+      variant: 'standard'
+    }
+  }
+}
 export default function WysiwygForm(props) {
 
   const [filePreview, setFilePreview] = useState(null)
@@ -13,8 +31,8 @@ export default function WysiwygForm(props) {
 
   const [formContent, setFormContent] = useState('')
   const action = props.action == null ? () => { } : props.action
-  const { action, tweet } = props
-  const authContext = useContext(AuthContext)
+  const { placeholder } = props
+
   
   const onEditorStateChange = function (e) {
     const state = e.target.value
@@ -25,12 +43,12 @@ export default function WysiwygForm(props) {
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
     e.target.value = ''
-    const sizeMB = file.size / (10**6)
+    const sizeMB = file.size / (10 ** 6)
     if (sizeMB > 512.0) {
       setFileErr(true)
-      setTimeout(()=>{
+      setTimeout(() => {
         setFileErr(false)
-      },3000)
+      }, 3000)
       return
     }
     setFile(file)
@@ -54,26 +72,26 @@ export default function WysiwygForm(props) {
 
 
   }
-
+  const styleSelector = props.style == null ? style : props.style
   return (
-    <div className="tweet-editor">
-      { fileErr === true ? 
+    <div style={styleSelector['editor']}>
+      {fileErr === true ?
         <div className="file-error">
           File must not exceed 512MB
         </div>
-      : null}
+        : null}
 
       <div className="editor-wrapper">
-        
+
         <TextField
           id="multiline-flexible"
-          label="Ecrivez votre tweet"
+          label={placeholder}
           className="editor"
           multiline
           maxRows={10}
           value={formContent}
           onChange={onEditorStateChange}
-          variant="standard"
+          variant={styleSelector['textField']['attributes']['variant']}
         />
         <div className="file-preview" dangerouslySetInnerHTML={{ __html: filePreview }} >
 

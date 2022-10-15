@@ -3,6 +3,23 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../../authContext';
 import Message from '../../components/Message';
 import SendIcon from '@mui/icons-material/Send';
+import WysiwygForm from '../../components/form/WysiwygForm';
+import { postMedia } from '../../services/tweetServices';
+import { axiosInstance } from '../../axios';
+
+const style = {
+    'editor': {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    'textField': {
+        attributes: {
+            variant: 'outlined'
+        }
+    }
+}
+const BASE_URL = axiosInstance.defaults.baseURL
+
 export default function Chat(props) {
     /*
         props: {
@@ -18,28 +35,45 @@ export default function Chat(props) {
 
     const authContext = useContext(AuthContext)
     const { selectedChat, createChat, postMessage, emitWritingEvent } = props
-    const {recipients} = selectedChat
-    const [messages, setMessages] = useState(selectedChat.messages)
-    const [message, setMessage] = useState('')
-    const handleSearchInput = (e) => {setMessage(e.target.value); emitWritingEvent()}
+    const { recipients } = selectedChat
+    const [messages] = useState(selectedChat.messages)
 
-    const handleMessagePost = () => {
-        let trimmedMessage = message.trim()
-        if (trimmedMessage.length == 0)
+    const uploadImage = async (file) => {
+        return await postMedia(file)
+    }
+
+    const handleMessagePost = async (formContent, file) => {
+        console.log(formContent, file)
+        if (file == null && (formContent == null || formContent.trim().length === 0))
             return
+
+        const filename = await uploadImage(file)
+        let content = formContent == null ? '' : "<div>" + formContent.trim() + "</div>"
+
+        if (file !== null) {
+            const imageUrl = BASE_URL + '/' + filename.filename
+            const mimeType = filename.mimetype
+            if (formContent.trim().length > 0) {
+                content += '<br/>'
+            }
+            if (mimeType.toLowerCase().includes('video')) {
+                content += `<video onclick="event.stopPropagation()" controls muted> <source src="${imageUrl}" type="${mimeType}"/> </video>`
+            } else {
+                content += `<img src="${imageUrl}" alt="test"/>`
+            }
+        }
         const newMessage = {
             author: authContext.user,
-            content: trimmedMessage,
+            content,
             date: Date.now()
         }
         if (messages.length == 0) {
             createChat(newMessage)
         } else {
-            postMessage({...newMessage, chatId: selectedChat.chatId})
+            postMessage({ ...newMessage, chatId: selectedChat.chatId })
         }
-        setMessage('')
     }
-    
+
     const findAuthorOfMessage = (message) => {
         const recipient = recipients.find((r) => r.uid == message.idUser)
         if (recipient == null) {
@@ -48,7 +82,7 @@ export default function Chat(props) {
         return recipient
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         messagesListContainer.current.scrollTop = messagesListContainer.current.scrollHeight
     })
 
@@ -57,9 +91,9 @@ export default function Chat(props) {
             <div className='DM-header-container'>
                 <div className='DM-header'>
                     <h1>
-                    {recipients.map((r)=>{
-                        return (<span key={r.uid}>{r.username}</span>)
-                    })}
+                        {recipients.map((r) => {
+                            return (<span key={r.uid}>{r.username}</span>)
+                        })}
                     </h1>
                 </div>
             </div>
@@ -67,13 +101,12 @@ export default function Chat(props) {
             <div className='DM-messages' ref={messagesListContainer}>
                 {messages.map((m) => {
                     return (
-                        <Message key={m.messageId} content={m.content} author={findAuthorOfMessage(m)} date={m.date}/>
+                        <Message key={m.messageId} content={m.content} author={findAuthorOfMessage(m)} date={m.date} />
                     )
                 })}
             </div>
             <div className='write-message'>
-                <TextField onChange={handleSearchInput} value={message} label="Ecrire un message..." variant="outlined" sx={{ width: '100%' }} />
-                <Button onClick={handleMessagePost}><SendIcon/></Button>
+                <WysiwygForm placeholder="Ecrire un message" action={handleMessagePost} button={<Button><SendIcon /></Button>} style={style} />
             </div>
         </div>
     )

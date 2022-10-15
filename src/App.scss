@@ -1,4 +1,4 @@
-$border-dark: rgba(0, 0, 0, 0.1);;
+$border-dark: rgba(0, 0, 0, 0.1);
 
 .main-container {
   display: flex;
@@ -201,19 +201,6 @@ a {
   margin-right: 10px;
 }
 
-.tweet-editor {
-  border-width: 0.5px;
-  border-style: solid;
-  border-color: $border-dark;
-  border-collapse: collapse;
-  padding: 10px 16px 10px 16px;
-  display: flex;
-  justify-content: space-evenly;
-  flex-direction: column;
-  align-items: flex-end;
-  min-height: 120px;
-}
-
 .user-infos {
   display: flex;
   flex-direction: column;
@@ -365,10 +352,6 @@ ul a {
   display: flex;
   flex-direction: column;
   width: 100%;
-  .file-preview {
-    margin-top: 30px;
-
-  }
 }
 
 .editor {
@@ -448,7 +431,7 @@ button {
   .DM-messages {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    height: 75vh;
     overflow-y: auto;
     padding: 10px;
 
@@ -468,6 +451,9 @@ button {
         border: 1px solid solid;
         border-radius: 5px;
         padding: 7px;
+        display: flex;
+        flex-direction: column;
+        max-width: 400px;
       }
     }
   }
@@ -512,6 +498,5 @@ button {
 }
 
 .write-message {
-  display: flex;
   margin: 10px;
 }
