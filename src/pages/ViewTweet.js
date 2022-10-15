@@ -3,9 +3,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../authContext';
 import Tweet from '../components/Tweet';
-
 import WysiwygForm from '../components/form/WysiwygForm';
-import { fetchTweetsUnderTweet } from '../services/tweetServices';
+import { fetchTweetsUnderTweet, postMedia, postTweet } from '../services/tweetServices';
+import { axiosInstance } from '../axios';
+import TweetButton from '../components/buttons/TweetButton';
+
+const BASE_URL = axiosInstance.defaults.baseURL
 
 export default function ViewTweet() {
 
@@ -27,6 +30,39 @@ export default function ViewTweet() {
   const action = (tweet)=> {
     updateTweetsList(tweet)
   } 
+
+  const uploadImage = async (file) => {
+    return await postMedia(file)
+  }
+
+  const handleTweetPost = async function (formContent, file) {
+    let authorId, mentionnedPeople
+    authorId = authContext.user.uid
+    mentionnedPeople = []
+
+    if (file == null && (formContent == null || formContent.trim().length === 0))
+      return
+
+    const filename = await uploadImage(file)
+    let content = formContent == null ? '' : formContent.trim()
+
+    if (file !== null) {
+      const imageUrl = BASE_URL + '/' + filename.filename
+      const mimeType = filename.mimetype
+      content += '<br/>'
+      if (mimeType.toLowerCase().includes('video')) {
+        content += `<video onclick="event.stopPropagation()" controls muted> <source src="${imageUrl}" type="${mimeType}"/> </video>`
+      } else {
+        content += `<img src="${imageUrl}" alt="test"/>`
+      }
+    }
+    const data = { authorId, content, mentionnedPeople }
+    if (tweet != null) {
+      data['tweetId'] = tweet.uid
+    }
+    const results = await postTweet(data)
+    await action(results)
+  }
 
   const getCurrentTweetAndMessages = async () => {
     try {
@@ -59,7 +95,7 @@ export default function ViewTweet() {
   return (
     <div className="tweet">
       <Tweet key={tweet.replies} {...tweet}/>
-        <WysiwygForm action={action} tweet={tweet}/>
+        <WysiwygForm action={handleTweetPost} placeholder="Ecrivez votre tweet" button={<TweetButton />}/>
       <List>
         {messages.map((m) => {
           const { author, message } = m
