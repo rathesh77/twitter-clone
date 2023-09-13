@@ -27,12 +27,13 @@ export default function Timeline() {
     const results = await fetchDeepTweets(userId)
     const tweets = []
     const seenTweets = {}
+    console.log(results)
     for (const res of results) {
-      if (!res._fields[0])
+      if (!res)
         continue
-      const message = res._fields[2].properties
-      let author = res._fields[0].properties
-      const relationship = res._fields[1]
+      const message = res.tweet
+      let author = res.user
+      const relationship = res.type
       if (relationship === 'RETWEETED') {
         if (message.uid in seenTweets) {
           seenTweets[message.uid].push({ author, relationship })

@@ -36,8 +36,8 @@ export default function ViewTweet() {
   }
 
   const handleTweetPost = async function (formContent, file) {
-    let authorId, mentionnedPeople
-    authorId = authContext.user.uid
+    let userId, mentionnedPeople
+    userId = authContext.user.uid
     mentionnedPeople = []
 
     if (file == null && (formContent == null || formContent.trim().length === 0))
@@ -56,7 +56,7 @@ export default function ViewTweet() {
         content += `<img src="${imageUrl}" alt="test"/>`
       }
     }
-    const data = { authorId, content, mentionnedPeople }
+    const data = { userId, content, mentionnedPeople }
     if (tweet != null) {
       data['tweetId'] = tweet.uid
     }

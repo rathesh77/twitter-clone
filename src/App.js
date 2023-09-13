@@ -6,7 +6,7 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 import Main from './layout/index.js'
-import Login from './pages/Login'
+import Login from './pages/login'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './middlewares/PrivateRoute';
 import AuthContext from './authContext'

@@ -57,6 +57,7 @@ export default function Profile(props) {
 
       let followings = await fetchFollowings(currentUserId)
       setUser({...currentUser, followers, followings})
+      console.log(currentUser)
       if (currentUser.uid !== authContext.user.uid ) {
         const isFollowing = await doesCurrentUserFollowRecipient(currentUser.uid)
         if (isFollowing !== false) {

@@ -19,9 +19,7 @@ export const fetchUser = async (userId) => {
   try {
     const response = await axiosInstance.get(`/user?id=${userId}`)
     if (response.status === 200) {
-
-      const { data } = response
-      return data._fields[0].properties
+      return response.data
     }
     return false
   } catch (e) {
@@ -96,6 +94,7 @@ export const fetchFollowings = async (userId) => {
 }
 
 export const doesCurrentUserFollowRecipient = async (userId) => {
+  console.log(userId)
   try {
     const following = await axiosInstance.get(`/follow/${userId}`)
     return following.data
