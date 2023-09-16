@@ -33,7 +33,7 @@ export default function Timeline() {
         continue
       const message = res.tweet
       let author = res.user
-      const relationship = res.type
+      const relationship = res.relation
       if (relationship === 'RETWEETED') {
         if (message.uid in seenTweets) {
           seenTweets[message.uid].push({ author, relationship })
