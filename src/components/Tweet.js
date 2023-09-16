@@ -9,16 +9,16 @@ import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import { postLikeTweet, postDislikeTweet, postRetweet } from "../services/tweetServices";
 
 export default function Tweet(props) {
-  const [uid] = useState(props.uid);
-  const [message] = useState(props.content);
-  const [author] = useState(props.author);
-  const [timestamp] = useState(formatDate(props.date));
-  const [likes, setLikes] = useState(props.likes);
-  const [retweets, setRetweets] = useState(props.retweets);
-  const [dislikes, setDislikes] = useState(props.dislikes);
+  const [uid] = useState(props.tweet.uid);
+  const [message] = useState(props.tweet.content);
+  const [author] = useState(props.user);
+  const [timestamp] = useState(formatDate(props.tweet.date));
+  const [likes, setLikes] = useState(props.tweet.likes);
+  const [retweets, setRetweets] = useState(props.tweet.retweets);
+  const [dislikes, setDislikes] = useState(props.tweet.dislikes);
   const [enabledButtons, setEnabledButtons] = useState(true);
 
-  const [replies] = useState(props.replies);
+  const [replies] = useState(props.tweet.replies);
   const [userRelations] = useState(props.userRelations != null ? props.userRelations : [])
 
   const handleRetweetClick = async (e) => {
@@ -33,12 +33,10 @@ export default function Tweet(props) {
     e.stopPropagation()
     if (!enabledButtons)
       return
-    console.log('process like')
     setEnabledButtons(false)
 
     const result = await postLikeTweet(uid)
     if (!result) {
-      console.log('bug handleLikeClick')
       return
     }
     const {likesIncrement, dislikesIncrement} = result
@@ -53,11 +51,9 @@ export default function Tweet(props) {
     e.stopPropagation()
     if (!enabledButtons)
       return
-    console.log('process dislike')
     setEnabledButtons(false)
     const result = await postDislikeTweet(uid)
     if (!result) {
-      console.log('bug handleDislikeClick')
       return
     }
     const {dislikesIncrement, likesIncrement} = result

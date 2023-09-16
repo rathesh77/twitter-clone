@@ -40,7 +40,7 @@ export default function CreateTweet(props) {
         content += `<img src="${imageUrl}" alt="test"/>`
       }
     }
-    const data = { userId, content, mentionnedPeople }
+    const data = { content, mentionnedPeople }
     if (tweet != null) {
       data['tweetId'] = tweet.uid
     }

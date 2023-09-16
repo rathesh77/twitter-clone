@@ -94,7 +94,6 @@ export const fetchFollowings = async (userId) => {
 }
 
 export const doesCurrentUserFollowRecipient = async (userId) => {
-  console.log(userId)
   try {
     const following = await axiosInstance.get(`/follow/${userId}`)
     return following.data

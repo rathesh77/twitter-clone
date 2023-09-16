@@ -1,10 +1,10 @@
 import { List, ListItem } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AuthContext from '../authContext';
 import Tweet from '../components/Tweet';
 import WysiwygForm from '../components/form/WysiwygForm';
-import { fetchTweetsUnderTweet, postMedia, postTweet } from '../services/tweetServices';
+import { fetchTweetsUnderTweet, postMedia, postTweet, findTweetById } from '../services/tweetServices';
 import { axiosInstance } from '../axios';
 import TweetButton from '../components/buttons/TweetButton';
 
@@ -21,9 +21,9 @@ export default function ViewTweet() {
     navigate(`/tweet?id=${tweetId}`)
   }
 
-  const updateTweetsList = function (data) {
+  const updateTweetsList = function (tweet) {
     const newMessagesList = [...messages]
-    newMessagesList.unshift({ message: { ...data }, author: authContext.user })
+    newMessagesList.unshift(tweet)
     setMessages(newMessagesList)
   }
 
@@ -58,7 +58,7 @@ export default function ViewTweet() {
     }
     const data = { userId, content, mentionnedPeople }
     if (tweet != null) {
-      data['tweetId'] = tweet.uid
+      data['masterTweetId'] = tweet.tweet.uid
     }
     const results = await postTweet(data)
     await action(results)
@@ -69,14 +69,10 @@ export default function ViewTweet() {
       const urlParams = new URLSearchParams(window.location.search)
       const tweetId = urlParams.get('id')
       let response = await fetchTweetsUnderTweet(tweetId)
-      const currentTweet = response.tweet._fields[0].properties
-      const author = response.tweet._fields[1].properties
-      let { messages } = response
-      messages = messages.map((m) => { return { author: m._fields[0].properties, message: m._fields[1].properties } })
+      const currentTweet = await findTweetById(tweetId)
+      setTweet(currentTweet)
+      setMessages(response)
 
-      const obj = { ...currentTweet, author }
-      setTweet(obj)
-      setMessages(messages)
     } catch (e) {
       console.log('une erreur est survenu:', e)
       navigate('/')
@@ -94,14 +90,14 @@ export default function ViewTweet() {
   }
   return (
     <div className="tweet">
-      <Tweet key={tweet.replies} {...tweet}/>
+      <Tweet key={tweet.tweet.replies} {...tweet}/>
         <WysiwygForm action={handleTweetPost} placeholder="Ecrivez votre tweet" button={<TweetButton />}/>
       <List>
         {messages.map((m) => {
-          const { author, message } = m
+          const { tweet } = m
           return (
-            <ListItem key={message.uid}  onClick={(e)=> {handleTweetClick(e, message.uid)}}>
-              <Tweet {...message} author={author}/>
+            <ListItem key={tweet.uid}  onClick={(e)=> {handleTweetClick(e, tweet.uid)}}>
+              <Tweet {...m}/>
             </ListItem>
           )
         })}

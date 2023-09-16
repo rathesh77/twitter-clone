@@ -11,7 +11,7 @@ export default function ListTweets(props) {
     <List className="tweets">
       {tweets.map(t =>
       (
-        <ListItem key={t.uid} onClick={(e)=> {handleTweetClick(e, t.uid)}} className='tweet-item' disablePadding>
+        <ListItem key={t.tweet.uid} onClick={(e)=> {handleTweetClick(e, t.tweet.uid)}} className='tweet-item' disablePadding>
           <Tweet {...t} />
         </ListItem>
       )

@@ -27,7 +27,6 @@ export default function Timeline() {
     const results = await fetchDeepTweets(userId)
     const tweets = []
     const seenTweets = {}
-    console.log(results)
     for (const res of results) {
       if (!res)
         continue
@@ -44,23 +43,19 @@ export default function Timeline() {
         continue
       }
       if (relationship === 'WROTE_TWEET')
-      tweets.push({
-        tweetId: message.uid,
-        author,
-        ...message
-      })
+      tweets.push(res)
     }
     for (let i = 0; i < tweets.length; i++) {
-      if (seenTweets[tweets[i].tweetId]) {
-        for (let j = 0; j <seenTweets[tweets[i].tweetId].length; j++) {
+      if (seenTweets[results[i].tweet.uid]) {
+        for (let j = 0; j <seenTweets[results[i].tweet.uid].length; j++) {
           const item = {
-            author: seenTweets[tweets[i].tweetId][j].author,
-            relationship: seenTweets[tweets[i].tweetId][j].relationship
+            author: seenTweets[results[i].tweet.uid][j].author,
+            relationship: seenTweets[results[i].tweet.uid][j].relationship
           }
           if (!tweets[i].userRelations) {
             tweets[i].userRelations = [item]
           } else
-            tweets[i].userRelations.push(item)
+          tweets[i].userRelations.push(item)
         }
       }
     }

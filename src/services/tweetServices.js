@@ -1,9 +1,18 @@
 import { axiosInstance } from "../axios"
 
+export const findTweetById = async (tweetId) => {
+  try {
+    const results = await axiosInstance.get('/tweet/'+tweetId)
+    return results.data
+  } catch (e) {
+    return false
+
+  }
+}
+
 export const postTweet = async (data) => {
   try {
-    const results = await axiosInstance.post(
-      '/tweet',
+    const results = await axiosInstance.post('/tweet',
       {
         data
       }
