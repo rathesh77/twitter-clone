@@ -16,6 +16,8 @@ export default function Tweet(props) {
   const [likes, setLikes] = useState(props.likes);
   const [retweets, setRetweets] = useState(props.retweets);
   const [dislikes, setDislikes] = useState(props.dislikes);
+  const [enabledButtons, setEnabledButtons] = useState(true);
+
   const [replies] = useState(props.replies);
   const [userRelations] = useState(props.userRelations != null ? props.userRelations : [])
 
@@ -29,19 +31,41 @@ export default function Tweet(props) {
 
   const handleLikeClick = async (e) => {
     e.stopPropagation()
-    const results = await postLikeTweet(uid)
-    const {likesIncrement, dislikesDecrement} = results
+    if (!enabledButtons)
+      return
+    console.log('process like')
+    setEnabledButtons(false)
+
+    const result = await postLikeTweet(uid)
+    if (!result) {
+      console.log('bug handleLikeClick')
+      return
+    }
+    const {likesIncrement, dislikesIncrement} = result
     setLikes(likes + likesIncrement)
-    setDislikes(dislikes - dislikesDecrement)
+    setDislikes(dislikes + dislikesIncrement)
+    setTimeout(()=> {
+      setEnabledButtons(true)
+    }, 2000)
   }
 
   const handleDislikeClick = async (e) => {
     e.stopPropagation()
+    if (!enabledButtons)
+      return
+    console.log('process dislike')
+    setEnabledButtons(false)
     const result = await postDislikeTweet(uid)
-    const {dislikesIncrement, likesDecrement} = result
+    if (!result) {
+      console.log('bug handleDislikeClick')
+      return
+    }
+    const {dislikesIncrement, likesIncrement} = result
     setDislikes(dislikes + dislikesIncrement)
-    setLikes(likes - likesDecrement)
-
+    setLikes(likes + likesIncrement)
+    setTimeout(()=> {
+      setEnabledButtons(true)
+    }, 2000)
   }
 
   let headerRelation = userRelations
