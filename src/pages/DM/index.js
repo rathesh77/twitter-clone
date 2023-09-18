@@ -46,7 +46,7 @@ export default function DM() {
     const handleClose = () => {
         /*
        ---------- MODEL D'UN CHAT: ---------
-               idChat <- "0": {
+               chatId <- "0": {
                     chatId,
                     messages,
                     recipients <- ne doit pas inclure l'user courant
@@ -92,22 +92,25 @@ export default function DM() {
     };
 
     const createChat = (message) => {
+      console.log('create chat')
         const _chats = { ...chats }
         const obj = {
-            author: authContext.user,
             recipients: _chats[selectedChatId].recipients,
             content: message.content
         }
         //setChats(_chats)
-        socket.on('chat_created', ({ chatId, messageId }) => {
+        socket.on('chat_created', (chat) => {
+          console.log('chat created', chat)
             socket.off('chat_created')
-            _chats[chatId] = _chats[selectedChatId]
-            _chats[chatId].messages.push({ ...message, messageId })
-            _chats[chatId].chatId = chatId
+            _chats[chat.id] = _chats[selectedChatId]
+            _chats[chat.id].messages = chat.messages 
+            _chats[chat.id].chatId = chat.id
             delete _chats[selectedChatId]
             setChats(_chats)
-            setSelectedChatId(chatId)
-            socket.join(chatId)
+            setSelectedChatId(chat.id)
+            console.log(_chats)
+
+            socket.join(chat.id)
         })
 
         socket.emit('create_chat', obj)
@@ -115,9 +118,11 @@ export default function DM() {
     }
     const postMessage = (message) => {
         const _chats = { ...chats }
-        socket.on('posted_message', (messageId) => {
+        socket.on('posted_message', (id) => {
             socket.off('posted_message')
-            _chats[selectedChatId].messages.push({ ...message, messageId })
+            console.log(message)
+            const {content, date} = message
+            _chats[selectedChatId].messages.push({ content, date, userId: message.author.uid, id })
             setChats(_chats)
         })
 
@@ -147,28 +152,7 @@ export default function DM() {
 
     }
 
-    useEffect(()=> {
-        console.log('2nd effect refresh')
-                /*
-            author: authContext.user.uid, 
-            recipients: _chats[selectedChatId].recipients,
-            content: message.content
-        */
-       if (newChat == null)
-            return
-        const { author, recipients, content, chatId, messageId } = newChat
-        const _chats = { ...chats }
-
-        const message = {
-            content,
-            date: Date.now(),
-            idUser: author.uid,
-            messageId
-        }
-        _chats[chatId] = { recipients, messages: [message], chatId }
-        socket.emit('join', newChat.chatId)
-        setChats(_chats)
-    },[newChat])
+  
     useEffect(() => {
         // recuperer la liste des DM de l'utilisateur courant
         socket.connect()
@@ -183,12 +167,33 @@ export default function DM() {
             console.log('message received')
         });
 
-        socket.on('user_invited_you', (chat) => {
-            setNewChat(chat)
+        socket.on('user_invited_you', async (chat) => {
+                        let chats = {}
+                          console.log(chat)
+                          const _chats = {...chats}
+                const { id, messages, recipients } = chat
+                  _chats[id] = { id, messages: [], recipients: [] }
+                
+                  _chats[id].messages = messages.filter((m) => m.id != null)
+      
+
+                for (const recipient of recipients) {
+                  if (recipient === authContext.user.uid)
+                  continue
+                  _chats[id].recipients.push(await fetchUser(recipient))
+                }
+                
+            
+            console.log(_chats)
+
+            socket.emit('join', id)
+
+            setChats(_chats)
         });
 
         socket.on('user_posted_message', (message) => {
             const { chatId } = message
+            console.log(message)
             const _chats = { ...chats }
             _chats[chatId].messages.push(message)
             setChats(_chats)
@@ -199,7 +204,7 @@ export default function DM() {
             [
                 {
                     chatId,
-                    idUser,
+                    userId,
                     content: nullable,
                     messageId : nullable
                 }
@@ -208,7 +213,7 @@ export default function DM() {
             */
             /*
              chats : {
-                idChat <- "0": {
+                chatId <- "0": {
                      chatId,
                      messages,
                      recipients <- ne doit pas inclure l'user courant
@@ -217,16 +222,17 @@ export default function DM() {
              }
             */
             let chats = {}
+                          console.log(data)
             for (const chat of data) {
-                const { chatId, idUser, content, messageId, date } = chat
+                const { chatId, userId, content, messageId, date } = chat
                 if (!chats[chatId]) {
                     chats[chatId] = { chatId, messages: [], recipients: [] }
                 }
                 if (messageId != null) {
-                    chats[chatId].messages.push({ messageId, content, idUser, date })
+                    chats[chatId].messages.push({ id: messageId, content, userId, date })
                 }
-                if (idUser !== authContext.user.uid && chats[chatId].recipients.find((r) => r.uid === idUser) == null) {
-                    chats[chatId].recipients.push(await fetchUser(idUser))
+                if (userId !== authContext.user.uid && chats[chatId].recipients.find((r) => r.uid === userId) == null) {
+                    chats[chatId].recipients.push(await fetchUser(userId))
                 }
             }
             setChats(chats)
@@ -251,6 +257,7 @@ export default function DM() {
         setSearchResults([])
     }
     console.log('refresh')
+    console.log(chats)
     return (
         <div className='dm-container'>
             <div className='dm-list-container'>
@@ -292,7 +299,7 @@ export default function DM() {
                         </div>
                         <div> {/* search results*/}
                             {searchResults.map((s) => {
-                                const properties = s._fields[0].properties
+                                const properties = s
                                 return (
                                     <div key={properties.uid} className='search-item' onClick={(e) => { handleSearchItemClick(e, properties) }}>
                                         <Avatar sx={{ width: "60px", height: "60px" }} src={properties.avatar} alt='Spic' />

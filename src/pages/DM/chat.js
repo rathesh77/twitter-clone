@@ -75,7 +75,7 @@ export default function Chat(props) {
     }
 
     const findAuthorOfMessage = (message) => {
-        const recipient = recipients.find((r) => r.uid == message.idUser)
+        const recipient = recipients.find((r) => r.uid == message.userId)
         if (recipient == null) {
             return authContext.user
         }
@@ -85,6 +85,9 @@ export default function Chat(props) {
     useEffect(() => {
         messagesListContainer.current.scrollTop = messagesListContainer.current.scrollHeight
     })
+    console.log('messages:' )
+    console.log(messages)
+    console.log(recipients)
 
     return (
         <div className='selected-DM'>
@@ -101,7 +104,7 @@ export default function Chat(props) {
             <div className='DM-messages' ref={messagesListContainer}>
                 {messages.map((m) => {
                     return (
-                        <Message key={m.messageId} content={m.content} author={findAuthorOfMessage(m)} date={m.date} />
+                        <Message key={m.id} content={m.content} author={findAuthorOfMessage(m)} date={m.date} />
                     )
                 })}
             </div>
