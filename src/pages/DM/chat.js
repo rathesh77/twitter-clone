@@ -109,7 +109,7 @@ export default function Chat(props) {
                 })}
             </div>
             <div className='write-message'>
-                <WysiwygForm placeholder="Ecrire un message" action={handleMessagePost} button={<Button><SendIcon /></Button>} style={style} />
+                <WysiwygForm placeholder="Ecrire un message" emitWritingEvent={emitWritingEvent} action={handleMessagePost} button={<Button><SendIcon /></Button>} style={style} />
             </div>
         </div>
     )

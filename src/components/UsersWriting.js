@@ -53,7 +53,7 @@ class UsersWriting extends React.Component {
     render() {
         const { usersWriting } = this.state
         return (
-            <div>
+            <div style={{'position': 'relative', bottom: '140px', 'left': '20px'}}>
                 {Object.keys(usersWriting).length > 0 ?
                     Object.keys(usersWriting).length > 1 ?
                         "Plusieurs personnes ecrivent..." :

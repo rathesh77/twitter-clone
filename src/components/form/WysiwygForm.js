@@ -31,12 +31,13 @@ export default function WysiwygForm(props) {
 
   const [formContent, setFormContent] = useState('')
   const action = props.action == null ? () => { } : props.action
-  const { placeholder } = props
+  const { placeholder, emitWritingEvent } = props
 
   
   const onEditorStateChange = function (e) {
     const state = e.target.value
     setFormContent(state)
+    emitWritingEvent()
   }
 
 

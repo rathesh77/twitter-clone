@@ -136,7 +136,7 @@ export default function DM() {
     }
 
     const emitWritingEvent = () => {
-        socket.emit('writing', {user: authContext.user, chatId: selectedChatId})
+        socket.emit('writing', { chatId: selectedChatId })
     }
 
     const cleanListeners = (socket) => {
