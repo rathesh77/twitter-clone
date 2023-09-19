@@ -37,6 +37,7 @@ export default function WysiwygForm(props) {
   const onEditorStateChange = function (e) {
     const state = e.target.value
     setFormContent(state)
+    if (emitWritingEvent)
     emitWritingEvent()
   }
 
