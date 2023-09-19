@@ -57,7 +57,7 @@ class UsersWriting extends React.Component {
                 {Object.keys(usersWriting).length > 0 ?
                     Object.keys(usersWriting).length > 1 ?
                         "Plusieurs personnes ecrivent..." :
-                        usersWriting[Object.keys(usersWriting)[0]].username + ' ecrit' :
+                        usersWriting[Object.keys(usersWriting)[0]].username + ' ecrit...' :
                     null}
             </div>
         )
