@@ -128,7 +128,7 @@ export default function DM() {
 
         const obj = {
             author: authContext.user.uid,
-            chatId: message.chatId,
+            chatId: selectedChatId,
             content: message.content
         }
         socket.emit('post_message', obj)
