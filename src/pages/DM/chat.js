@@ -67,7 +67,7 @@ export default function Chat(props) {
             content,
             date: Date.now()
         }
-        if (messages.length == 0) {
+        if (messages.length === 0) {
             createChat(newMessage)
         } else {
             postMessage({ ...newMessage, chatId: selectedChat.chatId })
@@ -75,7 +75,7 @@ export default function Chat(props) {
     }
 
     const findAuthorOfMessage = (message) => {
-        const recipient = recipients.find((r) => r.uid == message.userId)
+        const recipient = recipients.find((r) => r.uid === message.userId)
         if (recipient == null) {
             return authContext.user
         }

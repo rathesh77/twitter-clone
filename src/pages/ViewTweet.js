@@ -1,6 +1,6 @@
 import { List, ListItem } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../authContext';
 import Tweet from '../components/Tweet';
 import WysiwygForm from '../components/form/WysiwygForm';
