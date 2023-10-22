@@ -69,8 +69,8 @@ export default function Call(props) {
     localStream.getTracks().forEach(track => track.stop());
     localStream = null;
     setLocalStream(null)
-    startButton.disabled = false;
-    hangupButton.disabled = true;
+    startButton.current.disabled = false;
+    hangupButton.current.disabled = true;
   };
   function createPeerConnection() {
     pc = new RTCPeerConnection();
@@ -88,14 +88,14 @@ export default function Call(props) {
       }
       socket.emit('webrtc:message', message)
     };
-    pc.ontrack = e => remoteVideo.srcObject = e.streams[0];
+    pc.ontrack = e => remoteVideo.current.srcObject = e.streams[0];
     localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
   }
   async function makeCall() {
     await createPeerConnection();
 
     const offer = await pc.createOffer();
-    socket.postMessage({ type: 'offer', sdp: offer.sdp })
+    socket.emit('webrtc:message', { type: 'offer', sdp: offer.sdp, chatId: selectedChat.chatId })
     await pc.setLocalDescription(offer);
   }
 
@@ -136,11 +136,11 @@ export default function Call(props) {
   const startButtonClick = async function () {
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
     setLocalStream(localStream)
-    localVideo.srcObject = localStream;
+    localVideo.current.srcObject = localStream;
 
 
-    startButton.disabled = true;
-    hangupButton.disabled = false;
+    startButton.current.disabled = true;
+    hangupButton.current.disabled = false;
 
     socket.emit('webrtc:message', { type: 'ready', chatId: selectedChat.chatId });
   }
