@@ -2,18 +2,15 @@ import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../../authContext";
 import { socket } from "../../socket";
 
+let pc, localStream = null
 export default function Call(props) {
 
   let { selectedChat } = props
-  let startButton = useRef(null);
-  let hangupButton = useRef(null);
+  const [startButtonEnabled, setStartButtonEnabled] = useState(true);
+  const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
+
   let localVideo = useRef(null);
   let remoteVideo = useRef(null);
-
-  let [localStream, setLocalStream] = useState(null)
-  let [pc, setPc] = useState(null)
-
-  console.log(selectedChat)
 
   useEffect(() => {
     // recuperer la liste des DM de l'utilisateur courant
@@ -64,17 +61,15 @@ export default function Call(props) {
     if (pc) {
       pc.close();
       pc = null
-      setPc(null)
     }
     localStream.getTracks().forEach(track => track.stop());
     localStream = null;
-    setLocalStream(null)
-    startButton.current.disabled = false;
-    hangupButton.current.disabled = true;
+
+    setStartButtonEnabled(true)
+    setHangupButtonEnabled(false)
   };
   function createPeerConnection() {
     pc = new RTCPeerConnection();
-    setPc(new RTCPeerConnection())
     pc.onicecandidate = e => {
       const message = {
         type: 'candidate',
@@ -135,12 +130,12 @@ export default function Call(props) {
 
   const startButtonClick = async function () {
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-    setLocalStream(localStream)
     localVideo.current.srcObject = localStream;
 
 
-    startButton.current.disabled = true;
-    hangupButton.current.disabled = false;
+    setStartButtonEnabled(false)
+    setHangupButtonEnabled(true)
+
 
     socket.emit('webrtc:message', { type: 'ready', chatId: selectedChat.chatId });
   }
@@ -155,8 +150,8 @@ export default function Call(props) {
       <video id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
       <video id="remoteVideo" ref={remoteVideo} playsInline={true} autoPlay={true}></video>
       <div className="box">
-        <button ref={startButton} id="startButton" onClick={startButtonClick}>Start</button>
-        <button disabled={true} ref={hangupButton} onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
+        <button  disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
+        <button disabled={!hangupButtonEnabled}  onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
       </div>
 
     </div>
