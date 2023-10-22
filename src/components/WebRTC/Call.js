@@ -1,11 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../../authContext";
+import { socket } from "../../socket";
 
 export default function Call(props) {
-  const authContext = useContext(AuthContext)
 
   let { selectedChat } = props
-  const socket = authContext.socket
   let startButton = useRef(null);
   let hangupButton = useRef(null);
   let localVideo = useRef(null);

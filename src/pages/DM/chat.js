@@ -44,7 +44,6 @@ export default function Chat(props) {
     }
 
     const handleMessagePost = async (formContent, file) => {
-        console.log(formContent, file)
         if (file == null && (formContent == null || formContent.trim().length === 0))
             return
 
@@ -86,9 +85,6 @@ export default function Chat(props) {
     useEffect(() => {
         messagesListContainer.current.scrollTop = messagesListContainer.current.scrollHeight
     })
-    console.log('messages:' )
-    console.log(messages)
-    console.log(recipients)
 
     return (
         <div className='selected-DM'>

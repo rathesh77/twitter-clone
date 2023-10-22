@@ -17,15 +17,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { blueGrey, common, grey } from '@mui/material/colors';
 
 import {fetchMe} from './services/userServices.js'
-import { axiosInstance } from './axios';
-import { Manager } from "socket.io-client";
-
-
-const manager = new Manager(axiosInstance.defaults.baseURL, {
-  autoConnect: false,
-  secure: false,
-  withCredentials: true
-})
+import { socket } from './socket';
 
 const darkTheme = createTheme({
   palette: {
@@ -80,16 +72,15 @@ function MainComponent() {
 
 function App() {
   const [user, setUser] = useState(null)
-  const [socket] = useState(manager.socket("/"))
   const [isLoading, setIsLoading] = useState(true);
 
+  socket.connect()
 
   const getMe = async () => {
-    const response = await fetchMe()
-    if (response) {
-      socket.connect()
-      console.log(response)
-      setUser(response)
+    const user = await fetchMe()
+    if (user) {
+      console.log(user)
+      setUser(user)
     }
     setIsLoading(false)
     
@@ -98,7 +89,6 @@ function App() {
   useEffect(() => {
 
     if (user == null) {
-      socket.disconnect()
       getMe()
     }
   }, [user])
@@ -107,11 +97,12 @@ function App() {
   if (isLoading) {
     return (<div>LOADING</div>)
   }
+  console.log('REFRESH APP')
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
 
-    <AuthContext.Provider value={{user, setUser, socket }}>
+    <AuthContext.Provider value={{user, setUser }}>
       <Router>
         <Routes>
           <Route element={<PrivateRoute Component={Login} shouldBeAuthenticated={false} />} path='/login' />

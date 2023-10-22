@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ClickableUser from '../../components/ClickableUser';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import UsersWriting from '../../components/UsersWriting';
+import { socket } from '../../socket';
 
 
 const style = {
@@ -29,7 +30,7 @@ export default function DM() {
 
     const authContext = useContext(AuthContext)
 
-    const socket = authContext.socket
+    
     const [searchResults, setSearchResults] = useState([])
     const [selectedRecipients, setSelectedRecipients] = useState([])
     const [open, setOpen] = useState(false)
@@ -85,7 +86,6 @@ export default function DM() {
     };
 
     const createChat = (message) => {
-      console.log('create chat')
         const _chats = { ...chats }
         const obj = {
             recipients: _chats[selectedChatId].recipients,
@@ -93,7 +93,6 @@ export default function DM() {
         }
         //setChats(_chats)
         socket.on('chat_created', (chat) => {
-          console.log('chat created', chat)
             socket.off('chat_created')
             _chats[chat.id] = _chats[selectedChatId]
             _chats[chat.id].messages = chat.messages 
@@ -101,7 +100,6 @@ export default function DM() {
             delete _chats[selectedChatId]
             setChats(_chats)
             setSelectedChatId(chat.id)
-            console.log(_chats)
 
             socket.join(chat.id)
         })
@@ -113,7 +111,6 @@ export default function DM() {
         const _chats = { ...chats }
         socket.on('posted_message', (id) => {
             socket.off('posted_message')
-            console.log(message)
             const {content, date} = message
             _chats[selectedChatId].messages.push({ content, date, userId: message.author.uid, id })
             setChats(_chats)
@@ -151,15 +148,13 @@ export default function DM() {
         cleanListeners(socket)
 
         socket.emit('get_chats', authContext.user);
-
-
+      console.log(authContext)
         socket.on('message', () => {
             console.log('message received')
         });
 
         socket.on('user_invited_you', async (chat) => {
                         let chats = {}
-                          console.log(chat)
                           const _chats = {...chats}
                 const { id, messages, recipients } = chat
                   _chats[id] = { id, messages: [], recipients: [] }
@@ -174,7 +169,6 @@ export default function DM() {
                 }
                 
             
-            console.log(_chats)
 
             socket.emit('join', id)
 
@@ -183,7 +177,6 @@ export default function DM() {
 
         socket.on('user_posted_message', (message) => {
             const { chatId } = message
-            console.log(message)
             const _chats = { ...chats }
             _chats[chatId].messages.push(message)
             setChats(_chats)
@@ -212,7 +205,6 @@ export default function DM() {
              }
             */
             let chats = {}
-                          console.log(data)
             for (const chat of data) {
                 const { chatId, userId, content, messageId, date } = chat
                 if (!chats[chatId]) {
@@ -246,8 +238,7 @@ export default function DM() {
         setSelectedRecipients([...selectedRecipients, item])
         setSearchResults([])
     }
-    console.log('refresh')
-    console.log(chats)
+
     return (
         <div className='dm-container'>
             <div className='dm-list-container'>
