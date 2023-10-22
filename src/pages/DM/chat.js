@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../../authContext';
 import Message from '../../components/Message';
@@ -6,6 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import WysiwygForm from '../../components/form/WysiwygForm';
 import { postMedia } from '../../services/tweetServices';
 import { axiosInstance } from '../../axios';
+import Call from '../../components/WebRTC/Call';
 
 const style = {
     'editor': {
@@ -34,7 +35,7 @@ export default function Chat(props) {
     const messagesListContainer = useRef(null);
 
     const authContext = useContext(AuthContext)
-    const { selectedChat, createChat, postMessage, emitWritingEvent } = props
+    const { selectedChat, createChat, postMessage, emitWritingEvent, socket } = props
     const { recipients } = selectedChat
     const [messages] = useState(selectedChat.messages)
 
@@ -93,11 +94,14 @@ export default function Chat(props) {
         <div className='selected-DM'>
             <div className='DM-header-container'>
                 <div className='DM-header'>
+                  
                     <h1>
                         {recipients.map((r) => {
                             return (<span key={r.uid}>{r.username}</span>)
                         })}
                     </h1>
+                    <Call socket={socket} recipients={recipients} selectedChat={selectedChat}></Call>
+
                 </div>
             </div>
 

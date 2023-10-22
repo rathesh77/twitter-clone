@@ -1,25 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../../authContext';
 import Chat from './chat';
-import { Manager } from "socket.io-client";
 import SearchEngine from '../../components/SearchEngine';
 import { Avatar, Button, Modal, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import { fetchUser } from '../../services/userServices';
 import { blue } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
-import { axiosInstance } from '../../axios';
+
+
 import ClickableUser from '../../components/ClickableUser';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import UsersWriting from '../../components/UsersWriting';
 
-const manager = new Manager(axiosInstance.defaults.baseURL, {
-    autoConnect: false,
-    secure: false,
-    withCredentials: true
-})
-
-const socket = manager.socket("/")
 
 const style = {
     position: 'absolute',
@@ -36,12 +29,12 @@ export default function DM() {
 
     const authContext = useContext(AuthContext)
 
+    const socket = authContext.socket
     const [searchResults, setSearchResults] = useState([])
     const [selectedRecipients, setSelectedRecipients] = useState([])
     const [open, setOpen] = useState(false)
     const [chats, setChats] = useState({})
     const [selectedChatId, setSelectedChatId] = useState(null)
-    const [newChat, setNewChat] = useState(null)
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         /*
@@ -155,13 +148,10 @@ export default function DM() {
   
     useEffect(() => {
         // recuperer la liste des DM de l'utilisateur courant
-        socket.connect()
         cleanListeners(socket)
 
-        socket.on('connect', () => {
-            socket.emit('get_chats', authContext.user);
+        socket.emit('get_chats', authContext.user);
 
-        });
 
         socket.on('message', () => {
             console.log('message received')
@@ -345,7 +335,7 @@ export default function DM() {
                     </div>
                     </div> : 
                     <div>
-                        <Chat emitWritingEvent={emitWritingEvent} key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />
+                        <Chat socket={socket} emitWritingEvent={emitWritingEvent} key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />
                         <div>
                             <UsersWriting selectedChatId={selectedChatId} socket={socket}/>
                         </div>
