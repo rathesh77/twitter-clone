@@ -10,8 +10,7 @@ export default function Call(props) {
   const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
 
   let localVideo = useRef(null);
-  let remoteVideo = useRef(null);
-
+  let [streams, setStreams] = useState([])
   useEffect(() => {
     // recuperer la liste des DM de l'utilisateur courant
     socket.on('webrtc:message', (message) => {
@@ -55,7 +54,7 @@ export default function Call(props) {
     return () => {
       socket.off('webrtc:message');
     };
-  }, [])
+  }, [startButtonEnabled])
 
   async function hangup() {
     if (pc) {
@@ -83,7 +82,10 @@ export default function Call(props) {
       }
       socket.emit('webrtc:message', message)
     };
-    pc.ontrack = e => remoteVideo.current.srcObject = e.streams[0];
+    pc.ontrack = e => {
+      let _streams = [...streams, e.streams[0]]
+      setStreams(_streams)
+    };
     localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
   }
   async function makeCall() {
@@ -148,7 +150,12 @@ export default function Call(props) {
   return (
     <div>
       <video id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
-      <video id="remoteVideo" ref={remoteVideo} playsInline={true} autoPlay={true}></video>
+      {streams.map((stream) => {
+        console.log(stream)
+        return(
+          (<video ref={video => video.srcObject = stream} key={stream.id} id={stream.id} playsInline={true} autoPlay={true}></video>)
+        )
+      })}
       <div className="box">
         <button  disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
         <button disabled={!hangupButtonEnabled}  onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
