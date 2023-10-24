@@ -162,7 +162,6 @@ export default function Call(props) {
     } else {
       await pcs[index].addIceCandidate(candidate);
     }
-    lock = false
   }
 
 
