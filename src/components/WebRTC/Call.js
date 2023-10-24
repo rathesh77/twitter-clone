@@ -194,7 +194,7 @@ export default function Call(props) {
 
   const startButtonClick = async function () {
     if (!localStream) {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
       localVideo.current.srcObject = localStream;
     }
 
