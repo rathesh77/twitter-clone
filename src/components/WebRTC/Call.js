@@ -1,17 +1,16 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { socket } from "../../socket";
-import AuthContext from '../../authContext'
 
-let pc, localStream = null
-let pcs = [null, null, null, null, null, null]
-let index = 0
-let calls = []
+let localStream = null
+let pcs = {}
+setInterval(()=>{
+  console.log(pcs)
+}, 3000)
 export default function Call(props) {
 
   let { selectedChat } = props
   const [startButtonEnabled, setStartButtonEnabled] = useState(true);
   const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
-  const authContext = useContext(AuthContext)
 
   let localVideo = useRef(null);
   const video1 = useRef()
@@ -20,14 +19,7 @@ export default function Call(props) {
   const video4 = useRef()
   const video5 = useRef()
   const video6 = useRef()
-  setInterval(()=>{
-    console.log('index:' + index)
-    if (calls.length) {
-      const currentMessage = calls.shift()
-      makeCall(currentMessage.initiator)
-    }
 
-  }, 3000)
   useEffect(() => {
     // recuperer la liste des DM de l'utilisateur courant
     socket.on('webrtc:message', (message) => {
@@ -47,17 +39,16 @@ export default function Call(props) {
           handleCandidate(message);
           break;
         case 'ready':
-          // A second tab joined. This tab will initiate a call unless in a call already.
-          if (index >= pcs.length) {
-            console.log('already in call, ignoring');
-           // return;
+          if (Object.keys(pcs) === 6) {
+            console.log('already 7 persons in the room')
+            return
           }
-          calls.push(message)
-          //makeCall(message.initiator);
+          // A second tab joined. This tab will initiate a call unless in a call already.
+          makeCall(message.initiator);
           break;
         case 'bye':
-          if (pc) {
-            hangup();
+          if (message.leaver && pcs[message.leaver]) {
+            hangup(message.leaver);
           }
           break;
         default:
@@ -71,26 +62,57 @@ export default function Call(props) {
     };
   }, [startButtonEnabled])
 
-  async function hangup() {
-      //pc.close();
-    for (let pc of pcs) {
-      pc.close()
-      pc = null
+  async function hangup(leaver) {
+
+    if (leaver == null) {
+      for (const key of Object.keys(pcs)) {
+        pcs[key].close()
+      }
+      pcs = {}
+      localStream.getTracks().forEach(track => {track.stop()});
+      localStream = null;
+      setStartButtonEnabled(true)
+      setHangupButtonEnabled(false)
+      return
     }
-    
-    localStream.getTracks().forEach(track => {track.stop()});
-    localStream = null;
-    
-    setStartButtonEnabled(true)
-    setHangupButtonEnabled(false)
+    if (video1.current.peer === leaver) {
+      delete video1.current.peer
+    } else if (video2.current.peer === leaver) {
+      delete video2.current.peer
+    }
+    else if (video3.current.peer === leaver) {
+      delete video3.current.peer
+    }
+    else if (video3.current.peer === leaver) {
+      delete video3.current.peer
+    }
+    else if (video4.current.peer === leaver) {
+      delete video4.current.peer
+    }
+    else if (video5.current.peer === leaver) {
+      delete video5.current.peer
+    }
+    else if (video6.current.peer === leaver) {
+      delete video6.current.peer
+    }
+    pcs[leaver].close();
+    delete pcs[leaver]
+    if (Object.keys(pcs).length === 0) {
+      localStream.getTracks().forEach(track => {track.stop()});
+      localStream = null;
+      
+      setStartButtonEnabled(true)
+      setHangupButtonEnabled(false)
+    }
   };
-  function createPeerConnection() {
-    pcs[index] = new RTCPeerConnection();
-    pcs[index].onicecandidate = e => {
+  function createPeerConnection(peer) {
+    pcs[peer] = new RTCPeerConnection({});
+    pcs[peer].onicecandidate = e => {
       const message = {
         type: 'candidate',
         candidate: null,
-        chatId: selectedChat.chatId
+        chatId: selectedChat.chatId,
+        peer: socket.id
       };
       if (e.candidate) {
         message.candidate = e.candidate.candidate;
@@ -99,75 +121,80 @@ export default function Call(props) {
       }
       socket.emit('webrtc:message', message)
     };
-    pcs[index].ontrack = e => {
-      if (index === 0)
+    pcs[peer].ontrack = e => {
+      if (video1.current.peer) {
         video1.current.srcObject = e.streams[0]
-        if (index === 1)
+        video1.current.peer = peer
+      }
+      if (video2.current.peer) {
         video2.current.srcObject = e.streams[0]
-        if (index === 2)
+        video2.current.peer = peer
+      }
+      if (video3.current.peer) {
         video3.current.srcObject = e.streams[0]
-        if (index === 3)
+        video3.current.peer = peer
+      }
+      if (video4.current.peer) {
         video4.current.srcObject = e.streams[0]
-        if (index === 4)
+        video4.current.peer = peer
+      }
+      if (video5.current.peer) {
         video5.current.srcObject = e.streams[0]
-        if (index === 5)
+        video5.current.peer = peer
+      }
+      if (video6.current.peer) {
         video6.current.srcObject = e.streams[0]
+        video6.current.peer = peer
+      }
     };
-    localStream.getTracks().forEach(track => pcs[index].addTrack(track, localStream));
-    setTimeout(()=>{
-      index++
-    }, 3000)
+    localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
   }
-  async function makeCall(initiator) {
-    await createPeerConnection();
 
-    const offer = await pcs[index].createOffer();
+  async function makeCall(initiator) {
+    await createPeerConnection(initiator);
+
+    const offer = await pcs[initiator].createOffer();
     socket.emit('webrtc:message', { type: 'offer', sdp: offer.sdp, chatId: selectedChat.chatId, initiator, responder: socket.id })
-    await pcs[index].setLocalDescription(offer);
+    await pcs[initiator].setLocalDescription(offer);
   }
 
   async function handleOffer(offer) {
-    if (index >= pcs.length) {
-      console.error('existing peerconnection');
-      return;
-    }
-    console.log('got offer')
 
-    await createPeerConnection();
-    await pcs[index].setRemoteDescription(offer);
+    const {initiator, responder} = offer
+    console.log('got offer from responder:' + responder)
 
-    const answer = await pcs[index].createAnswer();
-    socket.emit('webrtc:message', { type: 'answer', sdp: answer.sdp, chatId: selectedChat.chatId, responder: offer.responder })
-    await pcs[index].setLocalDescription(answer);
+    await createPeerConnection(responder);
+    await pcs[responder].setRemoteDescription(offer);
+
+    const answer = await pcs[responder].createAnswer();
+    socket.emit('webrtc:message', { type: 'answer', sdp: answer.sdp, chatId: selectedChat.chatId, responder, initiator })
+    await pcs[responder].setLocalDescription(answer);
   }
 
   async function handleAnswer(answer) {
-    if (!pcs[index]) {
-      console.error('no peerconnection');
-      return;
-    }
-    console.log('got answer')
-    console.log(index)
-    await pcs[index].setRemoteDescription(answer);
+ 
+    const {initiator} = answer
+
+    console.log('got answer from initiator: '+initiator)
+    await pcs[initiator].setRemoteDescription(answer);
   }
 
   async function handleCandidate(candidate) {
-    if (!pcs[index]) {
-      console.error('no peerconnection with index:' + index);
+    if (!pcs[candidate.peer]) {
+      console.error('no peerconnection with initiator:' + candidate.peer);
       return;
     }
-    console.log(index);
     if (!candidate.candidate) {
-      await pcs[index].addIceCandidate(null);
+      await pcs[candidate.peer].addIceCandidate(null);
     } else {
-      await pcs[index].addIceCandidate(candidate);
+      await pcs[candidate.peer].addIceCandidate(candidate);
     }
   }
 
 
   const startButtonClick = async function () {
     if (!localStream) {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       localVideo.current.srcObject = localStream;
     }
 
@@ -179,19 +206,19 @@ export default function Call(props) {
   }
 
   const hangupButtonClick = async function () {
-    hangup();
-    socket.emit('webrtc:message', { type: 'bye', chatId: selectedChat.chatId })
+    hangup(null);
+    socket.emit('webrtc:message', { type: 'bye', chatId: selectedChat.chatId, leaver: socket.id })
   };
 
   return (
     <div>
       <video id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
-      <video ref={video1}  id='video1' playsInline={true} autoPlay={true}></video>
-      <video ref={video2}  id='video2' playsInline={true} autoPlay={true}></video>
-      <video ref={video3}  id='video3' playsInline={true} autoPlay={true}></video>
-      <video ref={video4}  id='video4' playsInline={true} autoPlay={true}></video>
-      <video ref={video5}  id='video5' playsInline={true} autoPlay={true}></video>
-      <video ref={video6}  id='video6' playsInline={true} autoPlay={true}></video>
+      <video ref={video1} style={{display: pcs[Object.keys(pcs)[0]] ? 'block' : 'none' }} id='video1' playsInline={true} autoPlay={true}></video>
+      <video ref={video2} style={{display: pcs[Object.keys(pcs)[1]] ? 'block' : 'none' }}  id='video2' playsInline={true} autoPlay={true}></video>
+      <video ref={video3}  style={{display: pcs[Object.keys(pcs)[2]] ? 'block' : 'none' }} id='video3' playsInline={true} autoPlay={true}></video>
+      <video ref={video4} style={{display: pcs[Object.keys(pcs)[3]] ? 'block' : 'none' }}  id='video4' playsInline={true} autoPlay={true}></video>
+      <video ref={video5}  style={{display: pcs[Object.keys(pcs)[4]] ? 'block' : 'none' }} id='video5' playsInline={true} autoPlay={true}></video>
+      <video ref={video6}  style={{display: pcs[Object.keys(pcs)[5]] ? 'block' : 'none' }}id='video6' playsInline={true} autoPlay={true}></video>
 
       <div className="box">
         <button  disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
