@@ -147,7 +147,7 @@ export default function DM() {
         // recuperer la liste des DM de l'utilisateur courant
         cleanListeners(socket)
 
-        socket.emit('get_chats', authContext.user);
+        socket.emit('get_chats');
       console.log(authContext)
         socket.on('message', () => {
             console.log('message received')
@@ -222,7 +222,6 @@ export default function DM() {
 
         return () => {
             cleanListeners(socket)
-            socket.disconnect()
         };
     }, [])
 

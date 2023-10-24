@@ -74,7 +74,6 @@ function App() {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true);
 
-  socket.connect()
 
   const getMe = async () => {
     const user = await fetchMe()
@@ -87,10 +86,14 @@ function App() {
   }
 
   useEffect(() => {
-
-    if (user == null) {
+    if (user == null)
       getMe()
-    }
+    
+    if (user)
+      socket.connect()
+    else if (socket.conected)
+      socket.disconnect()
+    
   }, [user])
 
 
