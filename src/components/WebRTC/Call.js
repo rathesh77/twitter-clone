@@ -180,6 +180,7 @@ export default function Call(props) {
   }
 
   async function handleCandidate(candidate) {
+    console.log('new icecandidate')
     if (!pcs[candidate.peer]) {
       console.error('no peerconnection with initiator:' + candidate.peer);
       return;
