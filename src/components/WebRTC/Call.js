@@ -5,14 +5,22 @@ let localStream = null
 
 export default function Call(props) {
 
-  let { selectedChat } = props
-  const [startButtonEnabled, setStartButtonEnabled] = useState(true);
-  const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
+  let { chatId, event, callbackWhenUserLeaves, updateStreams, callbackWhenCallStarts, callbackWhenCallStops, setIsCallRunning } = props
 
   let [pcs, setPcs] = useState({})
-  let localVideo = useRef(null);
 
-  const recipientsVideos = [useRef({}), useRef({}), useRef({}), useRef({}), useRef({}), useRef({})]
+  useEffect(()=>{
+    switch(event) {
+      case 'startCall':
+        startButtonClick()
+        break;
+      case 'stopCall':
+        hangupButtonClick()
+        break;
+      default:
+        break;
+    }
+  }, [event])
 
   useEffect(() => {
     // recuperer la liste des DM de l'utilisateur courant
@@ -54,7 +62,7 @@ export default function Call(props) {
     return () => {
       socket.off('webrtc:message');
     };
-  }, [startButtonEnabled])
+  }, [])
 
   async function hangup(leaver) {
 
@@ -66,19 +74,12 @@ export default function Call(props) {
       setPcs({})
       localStream.getTracks().forEach(track => {track.stop()});
       localStream = null;
-      setStartButtonEnabled(true)
-      setHangupButtonEnabled(false)
-      for (const recipient of recipientsVideos)
-          delete recipient.current.peer
-      
+ 
+      callbackWhenCallStops()
+
       return
     }
-    for (const recipient of recipientsVideos) {
-      if (recipient.current.peer === leaver) {
-        delete recipient.current.peer
-        break
-      }
-    }
+    callbackWhenUserLeaves(leaver)
 
     pcs[leaver].close();
     delete pcs[leaver]
@@ -86,9 +87,8 @@ export default function Call(props) {
     if (Object.keys(pcs).length === 0) {
       localStream.getTracks().forEach(track => {track.stop()});
       localStream = null;
-      
-      setStartButtonEnabled(true)
-      setHangupButtonEnabled(false)
+      callbackWhenCallStops()
+
     }
   };
   function createPeerConnection(peer) {
@@ -97,7 +97,7 @@ export default function Call(props) {
       const message = {
         type: 'candidate',
         candidate: null,
-        chatId: selectedChat.chatId,
+        chatId,
         peer: socket.id
       };
       if (e.candidate) {
@@ -109,13 +109,10 @@ export default function Call(props) {
     };
     pcs[peer].ontrack = e => {
 
-      for (const recipient of recipientsVideos) {
-        if (!recipient.current.peer || recipient.current.peer === peer) {
-          recipient.current.srcObject = e.streams[0]
-          recipient.current.peer = peer
-          break
-        }
-      }
+      let streams = {}
+      streams[peer] = e.streams[0];
+      updateStreams({peer, stream: e.streams[0]})
+
     };
     localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
     setPcs({...pcs})
@@ -125,7 +122,7 @@ export default function Call(props) {
     await createPeerConnection(initiator);
 
     const offer = await pcs[initiator].createOffer();
-    socket.emit('webrtc:message', { type: 'offer', sdp: offer.sdp, chatId: selectedChat.chatId, initiator, responder: socket.id })
+    socket.emit('webrtc:message', { type: 'offer', sdp: offer.sdp, chatId, initiator, responder: socket.id })
     await pcs[initiator].setLocalDescription(offer);
   }
 
@@ -138,7 +135,7 @@ export default function Call(props) {
     await pcs[responder].setRemoteDescription(offer);
 
     const answer = await pcs[responder].createAnswer();
-    socket.emit('webrtc:message', { type: 'answer', sdp: answer.sdp, chatId: selectedChat.chatId, responder, initiator })
+    socket.emit('webrtc:message', { type: 'answer', sdp: answer.sdp, chatId, responder, initiator })
     await pcs[responder].setLocalDescription(answer);
   }
 
@@ -166,43 +163,18 @@ export default function Call(props) {
 
 
   const startButtonClick = async function () {
-    if (!localStream) {
+    if (!localStream)
       localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: {width: 150, height: 150} });
-      localVideo.current.srcObject = localStream;
-    }
-
-    setStartButtonEnabled(false)
-    setHangupButtonEnabled(true)
+    
+    callbackWhenCallStarts(localStream)
+    setIsCallRunning(true)
 
 
-    socket.emit('webrtc:message', { type: 'ready', chatId: selectedChat.chatId, initiator: socket.id });
+    socket.emit('webrtc:message', { type: 'ready', chatId, initiator: socket.id });
   }
 
   const hangupButtonClick = async function () {
     hangup(null);
-    socket.emit('webrtc:message', { type: 'bye', chatId: selectedChat.chatId, leaver: socket.id })
+    socket.emit('webrtc:message', { type: 'bye', chatId, leaver: socket.id })
   };
-
-  console.log(pcs)
-  console.log(recipientsVideos)
-  return (
-    <div>
-      <div>
-      <video style={{display:localStream ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
-
-      {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
-        return (
-          <video key={index} ref={recipientsVideos[index]}  style={{display:recipientsVideos[index].current.peer  ? 'inline-block' : 'none', padding: '10px' }} id={'video'+index} playsInline={true} autoPlay={true}></video>
-        )
-      })}
-      </div>
-      <div>
-      <div className="box">
-        <button  disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
-        <button disabled={!hangupButtonEnabled}  onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
-      </div>
-
-      </div>
-    </div>
-  );
 }
