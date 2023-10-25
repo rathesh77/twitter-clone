@@ -2,24 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { socket } from "../../socket";
 
 let localStream = null
-let pcs = {}
-setInterval(()=>{
-  console.log(pcs)
-}, 3000)
+
 export default function Call(props) {
 
   let { selectedChat } = props
   const [startButtonEnabled, setStartButtonEnabled] = useState(true);
   const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
 
+  let [pcs, setPcs] = useState({})
   let localVideo = useRef(null);
-  const video1 = useRef()
-  const video2 = useRef()
-  const video3 = useRef()
-  const video4 = useRef()
-  const video5 = useRef()
-  const video6 = useRef()
-
+  const video1 = useRef({})
+  const video2 = useRef({})
+  const video3 = useRef({})
+  const video4 = useRef({})
+  const video5 = useRef({})
+  const video6 = useRef({})
+  setInterval(()=>{
+    console.log(pcs)
+  }, 3000)
   useEffect(() => {
     // recuperer la liste des DM de l'utilisateur courant
     socket.on('webrtc:message', (message) => {
@@ -69,6 +69,7 @@ export default function Call(props) {
         pcs[key].close()
       }
       pcs = {}
+      setPcs({...pcs})
       localStream.getTracks().forEach(track => {track.stop()});
       localStream = null;
       setStartButtonEnabled(true)
@@ -97,6 +98,7 @@ export default function Call(props) {
     }
     pcs[leaver].close();
     delete pcs[leaver]
+    setPcs({...pcs})
     if (Object.keys(pcs).length === 0) {
       localStream.getTracks().forEach(track => {track.stop()});
       localStream = null;
@@ -122,32 +124,33 @@ export default function Call(props) {
       socket.emit('webrtc:message', message)
     };
     pcs[peer].ontrack = e => {
-      if (video1.current.peer) {
+      if (!video1.current.peer || video1.current.peer === peer) {
         video1.current.srcObject = e.streams[0]
         video1.current.peer = peer
       }
-      if (video2.current.peer) {
+      else if (!video2.current.peer || video2.current.peer === peer) {
         video2.current.srcObject = e.streams[0]
         video2.current.peer = peer
       }
-      if (video3.current.peer) {
+      else if (!video3.current.peer || video3.current.peer === peer) {
         video3.current.srcObject = e.streams[0]
         video3.current.peer = peer
       }
-      if (video4.current.peer) {
+      else if (!video4.current.peer || video4.current.peer === peer) {
         video4.current.srcObject = e.streams[0]
         video4.current.peer = peer
       }
-      if (video5.current.peer) {
+      else if (!video5.current.peer || video5.current.peer === peer) {
         video5.current.srcObject = e.streams[0]
         video5.current.peer = peer
       }
-      if (video6.current.peer) {
+     else if (!video6.current.peer || video6.current.peer === peer) {
         video6.current.srcObject = e.streams[0]
         video6.current.peer = peer
       }
     };
     localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
+    setPcs({...pcs})
   }
 
   async function makeCall(initiator) {
@@ -190,6 +193,7 @@ export default function Call(props) {
     } else {
       await pcs[candidate.peer].addIceCandidate(candidate);
     }
+    setPcs({...pcs})
   }
 
 
@@ -211,15 +215,20 @@ export default function Call(props) {
     socket.emit('webrtc:message', { type: 'bye', chatId: selectedChat.chatId, leaver: socket.id })
   };
 
+  console.log(pcs)
+  console.log(video1.current.peer)
+  console.log(video2)
+  console.log(video3)
+
   return (
     <div>
       <video id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
-      <video ref={video1} style={{display: pcs[Object.keys(pcs)[0]] ? 'block' : 'none' }} id='video1' playsInline={true} autoPlay={true}></video>
-      <video ref={video2} style={{display: pcs[Object.keys(pcs)[1]] ? 'block' : 'none' }}  id='video2' playsInline={true} autoPlay={true}></video>
-      <video ref={video3}  style={{display: pcs[Object.keys(pcs)[2]] ? 'block' : 'none' }} id='video3' playsInline={true} autoPlay={true}></video>
-      <video ref={video4} style={{display: pcs[Object.keys(pcs)[3]] ? 'block' : 'none' }}  id='video4' playsInline={true} autoPlay={true}></video>
-      <video ref={video5}  style={{display: pcs[Object.keys(pcs)[4]] ? 'block' : 'none' }} id='video5' playsInline={true} autoPlay={true}></video>
-      <video ref={video6}  style={{display: pcs[Object.keys(pcs)[5]] ? 'block' : 'none' }}id='video6' playsInline={true} autoPlay={true}></video>
+      <video ref={video1} style={{display:video1.current.peer != null ? 'block' : 'none' }} id='video1' playsInline={true} autoPlay={true}></video>
+      <video ref={video2} style={{display: video2.current.peer  ? 'block' : 'none' }}  id='video2' playsInline={true} autoPlay={true}></video>
+      <video ref={video3}  style={{display: video3.current.peer  ? 'block' : 'none' }} id='video3' playsInline={true} autoPlay={true}></video>
+      <video ref={video4} style={{display:video4.current.peer  ? 'block' : 'none' }}  id='video4' playsInline={true} autoPlay={true}></video>
+      <video ref={video5}  style={{display: video5.current.peer  ? 'block' : 'none' }} id='video5' playsInline={true} autoPlay={true}></video>
+      <video ref={video6}  style={{display:video6.current.peer  ? 'block' : 'none' }}id='video6' playsInline={true} autoPlay={true}></video>
 
       <div className="box">
         <button  disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
