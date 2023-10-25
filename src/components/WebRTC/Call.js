@@ -11,15 +11,9 @@ export default function Call(props) {
 
   let [pcs, setPcs] = useState({})
   let localVideo = useRef(null);
-  const video1 = useRef({})
-  const video2 = useRef({})
-  const video3 = useRef({})
-  const video4 = useRef({})
-  const video5 = useRef({})
-  const video6 = useRef({})
-  setInterval(()=>{
-    console.log(pcs)
-  }, 3000)
+
+  const recipientsVideos = [useRef({}), useRef({}), useRef({}), useRef({}), useRef({}), useRef({})]
+
   useEffect(() => {
     // recuperer la liste des DM de l'utilisateur courant
     socket.on('webrtc:message', (message) => {
@@ -69,33 +63,23 @@ export default function Call(props) {
         pcs[key].close()
       }
       pcs = {}
-      setPcs({...pcs})
+      setPcs({})
       localStream.getTracks().forEach(track => {track.stop()});
       localStream = null;
       setStartButtonEnabled(true)
       setHangupButtonEnabled(false)
+      for (const recipient of recipientsVideos)
+          delete recipient.current.peer
+      
       return
     }
-    if (video1.current.peer === leaver) {
-      delete video1.current.peer
-    } else if (video2.current.peer === leaver) {
-      delete video2.current.peer
+    for (const recipient of recipientsVideos) {
+      if (recipient.current.peer === leaver) {
+        delete recipient.current.peer
+        break
+      }
     }
-    else if (video3.current.peer === leaver) {
-      delete video3.current.peer
-    }
-    else if (video3.current.peer === leaver) {
-      delete video3.current.peer
-    }
-    else if (video4.current.peer === leaver) {
-      delete video4.current.peer
-    }
-    else if (video5.current.peer === leaver) {
-      delete video5.current.peer
-    }
-    else if (video6.current.peer === leaver) {
-      delete video6.current.peer
-    }
+
     pcs[leaver].close();
     delete pcs[leaver]
     setPcs({...pcs})
@@ -124,29 +108,13 @@ export default function Call(props) {
       socket.emit('webrtc:message', message)
     };
     pcs[peer].ontrack = e => {
-      if (!video1.current.peer || video1.current.peer === peer) {
-        video1.current.srcObject = e.streams[0]
-        video1.current.peer = peer
-      }
-      else if (!video2.current.peer || video2.current.peer === peer) {
-        video2.current.srcObject = e.streams[0]
-        video2.current.peer = peer
-      }
-      else if (!video3.current.peer || video3.current.peer === peer) {
-        video3.current.srcObject = e.streams[0]
-        video3.current.peer = peer
-      }
-      else if (!video4.current.peer || video4.current.peer === peer) {
-        video4.current.srcObject = e.streams[0]
-        video4.current.peer = peer
-      }
-      else if (!video5.current.peer || video5.current.peer === peer) {
-        video5.current.srcObject = e.streams[0]
-        video5.current.peer = peer
-      }
-     else if (!video6.current.peer || video6.current.peer === peer) {
-        video6.current.srcObject = e.streams[0]
-        video6.current.peer = peer
+
+      for (const recipient of recipientsVideos) {
+        if (!recipient.current.peer || recipient.current.peer === peer) {
+          recipient.current.srcObject = e.streams[0]
+          recipient.current.peer = peer
+          break
+        }
       }
     };
     localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
@@ -199,7 +167,7 @@ export default function Call(props) {
 
   const startButtonClick = async function () {
     if (!localStream) {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: {width: 150, height: 150} });
       localVideo.current.srcObject = localStream;
     }
 
@@ -216,25 +184,25 @@ export default function Call(props) {
   };
 
   console.log(pcs)
-  console.log(video1.current.peer)
-  console.log(video2)
-  console.log(video3)
-
+  console.log(recipientsVideos)
   return (
     <div>
-      <video id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
-      <video ref={video1} style={{display:video1.current.peer != null ? 'block' : 'none' }} id='video1' playsInline={true} autoPlay={true}></video>
-      <video ref={video2} style={{display: video2.current.peer  ? 'block' : 'none' }}  id='video2' playsInline={true} autoPlay={true}></video>
-      <video ref={video3}  style={{display: video3.current.peer  ? 'block' : 'none' }} id='video3' playsInline={true} autoPlay={true}></video>
-      <video ref={video4} style={{display:video4.current.peer  ? 'block' : 'none' }}  id='video4' playsInline={true} autoPlay={true}></video>
-      <video ref={video5}  style={{display: video5.current.peer  ? 'block' : 'none' }} id='video5' playsInline={true} autoPlay={true}></video>
-      <video ref={video6}  style={{display:video6.current.peer  ? 'block' : 'none' }}id='video6' playsInline={true} autoPlay={true}></video>
+      <div>
+      <video style={{display:localStream ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
 
+      {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
+        return (
+          <video key={index} ref={recipientsVideos[index]}  style={{display:recipientsVideos[index].current.peer  ? 'inline-block' : 'none', padding: '10px' }} id={'video'+index} playsInline={true} autoPlay={true}></video>
+        )
+      })}
+      </div>
+      <div>
       <div className="box">
         <button  disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
         <button disabled={!hangupButtonEnabled}  onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
       </div>
 
+      </div>
     </div>
   );
 }
