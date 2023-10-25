@@ -147,7 +147,8 @@ export default function DM() {
         // recuperer la liste des DM de l'utilisateur courant
         cleanListeners(socket)
 
-        socket.emit('get_chats');
+        if (Object.keys(chats).length === 0)
+            socket.emit('get_chats');
       console.log(authContext)
         socket.on('message', () => {
             console.log('message received')
@@ -223,7 +224,7 @@ export default function DM() {
         return () => {
             cleanListeners(socket)
         };
-    }, [])
+    }, [chats])
 
     const handleSearchItemClick = async (e, item) => {
         if (item.uid === authContext.user.uid) {
