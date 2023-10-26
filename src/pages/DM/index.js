@@ -155,25 +155,7 @@ export default function DM() {
         });
 
         socket.on('user_invited_you', async (chat) => {
-                        let chats = {}
-                          const _chats = {...chats}
-                const { id, messages, recipients } = chat
-                  _chats[id] = { id, messages: [], recipients: [] }
-                
-                  _chats[id].messages = messages.filter((m) => m.id != null)
-      
-
-                for (const recipient of recipients) {
-                  if (recipient === authContext.user.uid)
-                  continue
-                  _chats[id].recipients.push(await fetchUser(recipient))
-                }
-                
-            
-
-            socket.emit('join', id)
-
-            setChats(_chats)
+            socket.emit('get_chats');
         });
 
         socket.on('user_posted_message', (message) => {
