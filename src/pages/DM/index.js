@@ -100,8 +100,6 @@ export default function DM() {
             delete _chats[selectedChatId]
             setChats(_chats)
             setSelectedChatId(chat.id)
-
-            socket.join(chat.id)
         })
 
         socket.emit('create_chat', obj)
@@ -117,7 +115,7 @@ export default function DM() {
         })
 
         const obj = {
-            author: authContext.user.uid,
+            userId: authContext.user.uid,
             chatId: selectedChatId,
             content: message.content
         }
@@ -138,17 +136,12 @@ export default function DM() {
         socket.off('user_posted_message');
         socket.off('posted_message');
         socket.off('chat_created');
-        socket.off('join');
 
     }
-
-  
     useEffect(() => {
         // recuperer la liste des DM de l'utilisateur courant
         cleanListeners(socket)
 
-        if (Object.keys(chats).length === 0)
-            socket.emit('get_chats');
       console.log(authContext)
         socket.on('message', () => {
             console.log('message received')
@@ -207,6 +200,11 @@ export default function DM() {
             cleanListeners(socket)
         };
     }, [chats])
+
+
+    useEffect(()=> {
+        socket.emit('get_chats');
+    }, [])
 
     const handleSearchItemClick = async (e, item) => {
         if (item.uid === authContext.user.uid) {

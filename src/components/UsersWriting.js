@@ -29,7 +29,7 @@ class UsersWriting extends React.Component {
     componentDidMount() {
         this.state.socket.on('user_writing', ({ user, chatId }) => {
             const { selectedChatId, usersWriting, clearUsersWritingHOF } = this.state
-            if (chatId === selectedChatId) {
+            if (chatId == selectedChatId) {
                 if (usersWriting[user.uid] == null) {
                     const _usersWriting = { ...usersWriting }
                     _usersWriting[user.uid] = user
