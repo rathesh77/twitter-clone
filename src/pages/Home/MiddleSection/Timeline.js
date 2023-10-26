@@ -45,20 +45,23 @@ export default function Timeline() {
       if (relationship === 'WROTE_TWEET')
       tweets.push(res)
     }
-    for (let i = 0; i < tweets.length; i++) {
-      if (seenTweets[results[i].tweet.uid]) {
+
+    for (let i = 0; i < results.length; i++) {
+      if (seenTweets[results[i].tweet.uid] && results[i].relation == 'WROTE_TWEET') {
+        const tweet = tweets.find((t) => t.tweet.uid === results[i].tweet.uid)
         for (let j = 0; j <seenTweets[results[i].tweet.uid].length; j++) {
           const item = {
             author: seenTweets[results[i].tweet.uid][j].author,
             relationship: seenTweets[results[i].tweet.uid][j].relationship
           }
-          if (!tweets[i].userRelations) {
-            tweets[i].userRelations = [item]
+          if (!tweet.userRelations) {
+            tweet.userRelations = [item]
           } else
-          tweets[i].userRelations.push(item)
+          tweet.userRelations.push(item)
         }
       }
     }
+    console.log(tweets)
     setDeepTweets(tweets)
   }
 
