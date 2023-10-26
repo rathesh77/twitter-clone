@@ -29,6 +29,8 @@ export default function Call(props) {
         console.log('not ready yet');
         return;
       }
+      if (message.chatId != chatId)
+        return
 
       switch (message.type) {
         case 'offer':
