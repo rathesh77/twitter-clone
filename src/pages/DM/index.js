@@ -328,7 +328,7 @@ export default function DM() {
                     <div>
                         <Chat socket={socket} emitWritingEvent={emitWritingEvent} key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />
                         <div>
-                            <UsersWriting selectedChatId={selectedChatId} socket={socket}/>
+                            <UsersWriting key={selectedChatId} selectedChatId={selectedChatId} socket={socket}/>
                         </div>
                     </div>
 
