@@ -32,36 +32,36 @@ export default function Chat(props) {
             postMessage: chat
         }
     */
-    const messagesListContainer = useRef(null);
-
-    const authContext = useContext(AuthContext)
-    const { selectedChat, createChat, postMessage, emitWritingEvent, socket } = props
-    const { recipients } = selectedChat
-    const [messages] = useState(selectedChat.messages)
-    const [startButtonEnabled, setStartButtonEnabled] = useState(true);
-    const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
+  
+   const authContext = useContext(AuthContext)
+   const { selectedChat, createChat, postMessage, emitWritingEvent } = props
+   const { recipients } = selectedChat
+   
+   const [messages] = useState(selectedChat.messages)
+   const [event, setEvent] = useState(null)
+   const [localStreamInfos, setLocalStreamInfos] = useState({})
+   const [startButtonEnabled, setStartButtonEnabled] = useState(true);
+   const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
+   const [isCallRunning, setIsCallRunning] = useState(false)
+   
+   const messagesListContainer = useRef(null);
     let localVideo = useRef(null);
-
     const [recipientsVideos, setRecipientsVideos] = useState([useRef({}), useRef({}), useRef({}), useRef({}), useRef({}), useRef({})])
 
-    const [isCallRunning, setIsCallRunning] = useState(false)
-
-    const [event, setEvent] = useState(null)
-    
     const updateStreams = function(s) {
-        const {peer, stream} = s
+        const {peer, stream, video, audio} = s
         for (const recipient of recipientsVideos) {
             if (!recipient.current.peer || recipient.current.peer === peer) {
               recipient.current.srcObject = stream
               recipient.current.peer = peer
+              recipient.current.video = video
+              recipient.current.audio = audio
               break
             }
           }
-
-          setRecipientsVideos([...recipientsVideos])
-
-     
+          setRecipientsVideos([...recipientsVideos])     
     }
+    
     const callbackWhenCallStarts= (localStream) =>{
         setStartButtonEnabled(false)
         setHangupButtonEnabled(true)
@@ -156,14 +156,14 @@ export default function Chat(props) {
                         <button disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
                         <button disabled={!hangupButtonEnabled} onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
                     </div>
-                    <Call setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId}  callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></Call>
+                    <Call setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId}  callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></Call>
                 </div>
                 <div>
-                    <video style={{ display: isCallRunning ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
+                    <video style={{ display: isCallRunning && localStreamInfos.video ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
 
                     {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
                         return (
-                            <video key={index} ref={recipientsVideos[index]} style={{ display: recipientsVideos[index].current.peer ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                            <video key={index} ref={recipientsVideos[index]} style={{ display: recipientsVideos[index].current.peer && recipientsVideos[index].current.video ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
                         )
                     })}
                 </div>

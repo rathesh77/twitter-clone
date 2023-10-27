@@ -5,7 +5,7 @@ let localStream = null
 
 export default function Call(props) {
 
-  let { chatId, event, callbackWhenUserLeaves, updateStreams, callbackWhenCallStarts, callbackWhenCallStops, setIsCallRunning } = props
+  let { chatId, event, callbackWhenUserLeaves, updateStreams, callbackWhenCallStarts, callbackWhenCallStops, setIsCallRunning, setLocalStreamInfos } = props
 
   let [pcs, setPcs] = useState({})
 
@@ -113,8 +113,13 @@ export default function Call(props) {
 
       let streams = {}
       streams[peer] = e.streams[0];
-      updateStreams({peer, stream: e.streams[0]})
-
+      
+      updateStreams({
+        peer, 
+        stream: e.streams[0], 
+        video: streams[peer].getVideoTracks().length > 0, 
+        audio: streams[peer].getVideoTracks().length > 0
+      })
     };
     localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
     setPcs({...pcs})
@@ -165,9 +170,18 @@ export default function Call(props) {
 
 
   const startButtonClick = async function () {
-    if (!localStream)
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: {width: 150, height: 150} });
-    
+    if (!localStream) {
+      try {
+        const mediaStreamConstraints = { audio: true, video: { width: 150, height: 150 } }
+        localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
+        setLocalStreamInfos(mediaStreamConstraints)
+      } catch (e) {
+        console.log(e)
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        setLocalStreamInfos({ video: false, audio: true })
+
+      }
+    }
     callbackWhenCallStarts(localStream)
     setIsCallRunning(true)
 
