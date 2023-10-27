@@ -425,13 +425,40 @@ button {
     & > h1> span:not(:first-child)::before{
       content: ', '
     }
+    .call-buttons {
+
+      .call-button {
+        color:white;
+        padding: 8px; 
+        border-radius:50%;
+      }
+      #startButton {
+        background-color: green;
+        margin-right:5px;
+      }
+      #hangupButton {
+        background-color: red;
+      }
+    }
   }
   
   .DM-header-container {
 
     padding-left: 10px;
     border-bottom: 1px solid black;
-
+    .call-participants {
+    display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    .call-participant-avatar {
+      width: 150px;
+      height: 150px;
+      margin: 5px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    }
   }
   .DM-messages {
     display: flex;

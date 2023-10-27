@@ -7,6 +7,8 @@ import WysiwygForm from '../../components/form/WysiwygForm';
 import { postMedia } from '../../services/tweetServices';
 import { axiosInstance } from '../../axios';
 import Call from '../../components/WebRTC/Call';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPhone, faPhoneSlash } from '@fortawesome/free-solid-svg-icons'
 
 const style = {
     'editor': {
@@ -49,11 +51,14 @@ export default function Chat(props) {
     const [recipientsVideos, setRecipientsVideos] = useState([useRef({}), useRef({}), useRef({}), useRef({}), useRef({}), useRef({})])
 
     const updateStreams = function(s) {
-        const {peer, stream, video, audio} = s
+        const {peer, stream, video, audio, userId} = s
         for (const recipient of recipientsVideos) {
             if (!recipient.current.peer || recipient.current.peer === peer) {
               recipient.current.srcObject = stream
               recipient.current.peer = peer
+
+              const recipientUser =  selectedChat.recipients.find((r) => r.uid === userId)
+              recipient.current.avatar = recipientUser ? (recipientUser.avatar) : (authContext.user.avatar ? authContext.user.avatar : '')
               recipient.current.video = video
               recipient.current.audio = audio
               break
@@ -72,14 +77,22 @@ export default function Chat(props) {
         for (const recipient of recipientsVideos) {
             if (recipient.current.peer === leaver) {
               delete recipient.current.peer
+              delete recipient.current.avatar
+              delete recipient.current.video
+              delete recipient.current.audio
+
               break
             }
           }
           setRecipientsVideos(recipientsVideos)
     }
     const callbackWhenCallStops = () => {
-        for (const recipient of recipientsVideos)
-            delete recipient.current.peer
+        for (const recipient of recipientsVideos) {
+          delete recipient.current.peer
+          delete recipient.current.avatar
+          delete recipient.current.video
+          delete recipient.current.audio
+        }
     
         setStartButtonEnabled(true)
         setHangupButtonEnabled(false)
@@ -89,11 +102,13 @@ export default function Chat(props) {
         setIsCallRunning(false)
     }
     const startButtonClick = async function () {
+      if (startButtonEnabled)
         setEvent('startCall')
       }
     
       const hangupButtonClick = async function () {
-        setEvent('stopCall')
+        if (hangupButtonEnabled)
+          setEvent('stopCall')
       };
 
     const uploadImage = async (file) => {
@@ -152,18 +167,29 @@ export default function Chat(props) {
                             return (<span key={r.uid}>{r.username}</span>)
                         })}
                     </h1>
-                    <div className="box">
-                        <button disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
-                        <button disabled={!hangupButtonEnabled} onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
+                    <div className="call-buttons">
+                        <span className='call-button' style={startButtonEnabled ? { opacity: '1', cursor: 'pointer' } : { opacity: '0.3', cursor: 'not-allowed' }} disabled={!startButtonEnabled} onClick={startButtonClick} id="startButton"><FontAwesomeIcon icon={faPhone} size='lg' /></span>
+                        <span className='call-button' style={hangupButtonEnabled ? { opacity: '1', cursor: 'pointer' } : { opacity: '0.3', cursor: 'not-allowed' }} disabled={!hangupButtonEnabled} onClick={hangupButtonClick} id="hangupButton"><FontAwesomeIcon icon={faPhoneSlash} size='lg' /></span>
                     </div>
-                    <Call setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId}  callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></Call>
+                    <Call setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId} callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></Call>
                 </div>
-                <div>
+                <div className='call-participants'>
+                    {
+                        localStreamInfos.audio && isCallRunning ? <div className='call-participant-avatar' style={{ backgroundImage: `url(${authContext.user.avatar})` }} > </div>
+                            : ''
+
+                    }
                     <video style={{ display: isCallRunning && localStreamInfos.video ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
 
                     {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
                         return (
-                            <video key={index} ref={recipientsVideos[index]} style={{ display: recipientsVideos[index].current.peer && recipientsVideos[index].current.video ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                            <div key={index}>
+                                <video ref={recipientsVideos[index]} style={{ display: recipientsVideos[index].current.peer && recipientsVideos[index].current.video && isCallRunning ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                                {isCallRunning && recipientsVideos[index].current.peer ?
+                                    <div className='call-participant-avatar' style={{ backgroundImage: `url(${recipientsVideos[index].current.avatar})` }}></div>
+                                    : ''
+                                }
+                            </div>
                         )
                     })}
                 </div>

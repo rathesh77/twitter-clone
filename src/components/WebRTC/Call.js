@@ -48,7 +48,7 @@ export default function Call(props) {
             return
           }
           // A second tab joined. This tab will initiate a call unless in a call already.
-          makeCall(message.initiator);
+          makeCall(message);
           break;
         case 'bye':
           if (message.leaver && pcs[message.leaver]) {
@@ -93,7 +93,7 @@ export default function Call(props) {
 
     }
   };
-  function createPeerConnection(peer) {
+  function createPeerConnection(peer, userId) {
     pcs[peer] = new RTCPeerConnection({});
     pcs[peer].onicecandidate = e => {
       const message = {
@@ -115,18 +115,19 @@ export default function Call(props) {
       streams[peer] = e.streams[0];
       
       updateStreams({
-        peer, 
+        peer,
+        userId,
         stream: e.streams[0], 
-        video: streams[peer].getVideoTracks().length > 0, 
-        audio: streams[peer].getVideoTracks().length > 0
+        video: streams[peer].getVideoTracks().length > 0 ? true : false, 
+        audio: streams[peer].getVideoTracks().length > 0 ? true : false
       })
     };
     localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
     setPcs({...pcs})
   }
 
-  async function makeCall(initiator) {
-    await createPeerConnection(initiator);
+  async function makeCall({initiator, userId}) {
+    await createPeerConnection(initiator, userId);
 
     const offer = await pcs[initiator].createOffer();
     socket.emit('webrtc:message', { type: 'offer', sdp: offer.sdp, chatId, initiator, responder: socket.id })
@@ -135,10 +136,10 @@ export default function Call(props) {
 
   async function handleOffer(offer) {
 
-    const {initiator, responder} = offer
+    const {initiator, responder, userId} = offer
     console.log('got offer from responder:' + responder)
 
-    await createPeerConnection(responder);
+    await createPeerConnection(responder, userId);
     await pcs[responder].setRemoteDescription(offer);
 
     const answer = await pcs[responder].createAnswer();
@@ -171,14 +172,16 @@ export default function Call(props) {
 
   const startButtonClick = async function () {
     if (!localStream) {
+      let mediaStreamConstraints
       try {
-        const mediaStreamConstraints = { audio: true, video: { width: 150, height: 150 } }
+        mediaStreamConstraints = { audio: true, video: { width: 150, height: 150 } }
         localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
         setLocalStreamInfos(mediaStreamConstraints)
       } catch (e) {
         console.log(e)
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        setLocalStreamInfos({ video: false, audio: true })
+        mediaStreamConstraints = { video: false, audio: true }
+        localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
+        setLocalStreamInfos(mediaStreamConstraints)
 
       }
     }
