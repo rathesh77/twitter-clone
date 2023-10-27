@@ -13,11 +13,8 @@ export default function Timeline() {
 
   const updateTweetsList = (data) => {
     const update = [...deepTweets]
-    const { uid } = data
     update.unshift({
-      tweetId: uid,
       ...data
-
     })
     setDeepTweets(update)
   }
@@ -28,11 +25,11 @@ export default function Timeline() {
     const tweets = []
     const seenTweets = {}
     for (const res of results) {
-      if (!res._fields[0])
+      if (!res)
         continue
-      const message = res._fields[2].properties
-      let author = res._fields[0].properties
-      const relationship = res._fields[1]
+      const message = res.tweet
+      let author = res.user
+      const relationship = res.relation
       if (relationship === 'RETWEETED') {
         if (message.uid in seenTweets) {
           seenTweets[message.uid].push({ author, relationship })
@@ -43,26 +40,25 @@ export default function Timeline() {
         continue
       }
       if (relationship === 'WROTE_TWEET')
-      tweets.push({
-        tweetId: message.uid,
-        author,
-        ...message
-      })
+      tweets.push(res)
     }
-    for (let i = 0; i < tweets.length; i++) {
-      if (seenTweets[tweets[i].tweetId]) {
-        for (let j = 0; j <seenTweets[tweets[i].tweetId].length; j++) {
+
+    for (let i = 0; i < results.length; i++) {
+      if (seenTweets[results[i].tweet.uid] && results[i].relation == 'WROTE_TWEET') {
+        const tweet = tweets.find((t) => t.tweet.uid === results[i].tweet.uid)
+        for (let j = 0; j <seenTweets[results[i].tweet.uid].length; j++) {
           const item = {
-            author: seenTweets[tweets[i].tweetId][j].author,
-            relationship: seenTweets[tweets[i].tweetId][j].relationship
+            author: seenTweets[results[i].tweet.uid][j].author,
+            relationship: seenTweets[results[i].tweet.uid][j].relationship
           }
-          if (!tweets[i].userRelations) {
-            tweets[i].userRelations = [item]
+          if (!tweet.userRelations) {
+            tweet.userRelations = [item]
           } else
-            tweets[i].userRelations.push(item)
+          tweet.userRelations.push(item)
         }
       }
     }
+    console.log(tweets)
     setDeepTweets(tweets)
   }
 

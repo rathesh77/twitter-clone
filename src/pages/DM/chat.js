@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../../authContext';
 import Message from '../../components/Message';
@@ -6,6 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import WysiwygForm from '../../components/form/WysiwygForm';
 import { postMedia } from '../../services/tweetServices';
 import { axiosInstance } from '../../axios';
+import Call from '../../components/WebRTC/Call';
 
 const style = {
     'editor': {
@@ -34,16 +35,72 @@ export default function Chat(props) {
     const messagesListContainer = useRef(null);
 
     const authContext = useContext(AuthContext)
-    const { selectedChat, createChat, postMessage, emitWritingEvent } = props
+    const { selectedChat, createChat, postMessage, emitWritingEvent, socket } = props
     const { recipients } = selectedChat
     const [messages] = useState(selectedChat.messages)
+    const [startButtonEnabled, setStartButtonEnabled] = useState(true);
+    const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
+    let localVideo = useRef(null);
+
+    const [recipientsVideos, setRecipientsVideos] = useState([useRef({}), useRef({}), useRef({}), useRef({}), useRef({}), useRef({})])
+
+    const [isCallRunning, setIsCallRunning] = useState(false)
+
+    const [event, setEvent] = useState(null)
+    
+    const updateStreams = function(s) {
+        const {peer, stream} = s
+        for (const recipient of recipientsVideos) {
+            if (!recipient.current.peer || recipient.current.peer === peer) {
+              recipient.current.srcObject = stream
+              recipient.current.peer = peer
+              break
+            }
+          }
+
+          setRecipientsVideos([...recipientsVideos])
+
+     
+    }
+    const callbackWhenCallStarts= (localStream) =>{
+        setStartButtonEnabled(false)
+        setHangupButtonEnabled(true)
+        localVideo.current.srcObject = localStream;
+    }
+
+    const callbackWhenUserLeaves = (leaver) => {
+        for (const recipient of recipientsVideos) {
+            if (recipient.current.peer === leaver) {
+              delete recipient.current.peer
+              break
+            }
+          }
+          setRecipientsVideos(recipientsVideos)
+    }
+    const callbackWhenCallStops = () => {
+        for (const recipient of recipientsVideos)
+            delete recipient.current.peer
+    
+        setStartButtonEnabled(true)
+        setHangupButtonEnabled(false)
+
+        setEvent(null)
+
+        setIsCallRunning(false)
+    }
+    const startButtonClick = async function () {
+        setEvent('startCall')
+      }
+    
+      const hangupButtonClick = async function () {
+        setEvent('stopCall')
+      };
 
     const uploadImage = async (file) => {
         return await postMedia(file)
     }
 
     const handleMessagePost = async (formContent, file) => {
-        console.log(formContent, file)
         if (file == null && (formContent == null || formContent.trim().length === 0))
             return
 
@@ -67,7 +124,7 @@ export default function Chat(props) {
             content,
             date: Date.now()
         }
-        if (messages.length == 0) {
+        if (messages.length === 0) {
             createChat(newMessage)
         } else {
             postMessage({ ...newMessage, chatId: selectedChat.chatId })
@@ -75,7 +132,7 @@ export default function Chat(props) {
     }
 
     const findAuthorOfMessage = (message) => {
-        const recipient = recipients.find((r) => r.uid == message.idUser)
+        const recipient = recipients.find((r) => r.uid === message.userId)
         if (recipient == null) {
             return authContext.user
         }
@@ -95,18 +152,32 @@ export default function Chat(props) {
                             return (<span key={r.uid}>{r.username}</span>)
                         })}
                     </h1>
+                    <div className="box">
+                        <button disabled={!startButtonEnabled} id="startButton" onClick={startButtonClick}>Start</button>
+                        <button disabled={!hangupButtonEnabled} onClick={hangupButtonClick} id="hangupButton">Hang Up</button>
+                    </div>
+                    <Call setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId}  callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></Call>
+                </div>
+                <div>
+                    <video style={{ display: isCallRunning ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
+
+                    {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
+                        return (
+                            <video key={index} ref={recipientsVideos[index]} style={{ display: recipientsVideos[index].current.peer ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                        )
+                    })}
                 </div>
             </div>
 
             <div className='DM-messages' ref={messagesListContainer}>
                 {messages.map((m) => {
                     return (
-                        <Message key={m.messageId} content={m.content} author={findAuthorOfMessage(m)} date={m.date} />
+                        <Message key={m.id} content={m.content} author={findAuthorOfMessage(m)} date={m.date} />
                     )
                 })}
             </div>
             <div className='write-message'>
-                <WysiwygForm placeholder="Ecrire un message" action={handleMessagePost} button={<Button><SendIcon /></Button>} style={style} />
+                <WysiwygForm placeholder="Ecrire un message" emitWritingEvent={emitWritingEvent} action={handleMessagePost} button={<Button><SendIcon /></Button>} style={style} />
             </div>
         </div>
     )

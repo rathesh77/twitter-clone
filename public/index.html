@@ -42,23 +42,7 @@
   <script>
     document.addEventListener('rendered', function () {
       console.log('DOM fully loaded and parsed');
-      const container = document.getElementsByClassName('main-pane-container')[0]
-      if (!container)
-        return
-      const rightSectionContainer =  document.getElementsByClassName('right-section')[0]
-      const rightSectionContainerHeight = rightSectionContainer.offsetHeight + 30
-      const containerHeight = container.offsetHeight
-      container.addEventListener('scroll', function (e) {
-        if (container.scrollTop >= (rightSectionContainerHeight - containerHeight)) {
-          if (rightSectionContainerHeight <= containerHeight) {
-            rightSectionContainer.style.marginTop = container.scrollTop + 'px'
-          } else {
-            rightSectionContainer.style.marginTop = (container.scrollTop - (rightSectionContainerHeight - containerHeight)) + 'px'
-          }
-        } else if (container.scrollTop === 0) {
-          rightSectionContainer.style.marginTop = '0px'
-        }
-      })
+
     }, false)
 
   </script>

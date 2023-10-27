@@ -29,7 +29,7 @@ class UsersWriting extends React.Component {
     componentDidMount() {
         this.state.socket.on('user_writing', ({ user, chatId }) => {
             const { selectedChatId, usersWriting, clearUsersWritingHOF } = this.state
-            if (chatId === selectedChatId) {
+            if (chatId == selectedChatId) {
                 if (usersWriting[user.uid] == null) {
                     const _usersWriting = { ...usersWriting }
                     _usersWriting[user.uid] = user
@@ -53,11 +53,11 @@ class UsersWriting extends React.Component {
     render() {
         const { usersWriting } = this.state
         return (
-            <div>
+            <div style={{'position': 'relative', bottom: '140px', 'left': '20px'}}>
                 {Object.keys(usersWriting).length > 0 ?
                     Object.keys(usersWriting).length > 1 ?
                         "Plusieurs personnes ecrivent..." :
-                        usersWriting[Object.keys(usersWriting)[0]].username + ' ecrit' :
+                        usersWriting[Object.keys(usersWriting)[0]].username + ' ecrit...' :
                     null}
             </div>
         )

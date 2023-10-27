@@ -23,7 +23,7 @@ export default function RightSection() {
         <SearchEngine setSearchResults={setSearchResults}/>
         <div className='search-results'>
           {searchResults.map((s) => {
-            const properties = s._fields[0].properties
+            const properties = s
             return (
               <div key={properties.uid} className='search-item' onClick={(e) => { handleSearchItemClick(e, properties) }}>
                 <Avatar sx={{ marginRight: "10px", marginLeft: "10px", width: "60px", height: "60px" }} src={properties.avatar} alt='Spic' />

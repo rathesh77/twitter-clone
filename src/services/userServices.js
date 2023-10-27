@@ -19,9 +19,7 @@ export const fetchUser = async (userId) => {
   try {
     const response = await axiosInstance.get(`/user?id=${userId}`)
     if (response.status === 200) {
-
-      const { data } = response
-      return data._fields[0].properties
+      return response.data
     }
     return false
   } catch (e) {

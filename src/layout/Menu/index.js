@@ -25,7 +25,6 @@ export default function LeftPane() {
 
   const handleGeneralClick = (e) => {
     const link = e.target.getAttribute('data-link')
-    console.log(link, pathname)
     if (pathname !== link) {
       navigate(link)
     }

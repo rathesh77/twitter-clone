@@ -9,19 +9,23 @@ import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import { postLikeTweet, postDislikeTweet, postRetweet } from "../services/tweetServices";
 
 export default function Tweet(props) {
-  const [uid] = useState(props.uid);
-  const [message] = useState(props.content);
-  const [author] = useState(props.author);
-  const [timestamp] = useState(formatDate(props.date));
-  const [likes, setLikes] = useState(props.likes);
-  const [retweets, setRetweets] = useState(props.retweets);
-  const [dislikes, setDislikes] = useState(props.dislikes);
-  const [replies] = useState(props.replies);
+  const [uid] = useState(props.tweet.uid);
+  const [message] = useState(props.tweet.content);
+  const [author] = useState(props.user);
+  const [timestamp] = useState(formatDate(props.tweet.date));
+  const [likes, setLikes] = useState(props.tweet.likes);
+  const [retweets, setRetweets] = useState(props.tweet.retweets);
+  const [dislikes, setDislikes] = useState(props.tweet.dislikes);
+  const [enabledButtons, setEnabledButtons] = useState(true);
+
+  const [replies] = useState(props.tweet.replies);
   const [userRelations] = useState(props.userRelations != null ? props.userRelations : [])
 
   const handleRetweetClick = async (e) => {
     e.stopPropagation()
     const results = await postRetweet(uid)
+    if (!results)
+      return;
     const {retweetsIncrement} = results
 
     setRetweets(retweets + retweetsIncrement)
@@ -29,19 +33,37 @@ export default function Tweet(props) {
 
   const handleLikeClick = async (e) => {
     e.stopPropagation()
-    const results = await postLikeTweet(uid)
-    const {likesIncrement, dislikesDecrement} = results
+    if (!enabledButtons)
+      return
+    setEnabledButtons(false)
+
+    const result = await postLikeTweet(uid)
+    if (!result) {
+      return
+    }
+    const {likesIncrement, dislikesIncrement} = result
     setLikes(likes + likesIncrement)
-    setDislikes(dislikes - dislikesDecrement)
+    setDislikes(dislikes + dislikesIncrement)
+    setTimeout(()=> {
+      setEnabledButtons(true)
+    }, 2000)
   }
 
   const handleDislikeClick = async (e) => {
     e.stopPropagation()
+    if (!enabledButtons)
+      return
+    setEnabledButtons(false)
     const result = await postDislikeTweet(uid)
-    const {dislikesIncrement, likesDecrement} = result
+    if (!result) {
+      return
+    }
+    const {dislikesIncrement, likesIncrement} = result
     setDislikes(dislikes + dislikesIncrement)
-    setLikes(likes - likesDecrement)
-
+    setLikes(likes + likesIncrement)
+    setTimeout(()=> {
+      setEnabledButtons(true)
+    }, 2000)
   }
 
   let headerRelation = userRelations

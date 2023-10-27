@@ -70,15 +70,9 @@ export default function Profile(props) {
       const results = await fetchRelatedTweets(userId)
       const tweets = []
       for (const res of results) {
-        if (res._fields[1] !== 'WROTE_TWEET')
+        if (res.relation !== 'WROTE_TWEET')
           continue
-        const message = res._fields[0].properties
-        const author = res._fields[2].properties
-        tweets.push({
-          author,
-          ...message
-
-        })
+        tweets.push(res)
       }
       setUserTweets(tweets)
     })()

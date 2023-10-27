@@ -6,7 +6,7 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 import Main from './layout/index.js'
-import Login from './pages/Login'
+import Login from './pages/login'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './middlewares/PrivateRoute';
 import AuthContext from './authContext'
@@ -17,6 +17,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { blueGrey, common, grey } from '@mui/material/colors';
 
 import {fetchMe} from './services/userServices.js'
+import { socket } from './socket';
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -72,25 +74,33 @@ function App() {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true);
 
+
   const getMe = async () => {
-    const response = await fetchMe()
-    if (response) {
-      console.log(response)
-      setUser(response)
+    const user = await fetchMe()
+    if (user) {
+      console.log(user)
+      setUser(user)
     }
     setIsLoading(false)
     
   }
 
   useEffect(() => {
-
-    if (user == null) {
+    if (user == null)
       getMe()
-    }
+    
+    if (user)
+      socket.connect()
+    else if (socket.conected)
+      socket.disconnect()
+    
   }, [user])
+
+
   if (isLoading) {
     return (<div>LOADING</div>)
   }
+  console.log('REFRESH APP')
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />

@@ -419,6 +419,8 @@ button {
   display: flex;
   flex-direction: column;
   .DM-header {
+    align-items: center;
+    justify-content:space-between;
     display: flex;
     & > h1> span:not(:first-child)::before{
       content: ', '

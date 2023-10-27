@@ -1,25 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../../authContext';
 import Chat from './chat';
-import { Manager } from "socket.io-client";
 import SearchEngine from '../../components/SearchEngine';
 import { Avatar, Button, Modal, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import { fetchUser } from '../../services/userServices';
 import { blue } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
-import { axiosInstance } from '../../axios';
+
+
 import ClickableUser from '../../components/ClickableUser';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import UsersWriting from '../../components/UsersWriting';
+import { socket } from '../../socket';
 
-const manager = new Manager(axiosInstance.defaults.baseURL, {
-    autoConnect: false,
-    secure: false,
-    withCredentials: true
-})
-
-const socket = manager.socket("/")
 
 const style = {
     position: 'absolute',
@@ -36,17 +30,17 @@ export default function DM() {
 
     const authContext = useContext(AuthContext)
 
+    
     const [searchResults, setSearchResults] = useState([])
     const [selectedRecipients, setSelectedRecipients] = useState([])
     const [open, setOpen] = useState(false)
     const [chats, setChats] = useState({})
     const [selectedChatId, setSelectedChatId] = useState(null)
-    const [newChat, setNewChat] = useState(null)
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         /*
        ---------- MODEL D'UN CHAT: ---------
-               idChat <- "0": {
+               chatId <- "0": {
                     chatId,
                     messages,
                     recipients <- ne doit pas inclure l'user courant
@@ -94,20 +88,18 @@ export default function DM() {
     const createChat = (message) => {
         const _chats = { ...chats }
         const obj = {
-            author: authContext.user,
             recipients: _chats[selectedChatId].recipients,
             content: message.content
         }
         //setChats(_chats)
-        socket.on('chat_created', ({ chatId, messageId }) => {
+        socket.on('chat_created', (chat) => {
             socket.off('chat_created')
-            _chats[chatId] = _chats[selectedChatId]
-            _chats[chatId].messages.push({ ...message, messageId })
-            _chats[chatId].chatId = chatId
+            _chats[chat.id] = _chats[selectedChatId]
+            _chats[chat.id].messages = chat.messages 
+            _chats[chat.id].chatId = chat.id
             delete _chats[selectedChatId]
             setChats(_chats)
-            setSelectedChatId(chatId)
-            socket.join(chatId)
+            setSelectedChatId(chat.id)
         })
 
         socket.emit('create_chat', obj)
@@ -115,15 +107,16 @@ export default function DM() {
     }
     const postMessage = (message) => {
         const _chats = { ...chats }
-        socket.on('posted_message', (messageId) => {
+        socket.on('posted_message', (id) => {
             socket.off('posted_message')
-            _chats[selectedChatId].messages.push({ ...message, messageId })
+            const {content, date} = message
+            _chats[selectedChatId].messages.push({ content, date, userId: message.author.uid, id })
             setChats(_chats)
         })
 
         const obj = {
-            author: authContext.user.uid,
-            chatId: message.chatId,
+            userId: authContext.user.uid,
+            chatId: selectedChatId,
             content: message.content
         }
         socket.emit('post_message', obj)
@@ -131,7 +124,7 @@ export default function DM() {
     }
 
     const emitWritingEvent = () => {
-        socket.emit('writing', {user: authContext.user, chatId: selectedChatId})
+        socket.emit('writing', { chatId: selectedChatId })
     }
 
     const cleanListeners = (socket) => {
@@ -143,48 +136,18 @@ export default function DM() {
         socket.off('user_posted_message');
         socket.off('posted_message');
         socket.off('chat_created');
-        socket.off('join');
 
     }
-
-    useEffect(()=> {
-        console.log('2nd effect refresh')
-                /*
-            author: authContext.user.uid, 
-            recipients: _chats[selectedChatId].recipients,
-            content: message.content
-        */
-       if (newChat == null)
-            return
-        const { author, recipients, content, chatId, messageId } = newChat
-        const _chats = { ...chats }
-
-        const message = {
-            content,
-            date: Date.now(),
-            idUser: author.uid,
-            messageId
-        }
-        _chats[chatId] = { recipients, messages: [message], chatId }
-        socket.emit('join', newChat.chatId)
-        setChats(_chats)
-    },[newChat])
     useEffect(() => {
         // recuperer la liste des DM de l'utilisateur courant
-        socket.connect()
         cleanListeners(socket)
-
-        socket.on('connect', () => {
-            socket.emit('get_chats', authContext.user);
-
-        });
 
         socket.on('message', () => {
             console.log('message received')
         });
 
-        socket.on('user_invited_you', (chat) => {
-            setNewChat(chat)
+        socket.on('user_invited_you', async (chat) => {
+            socket.emit('get_chats');
         });
 
         socket.on('user_posted_message', (message) => {
@@ -199,7 +162,7 @@ export default function DM() {
             [
                 {
                     chatId,
-                    idUser,
+                    userId,
                     content: nullable,
                     messageId : nullable
                 }
@@ -208,7 +171,7 @@ export default function DM() {
             */
             /*
              chats : {
-                idChat <- "0": {
+                chatId <- "0": {
                      chatId,
                      messages,
                      recipients <- ne doit pas inclure l'user courant
@@ -218,15 +181,15 @@ export default function DM() {
             */
             let chats = {}
             for (const chat of data) {
-                const { chatId, idUser, content, messageId, date } = chat
+                const { chatId, userId, content, messageId, date } = chat
                 if (!chats[chatId]) {
                     chats[chatId] = { chatId, messages: [], recipients: [] }
                 }
                 if (messageId != null) {
-                    chats[chatId].messages.push({ messageId, content, idUser, date })
+                    chats[chatId].messages.push({ id: messageId, content, userId, date })
                 }
-                if (idUser !== authContext.user.uid && chats[chatId].recipients.find((r) => r.uid === idUser) == null) {
-                    chats[chatId].recipients.push(await fetchUser(idUser))
+                if (userId !== authContext.user.uid && chats[chatId].recipients.find((r) => r.uid === userId) == null) {
+                    chats[chatId].recipients.push(await fetchUser(userId))
                 }
             }
             setChats(chats)
@@ -234,8 +197,12 @@ export default function DM() {
 
         return () => {
             cleanListeners(socket)
-            socket.disconnect()
         };
+    }, [chats])
+
+
+    useEffect(()=> {
+        socket.emit('get_chats');
     }, [])
 
     const handleSearchItemClick = async (e, item) => {
@@ -250,7 +217,7 @@ export default function DM() {
         setSelectedRecipients([...selectedRecipients, item])
         setSearchResults([])
     }
-    console.log('refresh')
+
     return (
         <div className='dm-container'>
             <div className='dm-list-container'>
@@ -292,7 +259,7 @@ export default function DM() {
                         </div>
                         <div> {/* search results*/}
                             {searchResults.map((s) => {
-                                const properties = s._fields[0].properties
+                                const properties = s
                                 return (
                                     <div key={properties.uid} className='search-item' onClick={(e) => { handleSearchItemClick(e, properties) }}>
                                         <Avatar sx={{ width: "60px", height: "60px" }} src={properties.avatar} alt='Spic' />
@@ -338,9 +305,9 @@ export default function DM() {
                     </div>
                     </div> : 
                     <div>
-                        <Chat emitWritingEvent={emitWritingEvent} key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />
+                        <Chat socket={socket} emitWritingEvent={emitWritingEvent} key={selectedChatId + '/' + chats[selectedChatId].messages.length} selectedChat={chats[selectedChatId]} createChat={createChat} postMessage={postMessage} />
                         <div>
-                            <UsersWriting selectedChatId={selectedChatId} socket={socket}/>
+                            <UsersWriting key={selectedChatId} selectedChatId={selectedChatId} socket={socket}/>
                         </div>
                     </div>
 
