@@ -175,17 +175,17 @@ export default function Chat(props) {
                 </div>
                 <div className='call-participants'>
                     {
-                        localStreamInfos.audio && isCallRunning ? <div className='call-participant-avatar' style={{ backgroundImage: `url(${authContext.user.avatar})` }} > </div>
+                        !localStreamInfos.video && isCallRunning ? <div className='call-participant-avatar' style={{ backgroundImage: `url(${authContext.user.avatar})` }} > </div>
                             : ''
-
                     }
                     <video style={{ display: isCallRunning && localStreamInfos.video ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
 
                     {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
+                        const shouldDisplayCam = recipientsVideos[index].current.peer && recipientsVideos[index].current.video && isCallRunning
                         return (
                             <div key={index}>
-                                <video ref={recipientsVideos[index]} style={{ display: recipientsVideos[index].current.peer && recipientsVideos[index].current.video && isCallRunning ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
-                                {isCallRunning && recipientsVideos[index].current.peer ?
+                                <video ref={recipientsVideos[index]} style={{ display: shouldDisplayCam ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                                {isCallRunning && recipientsVideos[index].current.peer && !recipientsVideos[index].current.video ?
                                     <div className='call-participant-avatar' style={{ backgroundImage: `url(${recipientsVideos[index].current.avatar})` }}></div>
                                     : ''
                                 }

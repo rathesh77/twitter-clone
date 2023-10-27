@@ -119,7 +119,7 @@ export default function Call(props) {
         userId,
         stream: e.streams[0], 
         video: streams[peer].getVideoTracks().length > 0 ? true : false, 
-        audio: streams[peer].getVideoTracks().length > 0 ? true : false
+        audio: streams[peer].getAudioTracks().length > 0 ? true : false
       })
     };
     localStream.getTracks().forEach(track => pcs[peer].addTrack(track, localStream));
