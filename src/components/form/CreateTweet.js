@@ -7,7 +7,8 @@ export default function CreateTweet(props) {
 
   const handleTweetPost = async function (formContent, file) {
    const createdTweet = await uploadTweet(formContent, file, tweet)
-   await updateTweetsList(createdTweet)
+   if (createdTweet)
+    await updateTweetsList(createdTweet)
   }
   return (
     <WysiwygForm action={handleTweetPost} placeholder="Quoi de neuf ?" button={<TweetButton />}/>

@@ -24,6 +24,8 @@ export default function Tweet(props) {
   const handleRetweetClick = async (e) => {
     e.stopPropagation()
     const results = await postRetweet(uid)
+    if (!results)
+      return;
     const {retweetsIncrement} = results
 
     setRetweets(retweets + retweetsIncrement)
