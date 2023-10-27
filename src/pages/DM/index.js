@@ -142,7 +142,6 @@ export default function DM() {
         // recuperer la liste des DM de l'utilisateur courant
         cleanListeners(socket)
 
-      console.log(authContext)
         socket.on('message', () => {
             console.log('message received')
         });

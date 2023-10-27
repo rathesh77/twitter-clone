@@ -13,11 +13,8 @@ export default function Timeline() {
 
   const updateTweetsList = (data) => {
     const update = [...deepTweets]
-    const { uid } = data
     update.unshift({
-      tweetId: uid,
       ...data
-
     })
     setDeepTweets(update)
   }

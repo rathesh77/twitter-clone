@@ -1,20 +1,17 @@
 import { List, ListItem } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../authContext';
 import Tweet from '../components/Tweet';
 import WysiwygForm from '../components/form/WysiwygForm';
-import { fetchTweetsUnderTweet, postMedia, postTweet, findTweetById } from '../services/tweetServices';
-import { axiosInstance } from '../axios';
+import { fetchTweetsUnderTweet, findTweetById } from '../services/tweetServices';
 import TweetButton from '../components/buttons/TweetButton';
+import { uploadTweet } from '../tools/tweet.tools';
 
-const BASE_URL = axiosInstance.defaults.baseURL
 
 export default function ViewTweet() {
 
   const [tweet, setTweet] = useState(null)
   const [messages, setMessages] = useState(null)
-  const authContext = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleTweetClick = (e, tweetId) => {
@@ -27,42 +24,11 @@ export default function ViewTweet() {
     setMessages(newMessagesList)
   }
 
-  const action = (tweet)=> {
-    updateTweetsList(tweet)
-  } 
-
-  const uploadImage = async (file) => {
-    return await postMedia(file)
-  }
 
   const handleTweetPost = async function (formContent, file) {
-    let userId, mentionnedPeople
-    userId = authContext.user.uid
-    mentionnedPeople = []
-
-    if (file == null && (formContent == null || formContent.trim().length === 0))
-      return
-
-    const filename = await uploadImage(file)
-    let content = formContent == null ? '' : formContent.trim()
-
-    if (file !== null) {
-      const imageUrl = BASE_URL + '/' + filename.filename
-      const mimeType = filename.mimetype
-      content += '<br/>'
-      if (mimeType.toLowerCase().includes('video')) {
-        content += `<video onclick="event.stopPropagation()" controls muted> <source src="${imageUrl}" type="${mimeType}"/> </video>`
-      } else {
-        content += `<img src="${imageUrl}" alt="test"/>`
-      }
-    }
-    const data = { userId, content, mentionnedPeople }
-    if (tweet != null) {
-      data['masterTweetId'] = tweet.tweet.uid
-    }
-    const results = await postTweet(data)
-    await action(results)
-  }
+    const createdTweet = await uploadTweet(formContent, file, tweet)
+     await updateTweetsList(createdTweet)
+   }
 
   const getCurrentTweetAndMessages = async () => {
     try {
@@ -88,6 +54,7 @@ export default function ViewTweet() {
   if (tweet === null) {
     return <div>LOADING</div>
   }
+
   return (
     <div className="tweet">
       <Tweet key={tweet.tweet.replies} {...tweet}/>
