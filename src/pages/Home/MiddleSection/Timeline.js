@@ -58,7 +58,6 @@ export default function Timeline() {
         }
       }
     }
-    console.log(tweets)
     setDeepTweets(tweets)
   }
 
