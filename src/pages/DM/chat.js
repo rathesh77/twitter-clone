@@ -39,7 +39,6 @@ export default function Chat(props) {
    const { selectedChat, createChat, postMessage, emitWritingEvent } = props
    const { recipients } = selectedChat
    
-   const [messages] = useState(selectedChat.messages)
    const [event, setEvent] = useState(null)
    const [localStreamInfos, setLocalStreamInfos] = useState({})
    const [startButtonEnabled, setStartButtonEnabled] = useState(true);
