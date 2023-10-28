@@ -129,7 +129,7 @@ export default function Call(props) {
   async function makeCall({initiator, userId}) {
     await createPeerConnection(initiator, userId);
 
-    const offer = await pcs[initiator].createOffer();
+    const offer = await pcs[initiator].createOffer({offerToReceiveAudio: 1, offerToReceiveVideo: 1});
     socket.emit('webrtc:message', { type: 'offer', sdp: offer.sdp, chatId, initiator, responder: socket.id })
     await pcs[initiator].setLocalDescription(offer);
   }
