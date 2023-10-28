@@ -143,7 +143,7 @@ export default function Chat(props) {
             content,
             date: Date.now()
         }
-        if (messages.length === 0) {
+        if (selectedChat.messages.length === 0) {
             createChat(newMessage)
         } else {
             postMessage({ ...newMessage, chatId: selectedChat.chatId })
@@ -200,7 +200,7 @@ export default function Chat(props) {
             </div>
 
             <div className='DM-messages' ref={messagesListContainer}>
-                {messages.map((m) => {
+                {selectedChat.messages.map((m) => {
                     return (
                         <Message key={m.id} content={m.content} author={findAuthorOfMessage(m)} date={m.date} />
                     )
