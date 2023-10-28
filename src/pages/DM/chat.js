@@ -6,7 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import WysiwygForm from '../../components/form/WysiwygForm';
 import { postMedia } from '../../services/tweetServices';
 import { axiosInstance } from '../../axios';
-import Call from '../../components/WebRTC/WebRTC';
+import WebRTC from '../../components/WebRTC/WebRTC';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faPhoneSlash } from '@fortawesome/free-solid-svg-icons'
 
@@ -175,7 +175,7 @@ export default function Chat(props) {
                         <span className='call-button' style={startButtonEnabled ? { opacity: '1', cursor: 'pointer' } : { opacity: '0.3', cursor: 'not-allowed' }} disabled={!startButtonEnabled} onClick={startButtonClick} id="startButton"><FontAwesomeIcon icon={faPhone} size='lg' /></span>
                         <span className='call-button' style={hangupButtonEnabled ? { opacity: '1', cursor: 'pointer' } : { opacity: '0.3', cursor: 'not-allowed' }} disabled={!hangupButtonEnabled} onClick={hangupButtonClick} id="hangupButton"><FontAwesomeIcon icon={faPhoneSlash} size='lg' /></span>
                     </div>
-                    <Call setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId} callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></Call>
+                    <WebRTC setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId} callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></WebRTC>
                 </div>
                 <div className='call-participants'>
                     {
