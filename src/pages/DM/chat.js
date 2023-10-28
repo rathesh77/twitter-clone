@@ -68,8 +68,6 @@ export default function Chat(props) {
     }
     
     const callbackWhenCallStarts= (localStream) =>{
-        setStartButtonEnabled(false)
-        setHangupButtonEnabled(true)
         localVideo.current.srcObject = localStream;
     }
 
@@ -102,13 +100,19 @@ export default function Chat(props) {
         setIsCallRunning(false)
     }
     const startButtonClick = async function () {
-      if (startButtonEnabled)
+      if (startButtonEnabled) {
         setEvent('startCall')
+        setStartButtonEnabled(false)
+        setHangupButtonEnabled(true)
+      }
       }
     
       const hangupButtonClick = async function () {
-        if (hangupButtonEnabled)
+        if (hangupButtonEnabled) {
           setEvent('stopCall')
+          setStartButtonEnabled(true)
+          setHangupButtonEnabled(false)
+        }
       };
 
     const uploadImage = async (file) => {
