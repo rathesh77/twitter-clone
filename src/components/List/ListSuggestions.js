@@ -28,11 +28,11 @@ export default function ListSuggestions() {
     <List className="suggestions">
       <div className="right-section-title">Vous pourriez aimer</div>
       {suggestions.map((s)=>{
-        const {uid} = s._fields[1].properties
+        const uid = s.uid
         return (
           <ListItem key={uid} disablePadding>
         <Suggestion setSuggestions={setSuggestions}
-          user={s._fields[1].properties}
+          user={s}
         />
       </ListItem>
         )
