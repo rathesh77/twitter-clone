@@ -3,7 +3,7 @@ import { socket } from "../../socket";
 
 let localStream = null
 
-export default function Call(props) {
+export default function WebRTC(props) {
 
   let { chatId, event, callbackWhenUserLeaves, updateStreams, callbackWhenCallStarts, callbackWhenCallStops, setIsCallRunning, setLocalStreamInfos } = props
 
