@@ -64,7 +64,7 @@ export default function WebRTC(props) {
     return () => {
       socket.off('webrtc:message');
     };
-  }, [])
+  }, [chatId])
 
   async function hangup(leaver) {
 
