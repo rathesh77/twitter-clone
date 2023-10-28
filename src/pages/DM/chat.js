@@ -6,7 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import WysiwygForm from '../../components/form/WysiwygForm';
 import { postMedia } from '../../services/tweetServices';
 import { axiosInstance } from '../../axios';
-import Call from '../../components/WebRTC/Call';
+import Call from '../../components/WebRTC/WebRTC';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faPhoneSlash } from '@fortawesome/free-solid-svg-icons'
 
