@@ -181,13 +181,13 @@ export default function Chat(props) {
                         !localStreamInfos.video && isCallRunning ? <div className='call-participant-avatar' style={{ backgroundImage: `url(${authContext.user.avatar})` }} > </div>
                             : ''
                     }
-                    <video style={{ display: isCallRunning && localStreamInfos.video ? 'inline-block' : 'none', padding: '10px' }} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
+                    <video style={{ display: isCallRunning && localStreamInfos.video ? 'inline-block' : 'none'}} id="localVideo" ref={localVideo} playsInline={true} autoPlay={true} muted></video>
 
                     {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
                         const shouldDisplayCam = recipientsVideos[index].current.peer && recipientsVideos[index].current.video && isCallRunning
                         return (
                             <div key={index}>
-                                <video ref={recipientsVideos[index]} style={{ display: shouldDisplayCam ? 'inline-block' : 'none', padding: '10px' }} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                                <video ref={recipientsVideos[index]} style={{ display: shouldDisplayCam ? 'inline-block' : 'none'}} id={'video' + index} playsInline={true} autoPlay={true}></video>
                                 {isCallRunning && recipientsVideos[index].current.peer && !recipientsVideos[index].current.video ?
                                     <div className='call-participant-avatar' style={{ backgroundImage: `url(${recipientsVideos[index].current.avatar})` }}></div>
                                     : ''

@@ -174,7 +174,7 @@ export default function WebRTC(props) {
     if (!localStream) {
       let mediaStreamConstraints
       try {
-        mediaStreamConstraints = { audio: true, video: { width: 150, height: 150 } }
+        mediaStreamConstraints = { audio: true, video: { width: 170, height: 170 } }
         localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
         setLocalStreamInfos(mediaStreamConstraints)
       } catch (e) {
