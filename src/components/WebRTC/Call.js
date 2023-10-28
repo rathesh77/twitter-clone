@@ -12,10 +12,10 @@ export default function Call(props) {
   useEffect(()=>{
     switch(event) {
       case 'startCall':
-        startButtonClick()
+        startCall()
         break;
       case 'stopCall':
-        hangupButtonClick()
+        stopCall()
         break;
       default:
         break;
@@ -170,7 +170,7 @@ export default function Call(props) {
   }
 
 
-  const startButtonClick = async function () {
+  const startCall = async function () {
     if (!localStream) {
       let mediaStreamConstraints
       try {
@@ -192,8 +192,10 @@ export default function Call(props) {
     socket.emit('webrtc:message', { type: 'ready', chatId, initiator: socket.id });
   }
 
-  const hangupButtonClick = async function () {
+  const stopCall = async function () {
     hangup(null);
     socket.emit('webrtc:message', { type: 'bye', chatId, leaver: socket.id })
   };
+
+  console.log('CALL COMPONENT REFRESH')
 }
