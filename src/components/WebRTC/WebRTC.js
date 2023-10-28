@@ -197,5 +197,4 @@ export default function WebRTC(props) {
     socket.emit('webrtc:message', { type: 'bye', chatId, leaver: socket.id })
   };
 
-  console.log('CALL COMPONENT REFRESH')
 }
