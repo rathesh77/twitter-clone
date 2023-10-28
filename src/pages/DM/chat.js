@@ -69,6 +69,7 @@ export default function Chat(props) {
     
     const callbackWhenCallStarts= (localStream) =>{
         localVideo.current.srcObject = localStream;
+        setHangupButtonEnabled(true)
     }
 
     const callbackWhenUserLeaves = (leaver) => {
@@ -103,7 +104,6 @@ export default function Chat(props) {
       if (startButtonEnabled) {
         setEvent('startCall')
         setStartButtonEnabled(false)
-        setHangupButtonEnabled(true)
       }
       }
     
