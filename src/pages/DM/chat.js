@@ -58,7 +58,7 @@ export default function Chat(props) {
               recipient.current.peer = peer
 
               const recipientUser =  selectedChat.recipients.find((r) => r.uid === userId)
-              recipient.current.avatar = recipientUser ? (recipientUser.avatar) : (authContext.user.avatar ? authContext.user.avatar : '')
+              recipient.current.user = recipientUser ? recipientUser : null
               recipient.current.video = video
               recipient.current.audio = audio
               break
@@ -76,7 +76,7 @@ export default function Chat(props) {
         for (const recipient of recipientsVideos) {
             if (recipient.current.peer === leaver) {
               delete recipient.current.peer
-              delete recipient.current.avatar
+              delete recipient.current.user
               delete recipient.current.video
               delete recipient.current.audio
 
@@ -88,7 +88,7 @@ export default function Chat(props) {
     const callbackWhenCallStops = () => {
         for (const recipient of recipientsVideos) {
           delete recipient.current.peer
-          delete recipient.current.avatar
+          delete recipient.current.user
           delete recipient.current.video
           delete recipient.current.audio
         }
@@ -180,12 +180,20 @@ export default function Chat(props) {
                 </div>
                 <div className='call-participants'>
 
-                    <video  id="localVideo" style={{ display: localStreamInfos && isCallRunning  ? 'inline-block' : 'none'}} poster={!localStreamInfos.video && isCallRunning ? authContext.user.avatar : ''} ref={localVideo} playsInline={true} autoPlay={true} muted></video>
-
+                    <div className='call-participant'>
+                      <video  id="localVideo" style={{ display: localStreamInfos && isCallRunning  ? 'inline-block' : 'none'}} poster={!localStreamInfos.video && isCallRunning ? authContext.user.avatar : ''} ref={localVideo} playsInline={true} autoPlay={true} muted></video>
+                      <div className='call-participant-nickname' style={{fontWeight: 'bolder'}}>{isCallRunning ? authContext.user.username + ' (You)': ''}</div>
+                    </div>
                     {(new Array(recipientsVideos.length)).fill(1).map((_, index) => {
                         const shouldDisplayCam = recipientsVideos[index].current.peer && isCallRunning
                         return (
-                                <video key={index} ref={recipientsVideos[index]} style={{ display: shouldDisplayCam ? 'inline-block' : 'none'}} poster={isCallRunning && recipientsVideos[index].current.peer && !recipientsVideos[index].current.video ? recipientsVideos[index].current.avatar : ''} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                          <div className='call-participant' key={index} >
+
+                                <video ref={recipientsVideos[index]} style={{ display: shouldDisplayCam ? 'inline-block' : 'none'}} poster={isCallRunning && recipientsVideos[index].current.peer && !recipientsVideos[index].current.video ? recipientsVideos[index].current.user.avatar : ''} id={'video' + index} playsInline={true} autoPlay={true}></video>
+                                <div className='call-participant-nickname'>{isCallRunning && recipientsVideos[index].current.user ? recipientsVideos[index].current.user.username  : ''}</div>
+
+                          </div>
+
                         )
                     })}
                 </div>
