@@ -86,13 +86,8 @@ export default function WebRTC(props) {
     pcs[leaver].close();
     delete pcs[leaver]
     setPcs({...pcs})
-    if (Object.keys(pcs).length === 0) {
-      localStream.getTracks().forEach(track => {track.stop()});
-      localStream = null;
-      callbackWhenCallStops()
-
-    }
   };
+  
   function createPeerConnection(peer, userId) {
     pcs[peer] = new RTCPeerConnection({});
     pcs[peer].onicecandidate = e => {
