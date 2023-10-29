@@ -104,6 +104,17 @@ export default function WebRTC(props) {
       }
       socket.emit('webrtc:message', message)
     };
+    pcs[peer].oniceconnectionstatechange = (e) => {
+      console.log(e)
+      switch (e.target.iceConnectionState) {
+        case 'disconnected':
+          callbackWhenUserLeaves(peer)
+          break;
+        default:
+          break;
+      }
+    };
+
     pcs[peer].ontrack = e => {
 
       let streams = {}
