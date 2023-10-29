@@ -107,7 +107,6 @@ export default function WebRTC(props) {
     pcs[peer].oniceconnectionstatechange = (e) => {
       switch (e.target.iceConnectionState) {
         case 'disconnected':
-          callbackWhenUserLeaves(peer)
           hangup(peer)
           break;
         default:
