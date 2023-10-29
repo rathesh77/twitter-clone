@@ -44,7 +44,8 @@ export default function Chat(props) {
    const [startButtonEnabled, setStartButtonEnabled] = useState(true);
    const [hangupButtonEnabled, setHangupButtonEnabled] = useState(false);
    const [isCallRunning, setIsCallRunning] = useState(false)
-   
+   const [chatIdWhereCallInitiated, setChatIdWhereCallInitiated] = useState(null)
+
    const messagesListContainer = useRef(null);
     let localVideo = useRef(null);
     const [recipientsVideos, setRecipientsVideos] = useState([useRef({}), useRef({}), useRef({}), useRef({}), useRef({}), useRef({})])
@@ -101,6 +102,7 @@ export default function Chat(props) {
     }
     const startButtonClick = async function () {
       if (startButtonEnabled) {
+        setChatIdWhereCallInitiated(selectedChat.chatId)
         setEvent('startCall')
         setStartButtonEnabled(false)
       }
@@ -174,7 +176,7 @@ export default function Chat(props) {
                         <span className='call-button' style={startButtonEnabled ? { opacity: '1', cursor: 'pointer' } : { opacity: '0.3', cursor: 'not-allowed' }} disabled={!startButtonEnabled} onClick={startButtonClick} id="startButton"><FontAwesomeIcon icon={faPhone} size='lg' /></span>
                         <span className='call-button' style={hangupButtonEnabled ? { opacity: '1', cursor: 'pointer' } : { opacity: '0.3', cursor: 'not-allowed' }} disabled={!hangupButtonEnabled} onClick={hangupButtonClick} id="hangupButton"><FontAwesomeIcon icon={faPhoneSlash} size='lg' /></span>
                     </div>
-                    <WebRTC setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={selectedChat.chatId} callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></WebRTC>
+                    <WebRTC setLocalStreamInfos={setLocalStreamInfos} setIsCallRunning={setIsCallRunning} event={event} chatId={chatIdWhereCallInitiated} callbackWhenUserLeaves={callbackWhenUserLeaves} updateStreams={updateStreams} callbackWhenCallStarts={callbackWhenCallStarts} callbackWhenCallStops={callbackWhenCallStops}></WebRTC>
                 </div>
                 <div className='call-participants'>
 
