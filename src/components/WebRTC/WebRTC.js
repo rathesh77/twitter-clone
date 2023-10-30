@@ -10,7 +10,20 @@ export default function WebRTC(props) {
   const authContext = useContext(AuthContext)
 
   let [pcs, setPcs] = useState({})
+  let quitCallIfAloneForTooLong = ()=> {
+    console.log('TIMEOUT STARTED')
+    setTimeout(() => {
+      if (localStream) {
+        stopCall()
+        clearInterval(quitCallIfAloneForTooLong)
+        console.log('TIMEOUT STOPPED')
 
+      }
+    }, 60000 * 3);
+   }
+   if (Object.keys(pcs).length ===0 && localStream) {
+    quitCallIfAloneForTooLong()
+   }
   useEffect(()=>{
     switch(event) {
       case 'startCall':
