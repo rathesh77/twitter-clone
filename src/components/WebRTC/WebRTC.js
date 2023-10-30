@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { socket } from "../../socket";
+import AuthContext from "../../authContext";
 
 let localStream = null
 
 export default function WebRTC(props) {
 
   let { chatId, event, callbackWhenUserLeaves, updateStreams, callbackWhenCallStarts, callbackWhenCallStops, setIsCallRunning, setLocalStreamInfos } = props
+  const authContext = useContext(AuthContext)
 
   let [pcs, setPcs] = useState({})
 
@@ -43,6 +45,12 @@ export default function WebRTC(props) {
           handleCandidate(message);
           break;
         case 'ready':
+          
+          if (message.userId === authContext.user.uid) {
+            console.log('you cannot initiate a call with yourself...')
+            socket.emit('webrtc:message', {type: 'self-call', chatId})
+            return
+          }
           if (Object.keys(pcs) === 6) {
             console.log('already 7 persons in the room')
             return
@@ -54,6 +62,10 @@ export default function WebRTC(props) {
           if (message.leaver && pcs[message.leaver]) {
             hangup(message.leaver);
           }
+          break;
+        case 'self-call':
+          hangup()
+          socket.emit('webrtc:message', { type: 'bye', chatId, leaver: socket.id })
           break;
         default:
           console.log('unhandled', message);
