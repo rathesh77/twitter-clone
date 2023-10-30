@@ -4,6 +4,10 @@ $border-dark: rgba(0, 0, 0, 0.1);
   display: flex;
 }
 
+.text-align-center {
+  text-align: center;
+}
+
 .left-pane-container {
   display: flex;
   justify-content: flex-end;

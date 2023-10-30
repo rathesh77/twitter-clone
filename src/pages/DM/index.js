@@ -285,7 +285,7 @@ export default function DM() {
                                 {chat.recipients.map((cr) => {
                                     return (
                                         <span key={cr.uid}>
-                                            <ClickableUser user={cr}>
+                                            <ClickableUser className="text-align-center" user={cr}>
                                                 <Avatar src={cr.avatar} alt={cr.username}/>{cr.username}
                                             </ClickableUser>
                                         </span>
