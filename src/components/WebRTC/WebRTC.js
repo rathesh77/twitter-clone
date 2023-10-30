@@ -3,27 +3,31 @@ import { socket } from "../../socket";
 import AuthContext from "../../authContext";
 
 let localStream = null
-
+let timerInactivity
 export default function WebRTC(props) {
 
-  let { chatId, event, callbackWhenUserLeaves, updateStreams, callbackWhenCallStarts, callbackWhenCallStops, setIsCallRunning, setLocalStreamInfos } = props
+  console.log('REFRESH WEBRTC')
+  let { 
+    chatId, 
+    event, 
+    updateStreams, 
+    setIsCallRunning, 
+    setLocalStreamInfos,
+    callbackWhenUserLeaves, 
+    callbackWhenCallStarts, 
+    callbackWhenCallStops
+  } = props
+
   const authContext = useContext(AuthContext)
 
   let [pcs, setPcs] = useState({})
-  let quitCallIfAloneForTooLong = ()=> {
-    console.log('TIMEOUT STARTED')
-    setTimeout(() => {
-      if (localStream) {
-        stopCall()
-        clearInterval(quitCallIfAloneForTooLong)
-        console.log('TIMEOUT STOPPED')
 
-      }
-    }, 60000 * 3);
-   }
-   if (Object.keys(pcs).length ===0 && localStream) {
-    quitCallIfAloneForTooLong()
-   }
+   
+  if (Object.keys(pcs).length === 0 && localStream) {
+    timerInactivity = setTimeout(()=> {
+      stopCall()
+    },60000)
+  }
   useEffect(()=>{
     switch(event) {
       case 'startCall':
@@ -55,6 +59,7 @@ export default function WebRTC(props) {
           handleAnswer(message);
           break;
         case 'candidate':
+          clearTimeout(timerInactivity)
           handleCandidate(message);
           break;
         case 'ready':
