@@ -4,7 +4,7 @@ import UserInfos from '../../../components/UserInfos'
 import { Avatar } from '@mui/material'
 import AuthContext from '../../../authContext'
 import { useLocation } from 'react-router-dom'
-import { fetchRelatedTweets } from '../../../services/tweetServices'
+import { fetchRelatedTweets, findLikedTweetsByUser } from '../../../services/tweetServices'
 import { doesCurrentUserFollowRecipient, fetchFollowersCount, fetchFollowingsCount, fetchUser, followUser } from '../../../services/userServices'
 import ListTweets from '../../../components/List/ListTweets'
 
@@ -26,6 +26,7 @@ export default function Profile(props) {
   const [userTweets, setUserTweets] = useState(tweets)
   const [user, setUser] = useState(null)
   const [isFollowing, setIsFollowing] = useState(false)
+  const [likedTweets, setLikedTweets] = useState([])
   const authContext = useContext(AuthContext)
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -78,6 +79,7 @@ export default function Profile(props) {
         tweets.push(res)
       }
       setUserTweets(tweets)
+      setLikedTweets(await findLikedTweetsByUser(userId))
     })()
   }, [state])
   if (user == null) {
@@ -87,6 +89,9 @@ export default function Profile(props) {
 
   if (value === 0)
     content = (<ListTweets tweets={userTweets} />)
+  else if (value === 3) {
+    content = (<ListTweets tweets={likedTweets} />)
+  } 
   return (
     <div className='user-profile'>
       <div className='user-banner'>

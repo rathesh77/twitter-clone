@@ -9,6 +9,15 @@ export const findTweetById = async (tweetId) => {
 
   }
 }
+export const findLikedTweetsByUser = async (userId) => {
+  try {
+    const results = await axiosInstance.get('/liked-tweets/'+userId)
+    return results.data
+  } catch (e) {
+    return false
+
+  }
+}
 
 export const postTweet = async (data) => {
   try {
