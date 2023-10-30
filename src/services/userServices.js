@@ -55,11 +55,9 @@ export const logout = async () => {
 
 export const followUser = async (userId) => {
   try {
-    await axiosInstance.put(`/follow/${userId}`)
-    return true
+   return  await axiosInstance.put(`/follow/${userId}`)
   } catch (e) {
-    return false
-
+    return e
   }
 }
 
@@ -73,9 +71,9 @@ export const fetchSuggestions = async (userId) => {
   }
 }
 
-export const fetchFollowers = async (userId) => {
+export const fetchFollowersCount = async (userId) => {
   try {
-    let followers = await axiosInstance.get(`/followers?id=${userId}`)
+    let followers = await axiosInstance.get(`/followers-count?id=${userId}`)
     return followers.data.count
   } catch (e) {
     return false
@@ -83,9 +81,9 @@ export const fetchFollowers = async (userId) => {
   }
 }
 
-export const fetchFollowings = async (userId) => {
+export const fetchFollowingsCount = async (userId) => {
   try {
-    let followings = await axiosInstance.get(`/followings?id=${userId}`)
+    let followings = await axiosInstance.get(`/followings-count?id=${userId}`)
     return followings.data.count
   } catch (e) {
     return false

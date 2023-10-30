@@ -5,7 +5,7 @@ import { Avatar } from '@mui/material'
 import AuthContext from '../../../authContext'
 import { useLocation } from 'react-router-dom'
 import { fetchRelatedTweets } from '../../../services/tweetServices'
-import { doesCurrentUserFollowRecipient, fetchFollowers, fetchFollowings, fetchUser, followUser } from '../../../services/userServices'
+import { doesCurrentUserFollowRecipient, fetchFollowersCount, fetchFollowingsCount, fetchUser, followUser } from '../../../services/userServices'
 import ListTweets from '../../../components/List/ListTweets'
 
 export default function Profile(props) {
@@ -33,8 +33,11 @@ export default function Profile(props) {
 
   const handleUserFollow = async () => {
     try {
-      await followUser(user.uid)
-      setIsFollowing(true)
+     const response = await followUser(user.uid)
+     if (response.status && response.status === 200) {
+      const isFollowing = response.data.isFollowing
+      setIsFollowing(isFollowing)
+     }
     } catch (e) {
       console.log(e)
     }
@@ -42,7 +45,7 @@ export default function Profile(props) {
 
   const handleHoverFollowButton = (e) => {
     if (isFollowing === true)
-      e.target.innerText = 'Se debasonner'
+      e.target.innerText = 'Se désabonner'
   }
   const handleUnhoverFollowButton = (e) => {
     if (isFollowing === true)
@@ -53,9 +56,9 @@ export default function Profile(props) {
     (async () => {
       const currentUserId = state == null ? authContext.user.uid : state.userId
       const currentUser = await fetchUser(currentUserId)
-      let followers = await fetchFollowers(currentUserId)
+      let followers = await fetchFollowersCount(currentUserId)
 
-      let followings = await fetchFollowings(currentUserId)
+      let followings = await fetchFollowingsCount(currentUserId)
       setUser({...currentUser, followers, followings})
       if (currentUser.uid !== authContext.user.uid ) {
         const isFollowing = await doesCurrentUserFollowRecipient(currentUser.uid)

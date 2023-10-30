@@ -3,12 +3,12 @@ import ClickableUser from "../components/ClickableUser"
 import { followUser } from "../services/userServices"
 export default function Suggestion(props) {
   
-  const {setSuggestions, user} = props
+  const {updateSuggestions, user} = props
   const {username, avatar} = user
   const handleUserFollow = async () => {
     try {
       await followUser(user.uid)
-      setSuggestions([])
+      updateSuggestions(user.uid)
     } catch (e) {
       console.log(e)
     }

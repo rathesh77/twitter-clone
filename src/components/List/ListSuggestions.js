@@ -7,6 +7,9 @@ import Suggestion from "../Suggestion";
 export default function ListSuggestions() {
   const [suggestions, setSuggestions] = useState(null)
   
+  const updateSuggestions = (uid) => {
+    setSuggestions(suggestions.filter((s) => s.uid !== uid))
+  }
   useEffect(()=>{
     if (suggestions != null) {
       console.log('render')
@@ -31,7 +34,7 @@ export default function ListSuggestions() {
         const uid = s.uid
         return (
           <ListItem key={uid} disablePadding>
-        <Suggestion setSuggestions={setSuggestions}
+        <Suggestion updateSuggestions={updateSuggestions}
           user={s}
         />
       </ListItem>
