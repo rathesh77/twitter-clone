@@ -46,7 +46,7 @@ export default function WysiwygForm(props) {
     const file = e.target.files[0]
     e.target.value = ''
     const sizeMB = file.size / (10 ** 6)
-    if (sizeMB > 512.0) {
+    if (sizeMB > 50) {
       setFileErr(true)
       setTimeout(() => {
         setFileErr(false)
@@ -79,7 +79,7 @@ export default function WysiwygForm(props) {
     <div style={styleSelector['editor']}>
       {fileErr === true ?
         <div className="file-error">
-          File must not exceed 512MB
+          File must not exceed 50MB
         </div>
         : null}
 
