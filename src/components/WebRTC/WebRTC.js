@@ -22,11 +22,13 @@ export default function WebRTC(props) {
 
   let [pcs, setPcs] = useState({})
 
-   
+  if (timerInactivity)
+    clearTimeout(timerInactivity)
+
   if (Object.keys(pcs).length === 0 && localStream) {
     timerInactivity = setTimeout(()=> {
       stopCall()
-    },60000)
+    },5000)
   }
   useEffect(()=>{
     switch(event) {
