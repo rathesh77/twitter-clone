@@ -28,7 +28,7 @@ export default function WebRTC(props) {
   if (Object.keys(pcs).length === 0 && localStream) {
     timerInactivity = setTimeout(()=> {
       stopCall()
-    },5000)
+    },60000)
   }
   useEffect(()=>{
     switch(event) {
