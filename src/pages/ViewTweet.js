@@ -57,7 +57,7 @@ export default function ViewTweet() {
 
   return (
     <div className="tweet">
-      <Tweet key={tweet.tweet.replies} {...tweet}/>
+      <Tweet {...tweet}/>
         <WysiwygForm action={handleTweetPost} placeholder="Ecrivez votre tweet" button={<TweetButton />}/>
       <List>
         {messages.map((m) => {
