@@ -1,13 +1,27 @@
 import { useState, useEffect, useContext } from 'react'
 import { Tabs, Tab } from '@mui/material'
 import UserInfos from '../../../components/UserInfos'
-import { Avatar } from '@mui/material'
+import { Avatar, Button, Modal, TextField } from '@mui/material';
+import { Box } from '@mui/system';
+import CloseIcon from '@mui/icons-material/Close';
+
 import AuthContext from '../../../authContext'
 import { useLocation } from 'react-router-dom'
 import { fetchRelatedTweets, findLikedTweetsByUser } from '../../../services/tweetServices'
 import { doesCurrentUserFollowRecipient, fetchFollowersCount, fetchFollowingsCount, fetchUser, followUser } from '../../../services/userServices'
 import ListTweets from '../../../components/List/ListTweets'
-
+import { axiosInstance } from '../../../axios';
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 export default function Profile(props) {
 
   const tweets = [
@@ -25,12 +39,18 @@ export default function Profile(props) {
   const [value, setValue] = useState(0)
   const [userTweets, setUserTweets] = useState(tweets)
   const [user, setUser] = useState(null)
+  const [open, setOpen] = useState(false)
+
   const [isFollowing, setIsFollowing] = useState(false)
   const [likedTweets, setLikedTweets] = useState([])
   const authContext = useContext(AuthContext)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleClose = ()=> {
+
+  }
 
   const handleUserFollow = async () => {
     try {
@@ -53,6 +73,56 @@ export default function Profile(props) {
       e.target.innerText = 'Abonné'
   }
 
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+});
+
+  const editProfil = async (e) => {
+    e.preventDefault();
+    console.log(e)
+    const formElements = e.target
+
+    const data = {}
+    for (const element of formElements) {
+      if (element.id && element.id.length) {
+        //console.log(element.value)
+        console.log(element.id + ': ')
+        console.log(element)
+        switch (element.type) {
+          case 'file':
+            if (element.files[0]) {
+
+              const base64String = await toBase64(element.files[0])
+              const { size, name} = element.files[0]
+              const {width, height } = element
+              data[element.id] = {
+                base64String,
+                size, name
+              }
+            }
+            break;
+          case 'text':
+            if (element.value && element.value.trim().length)
+              data[element.id] = element.value.trim()
+            break;
+          case 'password':
+            if (element.value && element.value.length)
+              data[element.id] = element.value
+            break;
+
+        }
+
+      }
+    }
+    console.log(data)
+    await axiosInstance.put('/user', data)
+    authContext.getMe()
+  }
+
+  console.log('refresh profil')
   useEffect(() => {
     (async () => {
       const currentUserId = state == null ? authContext.user.uid : state.userId
@@ -81,7 +151,7 @@ export default function Profile(props) {
       setUserTweets(tweets)
       setLikedTweets(await findLikedTweetsByUser(userId))
     })()
-  }, [state])
+  }, [state, authContext.user])
   if (user == null) {
     return (<div>LOADING</div>)
   }
@@ -94,9 +164,31 @@ export default function Profile(props) {
   } 
   return (
     <div className='user-profile'>
+          <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                  <Box sx={style}>
+                        <div className='dm-modal-header' style={{justifyContent:'space-between'}}>
+                        <span className='dm-modal-title'>Modifier le profil</span>
+                        <Button onClick={()=> {setOpen(false);}}><CloseIcon/></Button>
+                        </div>
+                          <form onSubmit={editProfil} style={{display: 'flex', flexDirection: 'column'}}>
+                            email <TextField type='text' name='email' id="email"  variant="outlined"  disabled value={authContext.user.email} />
+                            Nom d'utilisateur <TextField type='text' name='username' id="username" variant="outlined" placeholder={authContext.user.username}/>
+                            Mot de passe <TextField name='password' id="password" variant="outlined" type='password' />
+                            avatar <input id="avatar" type="file"  accept="image/*"/>
+                            banner <input id="banner" type="file"  accept="image/*"/>
+                            <Button type='submit'>go</Button>
+                            </form>
+                    </Box>
+
+                </Modal>
       <div className='user-banner'>
         <div className="user-profile-pic" style={{backgroundImage: `url('${user.banner}')`}}></div>
-        {user.uid === authContext.user.uid ? <button className='btn btn-edit-profile'>Éditer le profil</button> : null}
+        {user.uid === authContext.user.uid ? <button className='btn btn-edit-profile' onClick={()=>{setOpen(true)}}>Éditer le profil</button> : null}
       </div>
       <div className='user-profile-avatar-wrapper'>
         <Avatar sx={{ width: "140px", height: "140px" }} src={user.avatar} alt='profile pic' />

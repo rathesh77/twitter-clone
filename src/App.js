@@ -79,7 +79,7 @@ function App() {
     const user = await fetchMe()
     if (user) {
       console.log(user)
-      setUser(user)
+      setUser({...user})
     }
     setIsLoading(false)
     
@@ -105,7 +105,7 @@ function App() {
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
 
-    <AuthContext.Provider value={{user, setUser }}>
+    <AuthContext.Provider value={{user, setUser, getMe }}>
       <Router>
         <Routes>
           <Route element={<PrivateRoute Component={Login} shouldBeAuthenticated={false} />} path='/login' />
